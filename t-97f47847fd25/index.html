@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19p</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<title>ChargeOne mock v19q</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
 else if(L.TileLayer){L.TileLayer.addInitHook(function(){let bad=0;this.on('tileerror',()=>{if(++bad>=3)tileBar(this._map,1)}).on('tileload',()=>{bad=0;tileBar(this._map,0)})})}
@@ -382,7 +382,7 @@ body.hc .c1b.on{background:#000;color:#7dffb3;border:2px solid #7dffb3}
 .marker-cluster-anim .leaflet-marker-icon,.marker-cluster-anim .leaflet-marker-shadow{transition:transform .25s ease-out,opacity .25s ease-in}
 
 #s-map{position:relative}
-#clo{position:absolute;left:0;right:0;bottom:0;max-height:58%;overflow:hidden;transition:height .2s ease,transform .2s ease;touch-action:pan-x;z-index:1200;background:#080e20;border-top:1px solid var(--b);border-radius:18px 18px 0 0;padding:0 16px 12px;box-shadow:0 -8px 24px #0008}
+#clo{position:absolute;left:0;right:0;bottom:0;max-height:58%;overflow:hidden;transition:transform .2s ease;touch-action:pan-x;z-index:1200;background:#080e20;border-top:1px solid var(--b);border-radius:18px 18px 0 0;padding:0 16px 12px;box-shadow:0 -8px 24px #0008}
 #clo[hidden],#cloh[hidden]{display:none}
 .clhd{position:sticky;top:0;display:flex;align-items:center;gap:8px;width:100%;background:inherit;background:#080e20;border:0;color:inherit;font:inherit;font-weight:800;font-size:1.125rem;padding:20px 0 8px;min-height:52px;cursor:pointer;z-index:1}
 .clhd i{position:absolute;left:50%;top:6px;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:var(--m);opacity:.6}.clhd .muted{margin-left:auto}
@@ -495,7 +495,7 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 .c1fl{position:absolute;inset:0;border-radius:18px;background:radial-gradient(circle at 60% 40%,rgba(255,255,255,.75),rgba(0,255,157,.25) 45%,transparent 70%);pointer-events:none;opacity:0;animation:c1fl .45s ease-out}
 @keyframes c1fl{0%,100%{opacity:0}20%{opacity:1}40%{opacity:.2}55%{opacity:.8}}
 .evh.zoom .carg{animation:c1zm .6s ease-in-out}@keyframes c1zm{0%,100%{transform:none}35%{transform:translateX(10px) skewX(-6deg)}70%{transform:translateX(-3px)}}
-.wkey{position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.2,.2,1);touch-action:pan-y manipulation;overflow:visible}
+.wkey{position:relative;transform-style:preserve-3d;transition:transform .25s ease-out;touch-action:pan-y manipulation;overflow:visible}
 .wkey>*{backface-visibility:hidden;-webkit-backface-visibility:hidden}.wkey.flp{transform:rotateY(180deg)}.wkey.flp>*:not(.kbk){pointer-events:none}
 .kbk{position:absolute;inset:0;border-radius:inherit;transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(160deg,#151d30,#0b1120);border:1px solid rgba(255,255,255,.18);pointer-events:none}
 .wkey.flp .kbk{pointer-events:auto}.kbk b{font-size:1.25rem;color:#fff}.kbk svg{width:78%;max-width:280px;height:auto}
@@ -531,6 +531,15 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 .c1rg{position:absolute;z-index:650;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:2px solid rgba(0,255,157,.55);pointer-events:none;animation:c1rg .55s ease-out forwards}
 @keyframes c1rg{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.3);opacity:0}}
 @media (prefers-reduced-motion:reduce){.c1pr,.c1sp{transform:none!important;transition:none!important}#s-charge .evh svg.c1lh,.c1zb.on,.c1rg{animation:none!important}.c1zb,.c1rg{display:none}.c1gm{transition:none}}
+
+/* v19q transitions: short, transform/opacity only, no blur while moving */
+.screen.on{animation:c1in 220ms ease-out}#s-map.on{animation:c1fd 180ms ease-out}
+@keyframes c1in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}@keyframes c1fd{from{opacity:0}to{opacity:1}}
+.screen.on>.card{animation-duration:200ms}.screen.on>.card:nth-child(n+3){animation-delay:60ms}
+.modal.on .mbox{animation:upIn 220ms ease-out}#sheet.anim{animation-duration:220ms}
+.screen.c1done,.screen.c1done>.card,.modal.c1done .mbox,#sheet.c1done{animation:none!important}
+#intro.out{pointer-events:none}#clo.c1drag{transition:none;box-shadow:none}
+@media (max-width:600px),(hover:none){.sheet,.mbox,.ov{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.mbox{background:#0e1630!important}.ov{background:#0a1020!important}}
 </style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
 <div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
 <script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script><script>/* v19c intro variants */
@@ -656,7 +665,12 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 </div>
 <div class="foot" id="datasrc">This is a preview. Stations are real; prices, status and accounts are sample.</div>
 
-<script src="dc.js?v=2"></script><script>
+<script>/* v19q: dc.js loads after first paint */
+window.NDISP=window.NDISP||function(n){return n};var DCOK=0,DCQ=[];
+function dcLoad(cb){if(DCOK){cb&&cb();return}cb&&DCQ.push(cb);if(dcLoad.l)return;dcLoad.l=1;const j=document.createElement('script');j.src='dc.js?v=2';
+ j.onload=()=>{try{dcBuild()}catch(e){}DCOK=1;const q=DCQ;DCQ=[];q.forEach(f=>{try{f()}catch(e){}})};j.onerror=()=>{dcLoad.l=0;const q=DCQ;DCQ=[];DCOK=0;q.forEach(f=>{try{f()}catch(e){}})};document.head.appendChild(j)}
+function c1Idle(f,ms){setTimeout(()=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:2000}):f()),ms||0)}
+addEventListener('load',()=>c1Idle(()=>dcLoad(),300));</script><script>
 const S=[
  ["Riverside Station","Tesla",34.0522,-118.2437,"123 Main St, Los Angeles",["CCS","NACS"],350,4,6,0.42,4.7,128],
  ["Oakwood Plaza","ChargePoint",34.0736,-118.4004,"9 Oak Ave, Beverly Hills",["J1772","CCS"],62,3,4,0.35,4.4,61],
@@ -1128,7 +1142,7 @@ map.once('moveend',()=>{});setTimeout(function w(){if(typeof FLEW!='undefined'&&
 
 const CITYRAW="New York,NY,40.76,-73.97;Los Angeles,CA,34.06,-118.36;Chicago,IL,41.89,-87.64;Houston,TX,29.75,-95.41;Phoenix,AZ,33.51,-112.07;Philadelphia,PA,39.95,-75.17;San Antonio,TX,29.47,-98.49;San Diego,CA,32.78,-117.17;Dallas,TX,32.80,-96.81;San Jose,CA,37.34,-121.91;Austin,TX,30.28,-97.74;Jacksonville,FL,30.27,-81.62;Fort Worth,TX,32.75,-97.35;Columbus,OH,39.99,-83.00;Charlotte,NC,35.22,-80.85;San Francisco,CA,37.77,-122.40;Indianapolis,IN,39.83,-86.13;Seattle,WA,47.62,-122.34;Denver,CO,39.75,-104.99;Washington,DC,38.90,-77.03;Boston,MA,42.35,-71.06;El Paso,TX,31.79,-106.41;Nashville,TN,36.16,-86.78;Detroit,MI,42.34,-83.05;Oklahoma City,OK,35.51,-97.52;Portland,OR,45.52,-122.67;Las Vegas,NV,36.12,-115.18;Memphis,TN,35.14,-89.95;Louisville,KY,38.24,-85.71;Baltimore,MD,39.29,-76.61;Milwaukee,WI,43.04,-87.92;Albuquerque,NM,35.10,-106.62;Tucson,AZ,32.24,-110.96;Fresno,CA,36.81,-119.79;Mesa,AZ,33.39,-111.69;Sacramento,CA,38.58,-121.49;Atlanta,GA,33.79,-84.39;Kansas City,MO,39.10,-94.59;Colorado Springs,CO,38.88,-104.81;Omaha,NE,41.26,-96.00;Raleigh,NC,35.79,-78.65;Miami,FL,25.78,-80.22;Long Beach,CA,33.77,-118.19;Virginia Beach,VA,36.85,-76.07;Oakland,CA,37.80,-122.28;Minneapolis,MN,44.98,-93.27;Tulsa,OK,36.10,-95.92;Tampa,FL,27.95,-82.45;Arlington,TX,32.69,-97.10;New Orleans,LA,29.95,-90.08;Wichita,KS,37.69,-97.33;Cleveland,OH,41.50,-81.69;Bakersfield,CA,35.38,-119.04;Aurora,CO,39.74,-104.82;Anaheim,CA,33.81,-117.92;Honolulu,HI,21.30,-157.84;Santa Ana,CA,33.75,-117.87;Riverside,CA,33.97,-117.35;Corpus Christi,TX,27.76,-97.40;Lexington,KY,38.03,-84.49;Stockton,CA,37.99,-121.31;Henderson,NV,36.02,-115.05;Saint Paul,MN,44.95,-93.10;St. Louis,MO,38.63,-90.27;Cincinnati,OH,39.16,-84.51;Pittsburgh,PA,40.45,-79.96;Greensboro,NC,36.07,-79.86;Anchorage,AK,61.19,-149.87;Plano,TX,33.08,-96.80;Lincoln,NE,40.81,-96.69;Orlando,FL,28.48,-81.40;Irvine,CA,33.67,-117.78;Newark,NJ,40.70,-74.18;Toledo,OH,41.66,-83.59;Durham,NC,36.00,-78.90;Chula Vista,CA,32.63,-117.03;Fort Wayne,IN,41.08,-85.14;Jersey City,NJ,40.72,-74.05;St. Petersburg,FL,27.77,-82.64;Laredo,TX,27.56,-99.48;Madison,WI,43.08,-89.38;Chandler,AZ,33.29,-111.85;Buffalo,NY,42.90,-78.85;Lubbock,TX,33.58,-101.94;Scottsdale,AZ,33.58,-111.92;Reno,NV,39.50,-119.79;Glendale,AZ,33.55,-112.26;Gilbert,AZ,33.32,-111.72;Winston-Salem,NC,36.08,-80.27;North Las Vegas,NV,36.24,-115.12;Norfolk,VA,36.87,-76.23;Chesapeake,VA,36.79,-76.24;Garland,TX,32.91,-96.65;Irving,TX,32.88,-96.96;Hialeah,FL,25.87,-80.30;Fremont,CA,37.51,-121.97;Boise,ID,43.61,-116.21;Richmond,VA,37.56,-77.47;Baton Rouge,LA,30.42,-91.13;Spokane,WA,47.66,-117.41;Des Moines,IA,41.59,-93.62;Tacoma,WA,47.25,-122.46;San Bernardino,CA,34.10,-117.27;Modesto,CA,37.67,-121.00;Fontana,CA,34.10,-117.43;Santa Clarita,CA,34.42,-118.53;Birmingham,AL,33.51,-86.81;Oxnard,CA,34.17,-119.16;Fayetteville,NC,35.05,-78.94;Moreno Valley,CA,33.91,-117.22;Rochester,NY,43.14,-77.62;Glendale,CA,34.16,-118.25;Huntington Beach,CA,33.69,-118.00;Salt Lake City,UT,40.76,-111.89;Grand Rapids,MI,42.96,-85.66;Amarillo,TX,35.19,-101.88;Yonkers,NY,40.94,-73.89;Montgomery,AL,32.36,-86.20;Akron,OH,41.08,-81.53;Little Rock,AR,34.75,-92.33;Huntsville,AL,34.74,-86.65;Augusta,GA,33.49,-82.04;Columbus,GA,32.51,-84.97;Shreveport,LA,32.43,-93.72;Knoxville,TN,35.94,-84.00;Tallahassee,FL,30.44,-84.28;Worcester,MA,42.27,-71.80;Providence,RI,41.82,-71.42;Chattanooga,TN,35.05,-85.30;Fort Lauderdale,FL,26.13,-80.15;Sioux Falls,SD,43.54,-96.76;Eugene,OR,44.06,-123.08;Salem,OR,44.94,-123.02;Springfield,MO,37.21,-93.27;Jackson,MS,32.30,-90.17;Savannah,GA,32.07,-81.10;Charleston,SC,32.80,-79.95;Columbia,SC,34.02,-81.03;Hartford,CT,41.77,-72.68;New Haven,CT,41.31,-72.93;Albany,NY,42.69,-73.81;Syracuse,NY,43.05,-76.15;Burlington,VT,44.48,-73.21;Portland,ME,43.66,-70.26;Manchester,NH,42.96,-71.44;Wilmington,DE,39.74,-75.56;Charleston,WV,38.34,-81.64;Billings,MT,45.75,-108.59;Missoula,MT,46.87,-114.04;Bozeman,MT,45.69,-111.06;Fargo,ND,46.87,-96.84;Bismarck,ND,46.83,-100.78;Rapid City,SD,44.08,-103.22;Cheyenne,WY,41.13,-104.84;Casper,WY,42.85,-106.27;Jackson,WY,43.48,-110.76;Santa Fe,NM,35.67,-105.96;Flagstaff,AZ,35.19,-111.66;Yuma,AZ,32.69,-114.59;St. George,UT,37.08,-113.58;Moab,UT,38.59,-109.56;Palm Springs,CA,33.82,-116.53;San Luis Obispo,CA,35.28,-120.66;Santa Barbara,CA,34.42,-119.70;Monterey,CA,36.59,-121.89;Redding,CA,40.57,-122.36;Eureka,CA,40.80,-124.16;South Lake Tahoe,CA,38.94,-119.97;Mammoth Lakes,CA,37.64,-118.98;Barstow,CA,34.85,-117.08;Bend,OR,44.06,-121.31;Medford,OR,42.34,-122.86;Olympia,WA,47.04,-122.90;Bellingham,WA,48.76,-122.48;Yakima,WA,46.59,-120.50;Spokane Valley,WA,47.67,-117.24;Coeur d'Alene,ID,47.70,-116.79;Idaho Falls,ID,43.48,-112.05;Twin Falls,ID,42.59,-114.46;Elko,NV,40.85,-115.77;Grand Junction,CO,39.09,-108.57;Durango,CO,37.24,-107.87;Fort Collins,CO,40.57,-105.08;Pueblo,CO,38.27,-104.62;Midland,TX,31.98,-102.13;Waco,TX,31.53,-97.13;Galveston,TX,29.29,-94.83;Brownsville,TX,25.96,-97.51;Topeka,KS,39.03,-95.73;Kansas City,KS,39.12,-94.80;Cedar Rapids,IA,41.98,-91.67;Duluth,MN,46.79,-92.10;Green Bay,WI,44.48,-88.01;Lansing,MI,42.74,-84.55;Ann Arbor,MI,42.28,-83.74;Traverse City,MI,44.76,-85.64;Dayton,OH,39.76,-84.19;Evansville,IN,37.98,-87.54;Peoria,IL,40.78,-89.62;Springfield,IL,39.76,-89.67;Asheville,NC,35.58,-82.56;Myrtle Beach,SC,33.74,-78.86;Key West,FL,24.56,-81.78;Pensacola,FL,30.49,-87.22;Gainesville,FL,29.64,-82.35;Mobile,AL,30.69,-88.11;Biloxi,MS,30.40,-88.89;Lafayette,LA,30.16,-92.08;Branson,MO,36.64,-93.23;Atlantic City,NJ,39.36,-74.42;Harrisburg,PA,40.27,-76.84;Erie,PA,42.11,-80.09;Scranton,PA,41.41,-75.66;Niagara Falls,NY,43.09,-79.03;Bar Harbor,ME,44.39,-68.22;Cape Cod (Hyannis),MA,41.66,-70.29;Grand Canyon Village,AZ,35.97,-112.13;Yosemite Valley,CA,37.75,-119.58;Death Valley,CA,36.45,-116.86";
 
-const DCS=DCRAW.split(';').map((r,i)=>{const k=r.lastIndexOf('~'),n=r.slice(0,k),c=r.slice(k+1),b=x=>parseInt(x,36);return {name:n,lat:b(c.slice(0,3))/100+18,lng:b(c.slice(3,6))/100-170,net:DCNET[b(c[6])],ports:b(c[7]),pl:+c[8],i}});
+var DCS=[];function dcBuild(){DCS=DCRAW.split(';').map((r,i)=>{const k=r.lastIndexOf('~'),n=r.slice(0,k),c=r.slice(k+1),b=x=>parseInt(x,36);return {name:n,lat:b(c.slice(0,3))/100+18,lng:b(c.slice(3,6))/100-170,net:DCNET[b(c[6])],ports:b(c[7]),pl:+c[8],i}});}
 const CITIES=CITYRAW.split(';').map(r=>{const a=r.split(',');return {name:a[0],st:a[1],lat:+a[2],lng:+a[3],label:a[0]+', '+a[1]}});
 const MIKWH={'Tesla Model 3':4.0}; // stated efficiency; other cars use the existing MPP (miles per % of battery)
 function plTxt(pl){return [pl&1?'CCS':'',pl&2?'NACS':'',pl&4?'CHAdeMO':''].filter(Boolean).join(' + ')||'?'}
@@ -1719,15 +1733,18 @@ function fSync(){if(NOMAP_())return;const z=map.getZoom();if(z<FZ){if(FMC&&map.h
   const b=map.getBounds().pad(0.25),need=Object.keys(FIDX).filter(k=>!FLOAD[k]&&L.latLngBounds([FIDX[k][1],FIDX[k][2]],[FIDX[k][3],FIDX[k][4]]).intersects(b));need.forEach(fChunk);
   const fn=$('fullnote');if(fn)fn.hidden=true})}
 function NOMAP_(){return !!window.NOMAP||!window.map}
-async function fNets(){if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}
-function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json?v=3');if(!r.ok)throw 0;const a=await r.json();const pts=[];
-  let att=0;for(const row of a){const bs=SKEY.get(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10));if(bs){if(row[10])bs.hrs=row[10];if(row[11])bs.lp=row[11];att=1;continue}const s=mkSt(row);s.ck=k;pts.push(s)}FPTS.push(...pts);FN+=a.length;FLOAD[k]=2;
-  if(FMC)FMC.addLayers(pts.filter(fPass).map(fMk));fNote('');fCount();if(att&&cur&&window.cardAll)cardAll();if(window.cloUI)cloUI()}catch(e){FLOAD[k]=0;FERR=1;fNote()}})()}
+async function fNets(){if(!DCOK)await new Promise(r=>dcLoad(r));if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}
+function fYield(){return new Promise(r=>window.requestIdleCallback?requestIdleCallback(()=>r(),{timeout:120}):setTimeout(r,0))}
+function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json?v=3');if(!r.ok)throw 0;const a=await r.json();
+  let att=0,i=0;const N=700;while(i<a.length){const pts=[],end=Math.min(a.length,i+N);for(;i<end;i++){const row=a[i];const bs=SKEY.get(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10));if(bs){if(row[10])bs.hrs=row[10];if(row[11])bs.lp=row[11];att=1;continue}const s=mkSt(row);s.ck=k;pts.push(s)}
+   FPTS.push(...pts);if(FMC)FMC.addLayers(pts.filter(fPass).map(fMk));if(i<a.length)await fYield()}
+  FN+=a.length;FLOAD[k]=2;fNote('');fCount();if(att&&cur&&window.cardAll)cardAll();if(window.cloUI)cloUI()}catch(e){FLOAD[k]=0;FERR=1;fNote()}})()}
 function fCount(){const e=document.querySelector('.usbox');if(e&&!e.querySelector('.fl')){e.insertAdjacentHTML('beforeend','<div class="fl notr" style="font-size:.75rem;opacity:.8"></div>')}const f=e&&e.querySelector('.fl');if(f)f.textContent=L2(`${FN.toLocaleString()} stations loaded so far`,`${FN.toLocaleString()} estaciones cargadas hasta ahora`)}
-function fRefilter(){if(!FMC)return;const sig=[...on].sort().join('|')+'|'+(typeof maxP!='undefined'?maxP:'')+'|'+CAR;if(sig==fRefilter.s)return;fRefilter.s=sig;FMC.clearLayers();FMC.addLayers(FPTS.filter(fPass).map(fMk))}
+function fRefilter(){if(!FMC)return;const sig=[...on].sort().join('|')+'|'+(typeof maxP!='undefined'?maxP:'')+'|'+CAR;if(sig==fRefilter.s)return;fRefilter.s=sig;const tk=fRefilter.k=(fRefilter.k||0)+1;FMC.clearLayers();
+ (async()=>{const all=FPTS.slice();for(let i=0;i<all.length;i+=2000){if(tk!=fRefilter.k)return;FMC.addLayers(all.slice(i,i+2000).filter(fPass).map(fMk));if(i+2000<all.length)await fYield()}})()}
 {const _d=draw;draw=function(){const r=_d.apply(this,arguments);try{fRefilter()}catch(e){}return r}}
 {const _dc=drawClusters;drawClusters=function(){if(FMC&&map.getZoom()>=FZ&&!FERR){clu.clearLayers();drawClusters.z=null;try{clusterVis(map.getZoom(),map.getBounds())}catch(e){}const fn=$('fullnote');if(fn)fn.hidden=true;return}return _dc.apply(this,arguments)}}
-if(!window.NOMAP){map.on('moveend zoomend',()=>{clearTimeout(fSync.t);fSync.t=setTimeout(fSync,150)});setTimeout(fSync,1200)}
+if(!window.NOMAP){map.on('moveend zoomend',()=>{clearTimeout(fSync.t);fSync.t=setTimeout(fSync,150)});c1Idle(fSync,600)}
 // nearest station from the full set, for "Fits your car" users outside LA
 function fNearest(p){let best=null,bd=1e18;for(const s of FPTS){if(CAR&&fit(s)!='yes')continue;const d=(s.lat-p[0])**2+((s.lng-p[1])*Math.cos(p[0]*Math.PI/180))**2;if(d<bd){bd=d;best=s}}return best}
 </script><script>/* v19f2: listed prices + real hours (DOE AFDC) · Closest to you */
@@ -1768,12 +1785,12 @@ function cloUI(){const e=$('clo'),hd=$('cloh');if(!e)return;hd.textContent='▴ 
  <div class="cll">${CLOL.length?CLOL.map(cloRow).join(''):`<div class="muted">${L2('Loading stations…','Cargando estaciones…')}</div>`}</div>
  <div class="muted" style="font-size:.8125rem;margin-top:8px">${L2('Prices are listed prices from DOE AFDC','Precios publicados de DOE AFDC')}</div>`;cloPeekH()}
 function cloOpen(v){CLO.open=!!v;CLO.full=false;if(v)cloEnsure();cloUI();if(v)cloDot()}
-function cloPeekH(){const e=$('clo'),r=e.querySelectorAll('.clr');if(CLO.full||!r.length){e.style.height='';return}const x=r[Math.min(2,r.length-1)];e.style.height=(x.offsetTop+x.offsetHeight+10)+'px';e.scrollTop=0}
+function cloPeekH(){const e=$('clo'),r=e.querySelectorAll('.clr');if(CLO.full||!r.length||!e.offsetParent){e.style.height='';return}const x=r[Math.min(2,r.length-1)];e.style.height=(x.offsetTop+x.offsetHeight+10)+'px';e.scrollTop=0}
 function cloSet(full){CLO.full=full;cloUI();if(!full)cloDot()}
 function cloDot(){try{if(!CLO.open||CLO.full)return;const p=cloPos(),mr=$('map').getBoundingClientRect(),ct=$('clo').getBoundingClientRect().top,top=ct-mr.top;const pt=map.latLngToContainerPoint(p);
  const lim=Math.min(mr.height,top)-36;if(pt.y>lim||pt.y<24){const want=Math.max(40,lim/2);map.panBy([0,pt.y-want],{animate:false})}}catch(e){}}
 {let y0=null,dy=0,t0=0;const e=()=>$('clo');document.addEventListener('pointerdown',ev=>{const h=ev.target.closest&&ev.target.closest('#clo .clhd');if(!h||ev.target.closest('.clx'))return;y0=ev.clientY;dy=0;t0=Date.now();e().style.transition='none'});
- document.addEventListener('pointermove',ev=>{if(y0==null)return;dy=ev.clientY-y0;e().style.transform=dy>0?`translateY(${dy}px)`:''; if(dy<0&&!CLO.full){const hh=e().offsetHeight;e().style.height=Math.min(innerHeight*.6,hh-dy*0.2)+'px'}});
+ document.addEventListener('pointermove',ev=>{if(y0==null)return;dy=ev.clientY-y0;e().style.transform=dy>0?`translateY(${dy}px)`:`translateY(${Math.max(-14,dy*.15)}px)`;});
  document.addEventListener('pointerup',ev=>{if(y0==null)return;const d=dy;y0=null;const c=e();c.style.transition='';c.style.transform='';
   if(Math.abs(d)<8){cloSet(!CLO.full);return}if(d<-30){cloSet(true);return}if(d>30){if(CLO.full)cloSet(false);else cloOpen(0);return}cloUI()});
  document.addEventListener('pointercancel',()=>{if(y0!=null){y0=null;e().style.transform='';cloUI()}})}
@@ -2065,10 +2082,10 @@ addEventListener('keydown',e=>{if(e.key=='Escape'&&$('shm').classList.contains('
 {const rm=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 // 1) press and spring
 const PSEL='button,.btn,.chip,.tab,.card[onclick],[role=button]';let pe=null;
-const skip=el=>el.closest('#safm,.clhd,.leaflet-container')||/sfSet\('lock'/.test(el.getAttribute('onclick')||'')||el.disabled||getComputedStyle(el).transform!='none';
+const skip=el=>el.closest('#safm,.clhd,.leaflet-container,.tabs,.tab')||/sfSet\('lock'/.test(el.getAttribute('onclick')||'')||el.disabled||getComputedStyle(el).transform!='none';
 document.addEventListener('pointerdown',e=>{if(rm()||e.button>0)return;const el=e.target.closest&&e.target.closest(PSEL);if(!el||skip(el))return;el.classList.remove('c1sp');el.classList.add('c1pr');pe=el},true);
 const rel=()=>{const el=pe;if(!el)return;pe=null;el.classList.remove('c1pr');el.classList.add('c1sp');clearTimeout(el._c1sp);el._c1sp=setTimeout(()=>el.classList.remove('c1sp'),420)};
-['pointerup','pointercancel','dragstart'].forEach(k=>document.addEventListener(k,rel,true));document.addEventListener('pointermove',e=>{if(pe&&!pe.contains(document.elementFromPoint(e.clientX,e.clientY)))rel()},true);
+let rT=null;const relLater=()=>{if(!pe)return;clearTimeout(rT);rT=setTimeout(rel,260)};document.addEventListener('pointerup',relLater,true);document.addEventListener('click',()=>{if(pe){clearTimeout(rT);setTimeout(rel,0)}},true);['pointercancel','dragstart'].forEach(k=>document.addEventListener(k,rel,true));document.addEventListener('pointermove',e=>{if(pe&&!pe.contains(document.elementFromPoint(e.clientX,e.clientY)))rel()},true);
 // 2) buzz: Start charging and STOP only
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button,.btn');if(!b)return;const oc=b.getAttribute('onclick')||'';
  if(/openStart\(/.test(oc)||/^stStop\(\)$|^chStop\(\)$/.test(oc.trim())){try{if('vibrate' in navigator)navigator.vibrate(15)}catch(_){}}},true);
@@ -2099,5 +2116,29 @@ const mcc=()=>{clearTimeout(mt);mt=null};mc.addEventListener('pointerup',mcc,tru
 map.on('movestart zoomstart',mcc);
 mc.addEventListener('click',e=>{if(lp){lp=0;e.stopPropagation();e.preventDefault()}},true);
 mc.addEventListener('contextmenu',e=>{if(lp)e.preventDefault()},true);
+}
+</script><script>/* v19q: transitions always finish; rapid taps safe */
+{const DONE=320;
+ // screens: replay only when the screen changes; always finish by timeout
+ const _go=go;go=function(t){const was=document.querySelector('.screen.on');const r=_go.apply(this,arguments);const s=$('s-'+t);
+  if(s&&s!==was){document.querySelectorAll('.screen.c1done').forEach(x=>{if(x!==s&&!x.classList.contains('on'))x.classList.remove('c1done')});s.classList.remove('c1done');clearTimeout(go._t);go._t=setTimeout(()=>{document.querySelectorAll('.screen.on').forEach(x=>x.classList.add('c1done'))},DONE)}
+  else if(s)s.classList.add('c1done');if(t=='map'&&window.CLO&&CLO.open&&window.cloPeekH)requestAnimationFrame(()=>{try{cloPeekH()}catch(e){}});return r};
+ // modals + overlays: finish by timeout; closing is instant
+ const mo=new MutationObserver(ms=>ms.forEach(m=>{const e=m.target;if(!e.classList.contains('on')){if(e.classList.contains('c1done'))e.classList.remove('c1done');clearTimeout(e._c1t);return}if(!e.classList.contains('c1done')){clearTimeout(e._c1t);e._c1t=setTimeout(()=>e.classList.contains('on')&&e.classList.add('c1done'),DONE)}}));
+ const watch=()=>document.querySelectorAll('.modal,.ov').forEach(e=>{if(!e._c1w){e._c1w=1;mo.observe(e,{attributes:true,attributeFilter:['class']})}});watch();setTimeout(watch,1500);
+ // station sheet: drop the anim class after it runs
+ const _pk=pick;pick=function(){const r=_pk.apply(this,arguments);const sh=$('sheet');if(sh){clearTimeout(pick._t);pick._t=setTimeout(()=>sh.classList.remove('anim'),DONE)}return r};
+ // Closest-to-you drag: transform only, never stranded
+ let dg=0,dgT=null;const clo=()=>$('clo');const dReset=()=>{dg=0;clearTimeout(dgT);const c=clo();if(!c)return;c.classList.remove('c1drag');c.style.transition='';c.style.transform='';c.style.height=''};
+ document.addEventListener('pointerdown',ev=>{if(ev.target.closest&&ev.target.closest('#clo .clhd')&&!ev.target.closest('.clx')){dg=1;clo().classList.add('c1drag');clearTimeout(dgT);dgT=setTimeout(dReset,5000)}},true);
+ const dEnd=()=>{if(!dg)return;dg=0;clearTimeout(dgT);setTimeout(()=>{const c=clo();if(c){c.classList.remove('c1drag');c.style.transition='';if(!c.style.transform.includes('translateY'))c.style.transform=''}},0);setTimeout(()=>{const c=clo();if(c&&!dg){c.style.transform='';c.style.transition='';c.style.height=''}},DONE)};
+ ['pointerup','pointercancel','lostpointercapture'].forEach(k=>document.addEventListener(k,dEnd,true));
+ // global safety net: nothing blocks touch after leaving or returning to the app
+ const sweep=()=>{dReset();document.querySelectorAll('.c1pr,.c1sp').forEach(x=>x.classList.remove('c1pr','c1sp'));const i=$('intro');if(i&&i.classList.contains('out'))i.remove();document.querySelectorAll('.screen.on,.modal.on,.ov.on').forEach(x=>x.classList.add('c1done'))};
+ addEventListener('pageshow',sweep);addEventListener('blur',sweep);document.addEventListener('visibilitychange',sweep);
+ // press-spring fallback
+ document.addEventListener('pointerdown',()=>{clearTimeout(go._p);go._p=setTimeout(()=>document.querySelectorAll('.c1pr').forEach(x=>{x.classList.remove('c1pr')}),900)},true);
+ // trip planner waits for dc.js
+ if(typeof trip=='function'){const _tr=trip;trip=function(){if(!DCOK){dcLoad(()=>{if($('s-trip')&&$('s-trip').classList.contains('on'))_tr()});return}return _tr.apply(this,arguments)}}
 }
 </script></body></html>
