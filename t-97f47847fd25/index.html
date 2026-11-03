@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19j</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>ChargeOne mock v19k</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -475,6 +475,16 @@ body.night .evh::after{background:radial-gradient(1.2px 1.2px at 13% 38%,#fff 99
 @keyframes c1tw{from{opacity:.15}to{opacity:.85}}
 body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animation:c1b .3s ease-in-out 3}
 @media (prefers-reduced-motion:reduce){.evh.hop .carg,.evh.flash .hlg,body.night .evh::after{animation:none!important}body.night .evh::after{opacity:.5}.c1sp,.zapb{display:none}}
+
+.mhdr{padding:4px 10px;gap:6px}.mhdr>i{min-width:40px;min-height:44px;display:flex;align-items:center;justify-content:center}
+.srch{position:relative;flex:1;min-width:0}
+#stsearch{width:100%;box-sizing:border-box;height:44px;border-radius:22px;border:1px solid rgba(255,255,255,.18);background:#141c2e;color:#fff;font:inherit;font-size:1rem;font-weight:500;padding:0 44px 0 16px;outline:none;-webkit-appearance:none;appearance:none}
+#stsearch::placeholder{color:#a9b6cc}#stsearch:focus{border-color:#e6f1ff}#stsearch::-webkit-search-cancel-button{display:none}
+.srx{position:absolute;right:0;top:0;width:44px;height:44px;border:0;background:none;color:#c9d6ea;font-size:1.4rem;cursor:pointer;border-radius:22px}
+#srl{position:absolute;left:-46px;right:-46px;top:50px;margin:0;padding:6px;list-style:none;background:#121a2b;border:1px solid rgba(255,255,255,.16);border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.55);z-index:1600;max-height:60vh;overflow:auto}
+#srl li{display:flex;flex-direction:column;justify-content:center;min-height:48px;padding:6px 12px;border-radius:12px;cursor:pointer;font-weight:400}
+#srl li b{font-size:.9375rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#srl li span{font-size:.8125rem;color:#c9d6ea;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#srl li[aria-selected="true"],#srl li:hover{background:#1f2a40}#srl li.srn{cursor:default;color:#c9d6ea;font-size:.875rem}#srl li.srn:hover{background:none}
 </style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
 <div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
 <script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script><script>/* v19c intro variants */
@@ -499,7 +509,7 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 <div class="status"><span>9:41</span><span>●●● ▮</span></div>
 
 <section class="screen on" id="s-map">
- <div class="hdr"><i onclick="openMenu()">☰</i><span>Map</span><i id="hcbtn" onclick="hcToggle()" aria-pressed="false">◐</i></div>
+ <div class="hdr mhdr"><i onclick="openMenu()" role="button" tabindex="0" aria-label="Menu">☰</i><h2 class="sr">Map</h2><div class="srch notr"><input id="stsearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="srl" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Search a city or station" aria-label="Search a city or station"><button type="button" class="srx" id="srx" aria-label="Clear search" hidden>×</button><ul id="srl" role="listbox" aria-label="Suggestions" hidden></ul></div><i id="hcbtn" onclick="hcToggle()" aria-pressed="false">◐</i></div>
  <div class="chips" id="chips"></div>
  <div class="nfit"><button class="btn g" onclick="nearestFit()" id="nfbtn" style="flex:1">⚡ Show chargers near me</button><button class="btn" id="stybtn" style="width:auto;white-space:nowrap" onclick="setStyle(MSTYLE=='sat'?'dark':'sat',1)"></button></div>
  <div id="map" role="region" aria-label="Charger map. Use &quot;Nearest charger&quot; or the filters to find one fast."></div>
@@ -1888,4 +1898,33 @@ var ZB='';document.addEventListener('keydown',e=>{const a=document.activeElement
 // 4) night drive 9 PM - 5 AM local (?night=1 / ?night=0 to force, testing only)
 function nightUI(){const q=new URLSearchParams(location.search).get('night'),h=new Date().getHours();document.body.classList.toggle('night',q=='1'||(q!='0'&&(h>=21||h<5)))}
 nightUI();setInterval(nightUI,60000);
+</script><script>/* v19k: station + city search (offline index) */
+var CITY=null,CITYP=null,SRI=-1,SRR=[];
+function nrm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ,]/g,' ').replace(/\s+/g,' ').trim()}
+function cityLoad(){if(CITY||CITYP)return CITYP;CITYP=fetch('st/cities.json?v=1').then(r=>r.json()).then(o=>{const a=[];for(const st in o)for(const r of o[st].split(';')){const [n,la,lo,c]=r.split(',');a.push({n,st,lat:+la/100,lng:+lo/100,c:+c,k:nrm(n),f:nrm(n+' '+st)})}a.sort((x,y)=>y.c-x.c);CITY=a;return a}).catch(()=>{CITYP=null;return []});return CITYP}
+function srFind(qv){const q=nrm(qv).replace(/,/g,' ').replace(/\s+/g,' ').trim();if(q.length<2)return [];
+ const cs=[];if(CITY){const w=' '+q;for(const c of CITY){if(c.f.startsWith(q)||c.k.startsWith(q))cs.push([0,c]);else if((' '+c.k).includes(w))cs.push([1,c]);if(cs.length>60)break}cs.sort((a,b)=>a[0]-b[0]||b[1].c-a[1].c)}
+ const pool=[...S,...FPTS],ss=[],w=' '+q;for(const s of pool){const k=s._k||(s._k=nrm(s.name+' '+(s.net||'')));if(k.startsWith(q))ss.push([0,s]);else if((' '+k).includes(w))ss.push([1,s]);if(ss.length>80)break}
+ if(ss.length){const p=typeof cloPos=='function'?cloPos():[34.05,-118.24];ss.forEach(x=>x[2]=Math.hypot(x[1].lat-p[0],(x[1].lng-p[1])*.8));ss.sort((a,b)=>a[0]-b[0]||a[2]-b[2])}
+ const nc=Math.min(cs.length,ss.length?3:6),out=cs.slice(0,nc).map(x=>({t:'c',o:x[1]}));const seen=new Set();for(const x of ss){if(out.length>=6)break;const key=x[1].name+x[1].lat;if(seen.has(key))continue;seen.add(key);out.push({t:'s',o:x[1]})}return out}
+function srCity(s){const a=(s.addr||'').split(',').map(x=>x.trim()).filter(Boolean);return a.length>1?a[a.length-1]:(a[0]||'')}
+function srUI(){const i=$('stsearch'),l=$('srl'),v=i.value;$('srx').hidden=!v;if(!v.trim()||nrm(v)=='zap'){srClose();return}
+ SRR=srFind(v);SRI=SRR.length?0:-1;const nf=L2('stations','estaciones');
+ l.innerHTML=SRR.length?SRR.map((r,j)=>{const o=r.o;return r.t=='c'?`<li role="option" id="sro${j}" aria-selected="${j==SRI}" onpointerdown="event.preventDefault()" onclick="srGo(${j})"><b>${esc(o.n)}, ${o.st}</b><span>${o.c.toLocaleString(LANG=='es'?'es-US':'en-US')} ${nf}</span></li>`:`<li role="option" id="sro${j}" aria-selected="${j==SRI}" onpointerdown="event.preventDefault()" onclick="srGo(${j})"><b>${esc(o.name)}</b><span>${esc(o.net||'')}${srCity(o)?' · '+esc(srCity(o)):''}</span></li>`}).join(''):(CITY?`<li class="srn" role="option" aria-disabled="true">${L2('No matches. Try a city name.','Sin resultados. Prueba con una ciudad.')}</li>`:`<li class="srn" role="option" aria-disabled="true">${L2('Loading…','Cargando…')}</li>`);
+ l.hidden=false;i.setAttribute('aria-expanded','true');srAct()}
+function srAct(){const i=$('stsearch');[...$('srl').querySelectorAll('li[role=option]')].forEach((e,j)=>e.setAttribute('aria-selected',j==SRI?'true':'false'));if(SRI>=0&&SRR.length)i.setAttribute('aria-activedescendant','sro'+SRI);else i.removeAttribute('aria-activedescendant')}
+function srClose(){const l=$('srl');if(l){l.hidden=true;l.innerHTML=''}const i=$('stsearch');if(i){i.setAttribute('aria-expanded','false');i.removeAttribute('aria-activedescendant')}SRR=[];SRI=-1}
+function srLoadAt(la,lo){Object.keys(FIDX).forEach(k=>{const b=FIDX[k];if(!FLOAD[k]&&la>=b[1]&&la<=b[3]&&lo>=b[2]&&lo<=b[4])fChunk(k)})}
+function srGo(j){const r=SRR[j];if(!r)return;const i=$('stsearch');srClose();i.blur();try{cloOpen(0)}catch(e){}
+ if(r.t=='c'){i.value=r.o.n+', '+r.o.st;$('srx').hidden=false;srLoadAt(r.o.lat,r.o.lng);map.flyTo([r.o.lat,r.o.lng],12,{duration:rmOn()?0:1})}
+ else{const s=r.o;i.value=s.name;$('srx').hidden=false;srLoadAt(s.lat,s.lng);map.flyTo([s.lat,s.lng],15,{duration:rmOn()?0:1});pick(s);try{if(window.cardAll)cardAll()}catch(e){}}}
+{const i=$('stsearch');let tm=0;
+ i.addEventListener('focus',()=>{cityLoad().then(()=>{if(document.activeElement===i&&i.value.trim())srUI()})});
+ i.addEventListener('input',()=>{clearTimeout(tm);if(!i.value.trim()){srUI();return}tm=setTimeout(()=>{srUI();if(!CITY)cityLoad().then(()=>{if(i.value.trim())srUI()})},70)});
+ i.addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();if(!SRR.length&&i.value.trim())srUI();if(SRR.length)srGo(SRI>=0?SRI:0)}else if(e.key=='Escape'){srClose()}else if(e.key=='ArrowDown'&&SRR.length){e.preventDefault();SRI=(SRI+1)%SRR.length;srAct()}else if(e.key=='ArrowUp'&&SRR.length){e.preventDefault();SRI=(SRI-1+SRR.length)%SRR.length;srAct()}});
+ $('srx').addEventListener('click',()=>{i.value='';srClose();$('srx').hidden=true;i.focus()});
+ document.addEventListener('pointerdown',e=>{if(!e.target.closest||!e.target.closest('.srch'))srClose()},true);}
+function srLang(){const i=$('stsearch');if(!i)return;const p=L2('Search a city or station','Busca una ciudad o estación');i.placeholder=p;i.setAttribute('aria-label',p);$('srx').setAttribute('aria-label',L2('Clear search','Borrar búsqueda'));$('srl').setAttribute('aria-label',L2('Suggestions','Sugerencias'))}
+{const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);srLang();if(!$('srl').hidden)srUI();return r}}
+srLang();
 </script></body></html>
