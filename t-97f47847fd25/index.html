@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19m</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>ChargeOne mock v19n</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -1994,4 +1994,34 @@ function helloFx(){toast(L2('Charging systems online.','Sistemas de carga en lí
 function helloIn(el){el.value='';try{el.dispatchEvent(new Event('input',{bubbles:true}))}catch(e){}el.blur();if(typeof srClose=='function')srClose();setTimeout(helloFx,60)}
 document.addEventListener('input',e=>{const el=e.target;if(el&&el.id=='stsearch'&&/^\s*hello\s*$/i.test(el.value||''))helloIn(el)},true);
 document.addEventListener('keydown',e=>{const el=e.target;if(e.key=='Enter'&&el&&el.id=='stsearch'&&/^\s*hello\s*$/i.test(el.value||'')){e.preventDefault();e.stopImmediatePropagation();helloIn(el)}},true);
+</script><script>/* v19n: full offline search index (sharded) */
+var CSH={},NSH={},NGEO=null,SRQ=0,SRT=0,SRSTAT={n:0,b:0};
+const NSTOP=new Set('the of and at in on a an to for by ev evse charging charger chargers station stations parking lot garage level dc fast public plaza center centre st ave rd dr blvd hwy llc inc co'.split(' '));
+function jget(u,c){if(!c[u])c[u]=fetch(u).then(r=>{if(!r.ok)return [];return r.text().then(x=>{SRSTAT.n++;SRSTAT.b+=x.length;return JSON.parse(x)})}).catch(()=>{delete c[u];return []});return c[u]}
+cityLoad=function(){return Promise.resolve([])};
+async function cityFind(q){const p=q.replace(/[^a-z0-9]/g,'').slice(0,2);if(p.length<2)return [];const a=await jget('st/c/'+p+'.json?v=1',CSH),qq=q.replace(/,/g,' ').replace(/\s+/g,' ').trim(),o=[];
+ for(const c of a){const n=c._n||(c._n=nrm(c[0])),f=c._f||(c._f=n+' '+c[1].toLowerCase());if(f.startsWith(qq)||n.startsWith(qq))o.push({t:'c',r:n==qq||f==qq?0:1,o:{n:c[0],st:c[1],lat:c[2],lng:c[3],c:c[4]}})}
+ o.sort((a,b)=>a.r-b.r||b.o.c-a.o.c);return o}
+function mapC(){try{const c=map.getCenter();return [c.lat,c.lng]}catch(e){return [34.05,-118.24]}}
+function geoParts(p,keys){const [la,lo]=mapC(),sc=keys.map(x=>{const [k,m]=x.split(':'),b=FIDX[k]||[0,0,0,0,0],inn=la>=b[1]&&la<=b[3]&&lo>=b[2]&&lo<=b[4],d=inn?0:Math.hypot(la-(b[1]+b[3])/2,(lo-(b[2]+b[4])/2)*.8);return {k,m,d}}).sort((a,b)=>a.d-b.d);
+ const pick=sc.filter(x=>x.d==0).slice(0,2);if(!pick.length)pick.push(sc[0]);return pick.map(x=>x.m!=null?`${p}~${x.k}~${la<+x.m?0:1}`:`${p}~${x.k}`)}
+async function stFind(q){const ws=q.replace(/,/g,' ').split(' ').filter(Boolean);const cand=ws.filter(w=>w.length>=3&&!NSTOP.has(w));if(!cand.length)return [];
+ if(!NGEO)NGEO=await jget('st/n/geo.json?v=1',NSH);if(typeof fNets=='function')await fNets();
+ cand.sort((a,b)=>(!!NGEO[a.slice(0,3)])-(!!NGEO[b.slice(0,3)])||b.length-a.length);const p=cand[0].slice(0,3).replace(/[^a-z0-9]/g,'-');
+ const files=NGEO[p]?geoParts(p,NGEO[p]):[p];const arrs=await Promise.all(files.map(f=>jget('st/n/'+f+'.json?v=1',NSH)));const [la,lo]=mapC(),out=[],seen=new Set();
+ for(const a of arrs)for(const e of a){const net=NDISP((FNETS||[])[e[1]]||'');const h=e._h||(e._h=' '+nrm(e[0]+' '+e[2]+' '+net));if(!ws.every(w=>h.includes(' '+w)))continue;const key=e[0]+e[4];if(seen.has(key))continue;seen.add(key);
+  const n=nrm(e[0]);out.push({t:'s',r:n==q?0:n.startsWith(q)?1:2,d:Math.hypot(e[4]-la,(e[5]-lo)*.8),o:{name:e[0],net,city:e[2],st:e[3].replace(/\d+$/,''),k:e[3],lat:e[4],lng:e[5]}})}
+ out.sort((a,b)=>a.r-b.r||a.d-b.d);return out}
+function srRender(cs,ss,pend){const l=$('srl'),i=$('stsearch');const nc=Math.min(cs.length,ss.length?3:6);SRR=cs.slice(0,nc).concat(ss.slice(0,6-nc));SRI=SRR.length?0:-1;const nf=L2('stations','estaciones');
+ l.innerHTML=SRR.length?SRR.map((r,j)=>{const o=r.o,h=`role="option" id="sro${j}" aria-selected="${j==SRI}" onpointerdown="event.preventDefault()" onclick="srGo(${j})"`;return r.t=='c'?`<li ${h}><b>${esc(o.n)}, ${o.st}</b><span>${o.c.toLocaleString(LANG=='es'?'es-US':'en-US')} ${o.c==1?L2('station','estación'):nf}</span></li>`:`<li ${h}><b>${esc(o.name)}</b><span>${esc(o.net||'')}${o.city?' · '+esc(o.city)+', '+o.st:''}</span></li>`}).join('')
+  :`<li class="srn" role="option" aria-disabled="true">${pend?L2('Searching…','Buscando…'):L2('No matches. Try a city name.','Sin resultados. Prueba con una ciudad.')}</li>`;
+ l.hidden=false;i.setAttribute('aria-expanded','true');srAct()}
+srUI=function(){const i=$('stsearch'),v=i.value;$('srx').hidden=!v;const q=nrm(v).replace(/\s+/g,' ').trim();clearTimeout(SRT);const my=++SRQ;
+ if(!q||/^(zap|hello|road ?trip)$/.test(q)||q.length<2){srClose();return}
+ (async()=>{const cs=await cityFind(q);if(my!=SRQ)return;srRender(cs,[],q.length>=3);if(q.length<3)return;await new Promise(r=>SRT=setTimeout(r,150));if(my!=SRQ)return;const ss=await stFind(q);if(my!=SRQ||!$('stsearch').value.trim())return;srRender(cs,ss,false)})()}
+srGo=function(j){const r=SRR[j];if(!r)return;const i=$('stsearch');srClose();i.blur();try{cloOpen(0)}catch(e){}
+ if(r.t=='c'){i.value=r.o.n+', '+r.o.st;$('srx').hidden=false;srLoadAt(r.o.lat,r.o.lng);map.flyTo([r.o.lat,r.o.lng],12,{duration:rmOn()?0:1});return}
+ const o=r.o;i.value=o.name.replace(/…$/,'');$('srx').hidden=false;map.flyTo([o.lat,o.lng],15,{duration:rmOn()?0:1});if(FLOAD[o.k]!=2&&!FLOAD[o.k])fChunk(o.k);
+ (async()=>{for(let n=0;n<120&&FLOAD[o.k]!=2;n++)await new Promise(z=>setTimeout(z,100));const nm=o.name.replace(/…$/,'');const s=[...FPTS,...S].find(s=>Math.abs(s.lat-o.lat)<2e-4&&Math.abs(s.lng-o.lng)<2e-4&&(s.name||'').startsWith(nm.slice(0,12)));
+  if(s){pick(s);try{if(window.cardAll)cardAll()}catch(e){}}else toast(L2('Couldn’t open that station yet. Try again.','No se pudo abrir esa estación. Inténtalo de nuevo.'))})()}
 </script></body></html>
