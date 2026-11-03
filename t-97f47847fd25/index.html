@@ -349,6 +349,20 @@ body.hc .bay.o{background:#000;border:3px solid #7dffb3}body.hc .bay.u{backgroun
 .simg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.simg div{border:1px solid var(--b);border-radius:10px;padding:8px;text-align:center}.simg b{display:block;font-size:1.25rem}
 .simbar{height:14px;border-radius:7px;background:#ffffff1a;overflow:hidden;margin-top:10px}.simbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#00ff9d,#00c2ff);transform-origin:0 50%;transform:scaleX(0);transition:transform .1s linear}
 .carf label{display:block;margin-top:8px;font-size:.875rem;color:var(--m)}.carf .inp{margin-top:4px}
+
+.c1h{display:flex;flex-direction:column;gap:8px;padding:4px 0 8px}
+.c1n{font-size:1.25rem;font-weight:800;line-height:1.25}
+.c1b{align-self:flex-start;font-size:.875rem;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--b);color:var(--m)}.c1b.on{background:#00c26a;border-color:#00c26a;color:#001a10}
+.c1i{font-size:1rem;color:var(--t)}.c1f{font-size:.875rem;color:var(--m)}
+.c1btns{display:flex;gap:8px;margin-top:8px}.c1btns .btn{flex:1;margin:0;min-height:52px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.0625rem}
+.c1o{background:transparent!important;border:2px solid var(--g)!important;color:var(--t)!important;box-shadow:none!important}
+.c1t{background:none;border:0;color:var(--m);font:inherit;font-size:.9375rem;min-height:44px;text-align:left;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.c1btns .c1o{border:2px solid rgba(255,255,255,.45)!important;color:inherit!important;background:transparent!important;box-shadow:none!important}
+.c1btns .btn.g{background:#f4f6fb!important;color:#0b0f1a!important;border:0!important;box-shadow:none!important}
+.c1more{display:flex;flex-direction:column}.c1more[hidden]{display:none}
+#s-station>.c1h{margin:8px 14px;padding:16px;border:1px solid var(--b);border-radius:14px;background:rgba(255,255,255,.04)}
+.c1more .tmt,.c1more .cal,.c1more [onclick^="openAlong"]{display:none!important}
+body.hc .c1b.on{background:#000;color:#7dffb3;border:2px solid #7dffb3}
 </style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
 <div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
 <script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script><script>/* v19c intro variants */
@@ -2649,11 +2663,37 @@ function keyLockUI(){const e=$('keylock');if(e)e.textContent=sf().lock?'🔒 Key
 addEventListener('keydown',e=>{if(e.key=='Escape')['okm','menum','safm'].forEach(i=>$(i).classList.remove('on'))});
 function lvl(s){return s.kw>=50?'Fast':'Level 2'}
 function infoTxt(s){const o=(typeof ME_OK!='undefined'&&ME_OK)||youMk?me:[34.0522,-118.2437],mi=dist(o[0],o[1],s.lat,s.lng)/1609,p=priceInfo(s);return `${mi<10?mi.toFixed(1):Math.round(mi)} mi · ${lvl(s)} · ${p.ok?'$'+p.v.toFixed(2)+'/kWh'+(((CI[s.name]||[]).find(c=>c.p&&c.ts)||{}).t=='Just now'?'':' (sample)'):'Price not listed'}`}
-function infoLine(){const s=cur;if(!s)return;const sh=$('sheet');if(sh){sh.querySelector('.infol')?.remove();const r=sh.querySelector('.row');r&&r.insertAdjacentHTML('afterend',`<div class="muted infol" style="margin-top:2px">${T(infoTxt(s))} · <button type="button" class="lnk" style="min-height:32px" onclick="go('station')">${T('More details')}</button></div>`);
+function infoLine(){const s=cur;if(!s)return;const sh=$('sheet');if(sh){sh.querySelector('.infol')?.remove();const r=sh.querySelector('.row');
  const st=sh.querySelector('.stats');const c=st&&st.children[2];if(c&&!c.dataset.lv){c.dataset.lv=1;c.innerHTML=`⚡ ${T(lvl(s))}<div class="muted">~${s.kw} kW <span class="pill" style="font-size:.6875rem">${T('sample')}</span></div>`}}
  const a=$('st-addr');if(a){let e=$('st-info');if(!e){a.insertAdjacentHTML('afterend','<div class="muted" id="st-info"></div>');e=$('st-info')}e.textContent=T(infoTxt(s))}}
 ESR.unshift([/^([\d.]+) mi · (Fast|Level 2) · (.+)$/,(m,a,b,c)=>`${a} mi · ${b=='Fast'?'Rápida':'Nivel 2'} · ${c=='Price not listed'?'Precio no publicado':c.replace('(sample)','(muestra)')}`]);
 Object.assign(ES,{"Fast":"Rápida","Level 2":"Nivel 2","Price not listed":"Precio no publicado","sample":"muestra"});
+
+// ===== v19e card redesign: header + More details (tucks everything else) =====
+var MORE_OPEN=!!new URLSearchParams(location.search).get('scene');
+function L2(en,es){return LANG=='es'?es:en}
+function cardHTML(s,where){const open=s.avail||0,tot=s.total||0,ok=open>0,f=fit(s);
+ const fitL=!CAR?L2('Add your car to see if it fits','Agrega tu auto para ver si es compatible'):f=='yes'?'✓ '+L2('Fits your ','Compatible con tu ')+carShort():f=='adapter'?L2('Fits with an adapter: ','Funciona con adaptador: ')+T(adNote(s)):L2('Doesn’t fit your car','No es compatible con tu auto');
+ return `<div class="c1h notr"><div class="c1n">${s.name}</div><span class="c1b${ok?' on':''}">${L2(`${open} of ${tot} open (sample)`,`${open} de ${tot} libres (muestra)`)}</span>
+ <div class="c1i">${T(infoTxt(s))}</div><div class="c1f">${fitL}</div>
+ <div class="c1btns"><a class="btn g" target="_blank" rel="noopener" href="${goURL(s)}">${L2('Take me there','Llévame')}</a><button type="button" class="btn c1o" onclick="openAlong()">${L2('Charge along','Cargar en vivo')}</button></div>
+ <button type="button" class="c1t" aria-expanded="${MORE_OPEN}" onclick="toggleMore()">${MORE_OPEN?L2('Fewer details ▴','Menos detalles ▴'):L2('More details ▾','Más detalles ▾')}</button></div>`}
+function toggleMore(){MORE_OPEN=!MORE_OPEN;cardAll()}
+function cardInto(root,where,keep){if(!root||!cur)return;let h=root.querySelector(':scope>.c1h'),m=root.querySelector(':scope>.c1more');
+ if(!m){m=document.createElement('div');m.className='c1more';root.appendChild(m)}
+ const tmp=document.createElement('div');tmp.innerHTML=cardHTML(cur,where);const nh=tmp.firstElementChild;if(h)h.replaceWith(nh);else{const k=keep?root.querySelector(keep):null;k?k.after(nh):root.prepend(nh)}
+ [...root.children].forEach(c=>{if(c!==nh&&c!==m&&!(keep&&c.matches(keep)))m.appendChild(c)});m.hidden=!MORE_OPEN}
+var CARD_BUSY=0;function cardAll(){if(CARD_BUSY)return;CARD_BUSY=1;try{cardInto($('sheet'),'sheet');cardInto($('s-station'),'station','.hdr')}catch(e){}CARD_BUSY=0}
+{const _p=pick;pick=function(s){const ch=s&&cur&&s.name!==cur.name;if(ch&&!new URLSearchParams(location.search).get('scene'))MORE_OPEN=false;const r=_p.apply(this,arguments);cardAll();return r}}
+{const mo=new MutationObserver(ms=>{if(CARD_BUSY)return;const need=ms.some(m=>[...m.addedNodes].some(n=>n.nodeType==1&&!n.classList.contains('c1h')&&!n.classList.contains('c1more')));if(need)cardAll()});
+ ['sheet','s-station'].forEach(id=>$(id)&&mo.observe($(id),{childList:true}))}
+{const _g=go;go=function(t){const r=_g.apply(this,arguments);if(t=='station'||t=='map')cardAll();return r}}
+{const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);cardAll();return r}}
+{const _uc=useCar;useCar=function(){const r=_uc.apply(this,arguments);cardAll();return r}}
+// scenes that point at a tucked element open More details first
+{const _si=Element.prototype.scrollIntoView;Element.prototype.scrollIntoView=function(){const m=this.closest&&this.closest('.c1more');if(m&&m.hidden){MORE_OPEN=true;cardAll()}return _si.apply(this,arguments)}}
+ESR.unshift([/^\$([\d.]+)\/kWh \(sample\)$/,'$$$1/kWh (muestra)']);
+setTimeout(cardAll,0);
 setTimeout(keyLockUI,300);
 if(cur)try{repRender()}catch(e){}
 </script></body></html>
