@@ -1011,7 +1011,7 @@ function plugStat(s){const n=Math.max(1,Math.min(+s.total||+s.ports||1,40)),k=s.
  for(let j=0;j<n;j++){const hh=(k*31+j*17)%23;let st,txt;if(mine&&j==0){st='bad';txt='Reported down just now'}else if(hh==0||hh==7){st='bad';txt=`Reported down ${1+hh%3} d ago`}else if(hh%5==1){st='use';txt='In use'}else{st='ok';txt=`Working · confirmed ${1+(hh*3)%20} h ago`}
   out.push({j:j+1,ty:ty[j%ty.length],kw:s.kw,st,txt})}return out}
 function plugSum(s){const P=plugStat(s),w=P.filter(p=>p.st!='bad').length;return {P,w,n:P.length}}
-function plugRow(p){const ic=p.st=='ok'?'<span class="green">✔</span>':p.st=='use'?'<span style="color:#ffb020">●</span>':'<span style="color:#ff6b84">✖</span>';return `<div class="plug"><div>${ic} <b>Plug ${p.j}</b> <span class="muted">· ${p.ty} · ${p.kw} kW</span></div><span class="muted" style="text-align:right">${p.txt}</span></div>`}
+function plugRow(p){const ic=p.st=='ok'?'<span class="green">✔</span>':p.st=='use'?'<span style="color:#ffb020">●</span>':'<span style="color:#ff6b84">✖</span>';return `<div class="plug"><div>${ic} <b>Plug ${p.j}</b> <span class="muted">· ${p.ty} · ${p.kw} kW <span class="pill" style="font-size:.6875rem">sample</span></span></div><span class="muted" style="text-align:right">${p.txt}</span></div>`}
 function plugsHTML(s,max){const {P,w,n}=plugSum(s);const fr=P.filter(p=>p.st=='ok').length;return `<div class="row"><b>${w?`Working, ${fr} of ${n} plugs free`:'Not working right now. Try the backup.'}</b><span class="muted">${w} of ${n} plugs working (sample)</span></div>`+P.slice(0,max).map(plugRow).join('')+(n>max?`<div class="muted">${n-max} more</div>`:'')}
 // ===== arrival check (ESTIMATE) =====
 function arrival(s){const {P,w}=plugSum(s),mi=gcd(me,[s.lat,s.lng])*1.2,mn=Math.round(mi/28*60),h=new Date(Date.now()+mn*6e4).getHours(),b=busyAt(s,h),sc=trust(s).sc;
@@ -2627,7 +2627,7 @@ function caSave(save){const st=CA;if(!st)return;if(!save){caClose();return}const
 function caClose(){if(CA&&CA.iv)clearInterval(CA.iv);CA=null;$('cam').classList.remove('on')}
 {const mo=new MutationObserver(()=>{window.hSync&&hSync();if(!$('cam').classList.contains('on')&&CA){clearInterval(CA.iv);CA=null}});mo.observe($('cam'),{attributes:true,attributeFilter:['class']})}
 addEventListener('keydown',e=>{if(e.key=='Escape'&&$('cam').classList.contains('on'))caClose()});
-{const _x=stExtras;stExtras=function(){_x.apply(this,arguments);const v=document.querySelector('#sheet .v19b');if(v&&!v.querySelector('.cal'))v.insertAdjacentHTML('afterbegin','<button type="button" class="btn g cal" style="margin-top:10px" onclick="openAlong()">⏱ I’m charging here<br><span style="font-size:.8125rem;font-weight:500">Live, real time</span></button>')}}
+{const _x=stExtras;stExtras=function(){_x.apply(this,arguments);const v=document.querySelector('#sheet .v19b');if(v&&!v.querySelector('.cal'))(v.querySelector('a.tmt')||v.firstChild).insertAdjacentHTML('afterend','<button type="button" class="btn g cal" style="margin-top:6px" onclick="openAlong()">⏱ I’m charging here<br><span style="font-size:.8125rem;font-weight:500">Live, real time</span></button>');infoLine()}}
 // Safety (demo) + menu
 document.querySelector('.phone').insertAdjacentHTML('beforeend','<div class="modal" id="menum" onclick="if(event.target===this)this.classList.remove(\'on\')"><div class="mbox" role="dialog" aria-label="Menu" id="menubox"></div></div><div class="modal" id="safm" onclick="if(event.target===this)this.classList.remove(\'on\')"><div class="mbox" role="dialog" aria-label="Safety" id="safbox"></div></div><div class="modal" id="okm"><div class="mbox" role="dialog" aria-label="Confirm it’s you" id="okbox"></div></div>');
 function openMenu(){$('menubox').innerHTML=`<div class="row"><b>Menu</b><button class="lnk mx" aria-label="Close" onclick="$('menum').classList.remove('on')">✕</button></div><button class="btn" onclick="$('menum').classList.remove('on');openQR()">📲 Share this test</button><button class="btn" onclick="$('menum').classList.remove('on');openSafe()">🛡 Safety</button><button class="btn" onclick="$('menum').classList.remove('on');openCars()">🚗 My cars · Add my car</button>`;$('menum').classList.add('on')}
@@ -2647,6 +2647,13 @@ function keyLockUI(){const e=$('keylock');if(e)e.textContent=sf().lock?'🔒 Key
 {const _k=keyTap;keyTap=function(){if(sf().lock){toast('Key is locked. Unlock it in Safety.');return}_k.apply(this,arguments)}}
 {const mo=new MutationObserver(()=>window.hSync&&hSync());['menum','safm','okm'].forEach(id=>mo.observe($(id),{attributes:true,attributeFilter:['class']}))}
 addEventListener('keydown',e=>{if(e.key=='Escape')['okm','menum','safm'].forEach(i=>$(i).classList.remove('on'))});
+function lvl(s){return s.kw>=50?'Fast':'Level 2'}
+function infoTxt(s){const o=(typeof ME_OK!='undefined'&&ME_OK)||youMk?me:[34.0522,-118.2437],mi=dist(o[0],o[1],s.lat,s.lng)/1609,p=priceInfo(s);return `${mi<10?mi.toFixed(1):Math.round(mi)} mi · ${lvl(s)} · ${p.ok?'$'+p.v.toFixed(2)+'/kWh'+(((CI[s.name]||[]).find(c=>c.p&&c.ts)||{}).t=='Just now'?'':' (sample)'):'Price not listed'}`}
+function infoLine(){const s=cur;if(!s)return;const sh=$('sheet');if(sh){sh.querySelector('.infol')?.remove();const r=sh.querySelector('.row');r&&r.insertAdjacentHTML('afterend',`<div class="muted infol" style="margin-top:2px">${T(infoTxt(s))}</div>`);
+ const st=sh.querySelector('.stats');const c=st&&st.children[2];if(c&&!c.dataset.lv){c.dataset.lv=1;c.innerHTML=`⚡ ${T(lvl(s))}<div class="muted">~${s.kw} kW <span class="pill" style="font-size:.6875rem">${T('sample')}</span></div>`}}
+ const a=$('st-addr');if(a){let e=$('st-info');if(!e){a.insertAdjacentHTML('afterend','<div class="muted" id="st-info"></div>');e=$('st-info')}e.textContent=T(infoTxt(s))}}
+ESR.unshift([/^([\d.]+) mi · (Fast|Level 2) · (.+)$/,(m,a,b,c)=>`${a} mi · ${b=='Fast'?'Rápida':'Nivel 2'} · ${c=='Price not listed'?'Precio no publicado':c.replace('(sample)','(muestra)')}`]);
+Object.assign(ES,{"Fast":"Rápida","Level 2":"Nivel 2","Price not listed":"Precio no publicado","sample":"muestra"});
 setTimeout(keyLockUI,300);
 if(cur)try{repRender()}catch(e){}
 </script></body></html>
