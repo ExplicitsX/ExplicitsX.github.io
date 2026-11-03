@@ -1576,7 +1576,7 @@ function fSync(){if(NOMAP_())return;const z=map.getZoom();if(z<FZ){if(FMC&&map.h
   const fn=$('fullnote');if(fn)fn.hidden=true})}
 function NOMAP_(){return !!window.NOMAP||!window.map}
 async function fNets(){if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}
-function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json');if(!r.ok)throw 0;const a=await r.json();const pts=[];
+function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json?v=2');if(!r.ok)throw 0;const a=await r.json();const pts=[];
   let att=0;for(const row of a){const bs=SKEY.get(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10));if(bs){if(row[10])bs.hrs=row[10];if(row[11])bs.lp=row[11];att=1;continue}const s=mkSt(row);s.ck=k;pts.push(s)}FPTS.push(...pts);FN+=a.length;FLOAD[k]=2;
   if(FMC)FMC.addLayers(pts.filter(fPass).map(fMk));fNote('');fCount();if(att&&cur&&window.cardAll)cardAll();if(window.cloUI)cloUI()}catch(e){FLOAD[k]=0;FERR=1;fNote()}})()}
 function fCount(){const e=document.querySelector('.usbox');if(e&&!e.querySelector('.fl')){e.insertAdjacentHTML('beforeend','<div class="fl notr" style="font-size:.75rem;opacity:.8"></div>')}const f=e&&e.querySelector('.fl');if(f)f.textContent=L2(`${FN.toLocaleString()} stations loaded so far`,`${FN.toLocaleString()} estaciones cargadas hasta ahora`)}
