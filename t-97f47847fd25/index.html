@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19e</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>ChargeOne mock v19f</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -8,7 +8,7 @@ function tileBar(m,on){if(!m||!m.getContainer)return;const c=m.getContainer();le
 function geoLater(f){(function w(){const i=document.getElementById('intro'),c=['welcome','signup','perm'].some(x=>{const e=document.getElementById(x);return e&&e.classList.contains('on')});if((!i||i.classList.contains('out'))&&!c)setTimeout(f,500);else setTimeout(w,400)})()}
 </script>
 <script id="i18n">var LANG=(function(){try{const q=new URLSearchParams(location.search).get('lang')||(new URLSearchParams(location.search).get('scene')=='es'?'es':null);return q||localStorage.getItem('c1_lang')||((navigator.language||'en').toLowerCase().startsWith('es')?'es':'en')}catch(e){return 'en'}})();
-var I18N_ORIG=new WeakMap(),ES,ESR;ES={"Coming soon. It’s not in this preview yet.": "Próximamente. Todavía no está en esta vista previa.", "Station details copied": "Datos de la estación copiados", "Pick a city from the list": "Elige una ciudad de la lista", "Set your starting battery here.": "Elige aquí tu batería al salir.", "The map couldn’t load. Check your signal and tap Retry. Everything else still works.": "No se pudo cargar el mapa. Revisa tu señal y toca Reintentar. Todo lo demás sigue funcionando.", "Retry": "Reintentar", "Map images didn’t load. Check your signal. Stations still work.": "No cargaron las imágenes del mapa. Revisa tu señal. Las estaciones siguen funcionando.", "Check in": "Reportar","Every charger. One app.":"Todos los cargadores. Una app.","Skip":"Saltar","Close":"Cerrar","Map":"Mapa","Station":"Estación","Charging":"Carga","Trip":"Viaje","Wallet":"Billetera","Any price":"Cualquier precio","Favorites":"Favoritos","Other":"Otra","Fits my car":"Para mi auto","⌂ Home":"⌂ Casa","DOE AFDC Nov 2026":"DOE AFDC nov. 2026","Imagery © Esri, Maxar, Earthstar Geographics, Stations: DOE AFDC":"Imágenes © Esri, Maxar, Earthstar Geographics, Estaciones: DOE AFDC","Sample":"Muestra","Sample price":"Precio de muestra","sample price":"precio de muestra","Fast":"Rápida","Level 2":"Nivel 2","☆ Save":"☆ Guardar","★ Saved":"★ Guardado","↪ Backup":"↪ Alternativa","nearest alternative":"alternativa más cercana","View Station":"Ver estación","Open 24/7":"Abierta 24/7","⌂ Home charger ✓":"⌂ Cargador de casa ✓","Nearby (within 300 m)":"Cerca (a menos de 300 m)","Driver check-ins":"Reportes de conductores","Finding food, restrooms & Wi-Fi…":"Buscando comida, baños y Wi-Fi…","No food, restrooms or Wi-Fi mapped within 300 m.":"Sin comida, baños ni Wi-Fi en el mapa a menos de 300 m.","Nearby places unavailable right now":"Lugares cercanos no disponibles por ahora","Data © OpenStreetMap contributors":"Datos © colaboradores de OpenStreetMap","Restroom":"Baño","Coffee":"Café","Fast food":"Comida rápida","Restaurant":"Restaurante","Estimated time":"Tiempo estimado","🚗 Add your car":"🚗 Agrega tu auto","⏳ Idle fees":"⏳ Tarifas por inactividad","Link car (mock)":"Vincular auto (prueba)","estimate":"estimación","Estimate":"Estimación","(estimate)":"(estimación)","⏱ Idle-fee countdown":"⏱ Cuenta regresiva de tarifa por inactividad","EV / month":"EV / mes","Gas / month":"Gasolina / mes","You save":"Ahorras","Miles / month":"Millas / mes","Home charging %":"% de carga en casa","Home $/kWh":"Casa $/kWh","Public $/kWh":"Pública $/kWh","Gas $/gal":"Gasolina $/gal","Car mpg (gas)":"mpg del auto (gasolina)","Manage all":"Administrar todo","Recent charges":"Cargas recientes","Now":"Ahora","Coming soon":"Próximamente","From":"Desde","To":"Hasta","Your location":"Tu ubicación","Your car":"Tu auto","Start":"Inicio","sample battery":"batería de muestra","live battery":"batería en vivo","⛽ vs gas":"⛽ vs. gasolina","Assumed gas $":"Gasolina supuesta $","/gal ·":"/gal ·","approx.":"aprox.","Backup:":"Alternativa:","real (DOE AFDC)":"real (DOE AFDC)","Explore as guest":"Explorar como invitado","Create account":"Crear cuenta","Skip for now":"Ahora no","Allow battery access":"Permitir acceso a la batería","Not now":"Ahora no","Won't start":"No arranca","Just now":"Justo ahora","Real":"Real","Yours":"Tuyo","· Station names, locations, plugs, last-confirmed dates: DOE AFDC snapshot, Nov 2026 (cached on this device)":"· Nombres, ubicaciones, conectores y fechas de última confirmación: copia de DOE AFDC, nov. 2026 (guardada en este dispositivo)","· Map tiles & satellite: Esri · Nearby places: OpenStreetMap (live when reachable) · Routes: straight line × 1.2, approx. (no routing service)":"· Mapas y satélite: Esri · Lugares cercanos: OpenStreetMap (en vivo si hay conexión) · Rutas: línea recta × 1.2, aprox. (sin servicio de rutas)","· Trip stops & backups: real DC fast stations (DOE AFDC, Nov 2026, thinned to fit offline)":"· Paradas y alternativas del viaje: estaciones rápidas DC reales (DOE AFDC, nov. 2026, reducidas para funcionar sin conexión)","· Check-ins and prices you report (saved on this device)":"· Reportes y precios que tú reportas (guardados en este dispositivo)","· Other drivers' check-ins and price reports, availability, ratings, busy/wait (typical, not live), idle-fee summaries, plug-by-plug status, trip prices, availability & wait, wallet":"· Reportes y precios de otros conductores, disponibilidad, calificaciones, ocupación/espera (típica, no en vivo), resúmenes de tarifas por inactividad, estado por conector, precios, disponibilidad y espera del viaje, billetera","· Battery unless your car is linked; savings vs gas from your inputs; arrival chance; idle-fee countdown":"· Batería si tu auto no está vinculado; ahorro vs. gasolina según tus datos; probabilidad al llegar; cuenta regresiva de inactividad","Welcome to ChargeOne":"Te damos la bienvenida a ChargeOne","Add a photo (optional)":"Agregar foto (opcional)","Photo preview":"Vista previa de la foto","Menu":"Menú","Selected station":"Estación seleccionada","Save to favorites":"Guardar en favoritos","Saved to favorites, tap to remove":"Guardado en favoritos, toca para quitar","Back":"Atrás","Share station":"Compartir estación","Backup station":"Estación alternativa","Wallet menu":"Menú de billetera","Trip settings":"Ajustes del viaje","Type a US city":"Escribe una ciudad de EE. UU.","Email":"Correo","Main":"Principal","sample status":"estado de muestra","In use":"En uso","Working":"Funciona","typical busyness at that hour":"ocupación típica a esa hora","fits your car":"compatible con tu auto","Typical":"Típico","late night":"la madrugada","Drivers say this one’s reliable":"Los conductores dicen que este es confiable","Mixed reports lately":"Reportes mixtos últimamente","Drivers say this one’s been acting up":"Los conductores dicen que este ha estado fallando","You’re all set ⚡":"¡Listo! ⚡","Couldn’t get the route just now. Try again in a bit.":"No pudimos obtener la ruta ahora. Intenta de nuevo en un rato.","Couldn’t load nearby spots right now.":"No pudimos cargar lugares cercanos por ahora.","Nothing nearby fits your car. Want to widen the search?":"No hay nada cerca compatible con tu auto. ¿Ampliamos la búsqueda?","Widen search":"Ampliar búsqueda","check at the charger":"revisa en el cargador","No recent price":"Sin precio reciente","– Every charger. One app.":"– Todos los cargadores. Una app.","One map, all major networks":"Un mapa, todas las redes principales","Trips planned for your car":"Viajes planeados para tu auto","One wallet (coming soon)":"Una billetera (próximamente)","Get started":"Empezar","Launching in Los Angeles":"Lanzamos en Los Ángeles","This is a preview. Stations are real; prices, status and accounts are sample.":"Esto es una vista previa. Las estaciones son reales; precios, estado y cuentas son de muestra.","Preview only. Nothing you type is saved or sent.":"Solo vista previa. Nada de lo que escribes se guarda ni se envía.","Talking… tap to stop":"Hablando… toca para parar","Read this to me":"Léemelo","High contrast":"Alto contraste","Make your account":"Crea tu cuenta","First name (optional)":"Nombre (opcional)","Your car (optional)":"Tu auto (opcional)","Continue with Apple or Google (preview)":"Continuar con Apple o Google (vista previa)","Connect your car?":"¿Conectar tu auto?","We'd only read your battery and range while you charge, so we can tell you when you're full and before idle fees start. You can disconnect anytime. (Preview: nothing connects.)":"Solo leeríamos tu batería y autonomía mientras cargas, para avisarte cuando esté lista y antes de que empiece la tarifa por inactividad. Puedes desconectarlo cuando quieras. (Vista previa: no se conecta nada.)","Add your car to see battery and range here.":"Agrega tu auto para ver aquí la batería y la autonomía.","Numbers show public stations here. Full details for this area are coming in the app.":"Los números muestran estaciones públicas aquí. Los detalles de esta zona llegan con la app.","Finding you…":"Buscando tu ubicación…","Nearest fast charger":"Cargador rápido más cercano","Nearest charger that fits my car":"El más cercano para mi auto","Fast (50 kW+)":"Rápida (50 kW+)","Satellite":"Satélite","No home charger yet":"Aún no tienes cargador de casa","No home charger yet. Open a station and tap \"Set as home.\"":"Aún no tienes cargador de casa. Abre una estación y toca \"Usar como casa\".","Set as home":"Usar como casa","Charger map. Use \"Nearest charger\" or the filters to find one fast.":"Mapa de cargadores. Usa \"El más cercano\" o los filtros para encontrar uno rápido.","Showing sample stations for now. Live data didn’t load.":"Por ahora mostramos estaciones de muestra. No cargaron los datos en vivo.","Not working right now. Try the backup.":"No funciona ahora. Prueba la alternativa.","Reports are mixed here. Keep a backup in mind.":"Los reportes aquí son mixtos. Ten una alternativa en mente.","A driver says this one’s down. Try the backup.":"Un conductor dice que no funciona. Prueba la alternativa.","Not confirmed yet":"Sin confirmar aún","No check-ins yet. Be the first to check in.":"Aún no hay reportes. Sé quien reporte primero.","How's":"¿Cómo está","Busy":"Ocupado","Down":"No funciona","Send":"Enviar","Thanks, saved. (Preview: on this device only.)":"Gracias, guardado. (Vista previa: solo en este dispositivo.)","Thanks. Drivers nearby will see this. (Preview: on this device only.)":"Gracias. Los conductores cerca lo verán. (Vista previa: solo en este dispositivo.)","Report a problem":"Reportar un problema","⚠ Report a problem ·":"⚠ Reportar un problema ·","What's wrong?":"¿Qué pasa?","Screen's off":"Pantalla apagada","Cable's damaged":"Cable dañado","Payment didn't go through":"No pasó el pago","Optional. It stays on your phone.":"Opcional. Se queda en tu teléfono.","Send report":"Enviar reporte","Add a note (optional), like \"stall 3 is down\"":"Agrega una nota (opcional), como \"el puesto 3 no funciona\"","Sample report":"Reporte de muestra","Clean":"Limpia","Well lit":"Bien iluminada","Easy to get to":"Fácil acceso","Anonymous driver":"Conductor anónimo","Show my first name on check-ins (off by default)":"Mostrar mi nombre en los reportes (desactivado)","Needs an adapter":"Necesita adaptador","needs an adapter":"necesita adaptador","Won't fit your car":"No es compatible con tu auto","won't fit your car":"no es compatible con tu auto","We don’t know the plug type here":"No sabemos qué conector tiene","Add your car to see if it fits":"Agrega tu auto para ver si es compatible","Estimated cost":"Costo estimado","Driver-reported price":"Precio reportado por conductores","No recent price. Check the screen at the charger.":"No hay precio reciente. Revisa la pantalla del cargador.","Session fee: not known yet":"Tarifa por sesión: aún no la sabemos","No session fee reported":"No se reporta tarifa por sesión","What did you pay per kWh? (optional)":"¿Cuánto pagaste por kWh? (opcional)","Free":"Libre","free":"libres","Usually quiet now":"Suele estar tranquilo ahora","Might be a short wait":"Puede haber una espera corta","Typical times, sample data":"Horarios típicos, datos de muestra","Usually around now":"Normalmente a esta hora","sample":"muestra","When you get there":"Al llegar","It might be full when you get there. Try the backup?":"Puede estar lleno cuando llegues. ¿Pruebas la alternativa?","Backup":"Alternativa","nearest":"la más cercana","Go to backup":"Ir a la alternativa","Directions":"Cómo llegar","Start charging":"Empezar a cargar","Battery":"Batería","Speed":"Velocidad","So far":"Hasta ahora","Stop charging":"Parar la carga","Done charging":"Carga terminada","Connected ✓":"Conectado ✓","Not connected":"No conectado","Estimated. Connect your car for your real battery level.":"Estimado. Conecta tu auto para ver tu batería real.","Estimated":"Estimado","Move your car when you can.":"Mueve tu auto cuando puedas.","Tesla: only when the station is busy.":"Tesla: solo cuando la estación está ocupada.","We don’t know this network’s idle fees. Check the sign at the charger.":"No sabemos las tarifas por inactividad de esta red. Revisa el letrero del cargador.","No idle fee reported here":"No se reporta tarifa por inactividad aquí","Charge to":"Cargar hasta","Your battery %":"Tu batería %","Charging safety":"Seguridad al cargar","Plan a trip":"Planear viaje","Where to?":"¿A dónde vas?","Downtown LA":"Centro de LA","No stops needed. You’ve got the range.":"No necesitas paradas. Te alcanza la batería.","Directions will open in your maps app.":"Las indicaciones se abrirán en tu app de mapas.","Save trip":"Guardar viaje","Tell me if a stop goes down":"Avísame si una parada deja de funcionar","Try it: break a stop (sample)":"Pruébalo: simula una parada caída (muestra)","on your trip is down.":"en tu viaje no funciona.","on your trip is down (sample).":"en tu viaje no funciona (muestra).","All stops are already on their backup.":"Todas las paradas ya usan su alternativa.","Got it":"Entendido","One wallet for all major networks.":"Una billetera para las principales redes.","One balance":"Un saldo","One login (coming soon)":"Un inicio de sesión (próximamente)","Your network accounts (sample)":"Tus cuentas de redes (muestra)","Connected":"Conectada","Add payment method (coming soon)":"Agregar forma de pago (próximamente)","Rewards (coming soon)":"Recompensas (próximamente)","Recent charges (sample)":"Cargas recientes (muestra)","See all":"Ver todo","What you save vs gas each month":"Lo que ahorras vs gasolina al mes","With these numbers, gas comes out cheaper":"Con estos números, la gasolina sale más barata","Change the numbers":"Cambiar los números","Language":"Idioma","Saved on this phone":"Guardado en este teléfono","Where our data comes from":"De dónde vienen los datos","Prices, status and ratings are sample":"Precios, estado y calificaciones son de muestra","Offline":"Sin conexión","Heads up, move your car in 2 min to skip the idle fee":"Ojo, mueve tu auto en 2 min para evitar la tarifa por inactividad"};
+var I18N_ORIG=new WeakMap(),ES,ESR;ES={"Coming soon. It’s not in this preview yet.": "Próximamente. Todavía no está en esta vista previa.", "Station details copied": "Datos de la estación copiados", "Pick a city from the list": "Elige una ciudad de la lista", "Set your starting battery here.": "Elige aquí tu batería al salir.", "The map couldn’t load. Check your signal and tap Retry. Everything else still works.": "No se pudo cargar el mapa. Revisa tu señal y toca Reintentar. Todo lo demás sigue funcionando.", "Retry": "Reintentar", "Map images didn’t load. Check your signal. Stations still work.": "No cargaron las imágenes del mapa. Revisa tu señal. Las estaciones siguen funcionando.", "Check in": "Reportar","Every charger. One app.":"Todos los cargadores. Una app.","Skip":"Saltar","Close":"Cerrar","Map":"Mapa","Station":"Estación","Charging":"Carga","Trip":"Viaje","Wallet":"Billetera","Any price":"Cualquier precio","Favorites":"Favoritos","Other":"Otra","Fits my car":"Para mi auto","⌂ Home":"⌂ Casa","DOE AFDC Nov 2026":"DOE AFDC nov. 2026","Imagery © Esri, Maxar, Earthstar Geographics, Stations: DOE AFDC":"Imágenes © Esri, Maxar, Earthstar Geographics, Estaciones: DOE AFDC","Sample":"Muestra","Sample price":"Precio de muestra","sample price":"precio de muestra","Fast":"Rápida","Level 2":"Nivel 2","☆ Save":"☆ Guardar","★ Saved":"★ Guardado","↪ Backup":"↪ Alternativa","nearest alternative":"alternativa más cercana","View Station":"Ver estación","Open 24/7":"Abierta 24/7","⌂ Home charger ✓":"⌂ Cargador de casa ✓","Nearby (within 300 m)":"Cerca (a menos de 300 m)","Driver check-ins":"Reportes de conductores","Finding food, restrooms & Wi-Fi…":"Buscando comida, baños y Wi-Fi…","No food, restrooms or Wi-Fi mapped within 300 m.":"Sin comida, baños ni Wi-Fi en el mapa a menos de 300 m.","Nearby places unavailable right now":"Lugares cercanos no disponibles por ahora","Data © OpenStreetMap contributors":"Datos © colaboradores de OpenStreetMap","Restroom":"Baño","Coffee":"Café","Fast food":"Comida rápida","Restaurant":"Restaurante","Estimated time":"Tiempo estimado","🚗 Add your car":"🚗 Agrega tu auto","⏳ Idle fees":"⏳ Tarifas por inactividad","Link car (mock)":"Vincular auto (prueba)","estimate":"estimación","Estimate":"Estimación","(estimate)":"(estimación)","⏱ Idle-fee countdown":"⏱ Cuenta regresiva de tarifa por inactividad","EV / month":"EV / mes","Gas / month":"Gasolina / mes","You save":"Ahorras","Miles / month":"Millas / mes","Home charging %":"% de carga en casa","Home $/kWh":"Casa $/kWh","Public $/kWh":"Pública $/kWh","Gas $/gal":"Gasolina $/gal","Car mpg (gas)":"mpg del auto (gasolina)","Manage all":"Administrar todo","Recent charges":"Cargas recientes","Now":"Ahora","Coming soon":"Próximamente","From":"Desde","To":"Hasta","Your location":"Tu ubicación","Your car":"Tu auto","Start":"Inicio","sample battery":"batería de muestra","live battery":"batería en vivo","⛽ vs gas":"⛽ vs. gasolina","Assumed gas $":"Gasolina supuesta $","/gal ·":"/gal ·","approx.":"aprox.","Backup:":"Alternativa:","real (DOE AFDC)":"real (DOE AFDC)","Explore as guest":"Explorar como invitado","Create account":"Crear cuenta","Skip for now":"Ahora no","Allow battery access":"Permitir acceso a la batería","Not now":"Ahora no","Won't start":"No arranca","Just now":"Justo ahora","Real":"Real","Yours":"Tuyo","· Station names, locations, plugs, last-confirmed dates: DOE AFDC snapshot, Nov 2026 (cached on this device)":"· Nombres, ubicaciones, conectores y fechas de última confirmación: copia de DOE AFDC, nov. 2026 (guardada en este dispositivo)","· Map tiles & satellite: Esri · Nearby places: OpenStreetMap (live when reachable) · Routes: straight line × 1.2, approx. (no routing service)":"· Mapas y satélite: Esri · Lugares cercanos: OpenStreetMap (en vivo si hay conexión) · Rutas: línea recta × 1.2, aprox. (sin servicio de rutas)","· Trip stops & backups: real DC fast stations (DOE AFDC, Nov 2026, thinned to fit offline)":"· Paradas y alternativas del viaje: estaciones rápidas DC reales (DOE AFDC, nov. 2026, reducidas para funcionar sin conexión)","· Check-ins and prices you report (saved on this device)":"· Reportes y precios que tú reportas (guardados en este dispositivo)","· Other drivers' check-ins and price reports, availability, ratings, busy/wait (typical, not live), idle-fee summaries, plug-by-plug status, trip prices, availability & wait, wallet":"· Reportes y precios de otros conductores, disponibilidad, calificaciones, ocupación/espera (típica, no en vivo), resúmenes de tarifas por inactividad, estado por conector, precios, disponibilidad y espera del viaje, billetera","· Battery unless your car is linked; savings vs gas from your inputs; arrival chance; idle-fee countdown":"· Batería si tu auto no está vinculado; ahorro vs. gasolina según tus datos; probabilidad al llegar; cuenta regresiva de inactividad","Welcome to ChargeOne":"Te damos la bienvenida a ChargeOne","Add a photo (optional)":"Agregar foto (opcional)","Photo preview":"Vista previa de la foto","Menu":"Menú","Selected station":"Estación seleccionada","Save to favorites":"Guardar en favoritos","Saved to favorites, tap to remove":"Guardado en favoritos, toca para quitar","Back":"Atrás","Share station":"Compartir estación","Backup station":"Estación alternativa","Wallet menu":"Menú de billetera","Trip settings":"Ajustes del viaje","Type a US city":"Escribe una ciudad de EE. UU.","Email":"Correo","Main":"Principal","sample status":"estado de muestra","In use":"En uso","Working":"Funciona","typical busyness at that hour":"ocupación típica a esa hora","fits your car":"compatible con tu auto","Typical":"Típico","late night":"la madrugada","Drivers say this one’s reliable":"Los conductores dicen que este es confiable","Mixed reports lately":"Reportes mixtos últimamente","Drivers say this one’s been acting up":"Los conductores dicen que este ha estado fallando","You’re all set ⚡":"¡Listo! ⚡","Couldn’t get the route just now. Try again in a bit.":"No pudimos obtener la ruta ahora. Intenta de nuevo en un rato.","Couldn’t load nearby spots right now.":"No pudimos cargar lugares cercanos por ahora.","Nothing nearby fits your car. Want to widen the search?":"No hay nada cerca compatible con tu auto. ¿Ampliamos la búsqueda?","Widen search":"Ampliar búsqueda","check at the charger":"revisa en el cargador","No recent price":"Sin precio reciente","– Every charger. One app.":"– Todos los cargadores. Una app.","One map, all major networks":"Un mapa, todas las redes principales","Trips planned for your car":"Viajes planeados para tu auto","One wallet (coming soon)":"Una billetera (próximamente)","Get started":"Empezar","Launching in Los Angeles":"Lanzamos en Los Ángeles","This is a preview. Stations are real; prices, status and accounts are sample.":"Esto es una vista previa. Las estaciones son reales; precios, estado y cuentas son de muestra.","Preview only. Nothing you type is saved or sent.":"Solo vista previa. Nada de lo que escribes se guarda ni se envía.","Talking… tap to stop":"Hablando… toca para parar","Read this to me":"Léemelo","High contrast":"Alto contraste","Make your account":"Crea tu cuenta","First name (optional)":"Nombre (opcional)","Your car (optional)":"Tu auto (opcional)","Continue with Apple or Google (preview)":"Continuar con Apple o Google (vista previa)","Connect your car?":"¿Conectar tu auto?","We'd only read your battery and range while you charge, so we can tell you when you're full and before idle fees start. You can disconnect anytime. (Preview: nothing connects.)":"Solo leeríamos tu batería y autonomía mientras cargas, para avisarte cuando esté lista y antes de que empiece la tarifa por inactividad. Puedes desconectarlo cuando quieras. (Vista previa: no se conecta nada.)","Add your car to see battery and range here.":"Agrega tu auto para ver aquí la batería y la autonomía.","Numbers show public stations here. Full details for this area are coming in the app.":"Los números muestran estaciones públicas aquí. Los detalles de esta zona llegan con la app.","Finding you…":"Buscando tu ubicación…","Nearest fast charger":"Cargador rápido más cercano","Nearest charger that fits my car":"El más cercano para mi auto","Fast (50 kW+)":"Rápida (50 kW+)","Satellite":"Satélite","No home charger yet":"Aún no tienes cargador de casa","No home charger yet. Open a station and tap \"Set as home.\"":"Aún no tienes cargador de casa. Abre una estación y toca \"Usar como casa\".","Set as home":"Usar como casa","Charger map. Use \"Nearest charger\" or the filters to find one fast.":"Mapa de cargadores. Usa \"El más cercano\" o los filtros para encontrar uno rápido.","Showing sample stations for now. Live data didn’t load.":"Por ahora mostramos estaciones de muestra. No cargaron los datos en vivo.","Not working right now. Try the backup.":"No funciona ahora. Prueba la alternativa.","Reports are mixed here. Keep a backup in mind.":"Los reportes aquí son mixtos. Ten una alternativa en mente.","A driver says this one’s down. Try the backup.":"Un conductor dice que no funciona. Prueba la alternativa.","Not confirmed yet":"Sin confirmar aún","No check-ins yet. Be the first to check in.":"Aún no hay reportes. Sé quien reporte primero.","How's":"¿Cómo está","Busy":"Ocupado","Down":"No funciona","Send":"Enviar","Thanks, saved. (Preview: on this device only.)":"Gracias, guardado. (Vista previa: solo en este dispositivo.)","Thanks. Drivers nearby will see this. (Preview: on this device only.)":"Gracias. Los conductores cerca lo verán. (Vista previa: solo en este dispositivo.)","Report a problem":"Reportar un problema","⚠ Report a problem ·":"⚠ Reportar un problema ·","What's wrong?":"¿Qué pasa?","Screen's off":"Pantalla apagada","Cable's damaged":"Cable dañado","Payment didn't go through":"No pasó el pago","Optional. It stays on your phone.":"Opcional. Se queda en tu teléfono.","Send report":"Enviar reporte","Add a note (optional), like \"stall 3 is down\"":"Agrega una nota (opcional), como \"el puesto 3 no funciona\"","Sample report":"Reporte de muestra","Clean":"Limpia","Well lit":"Bien iluminada","Easy to get to":"Fácil acceso","Anonymous driver":"Conductor anónimo","Show my first name on check-ins (off by default)":"Mostrar mi nombre en los reportes (desactivado)","Needs an adapter":"Necesita adaptador","needs an adapter":"necesita adaptador","Won't fit your car":"No es compatible con tu auto","won't fit your car":"no es compatible con tu auto","We don’t know the plug type here":"No sabemos qué conector tiene","Add your car to see if it fits":"Agrega tu auto para ver si es compatible","Estimated cost":"Costo estimado","Driver-reported price":"Precio reportado por conductores","No recent price. Check the screen at the charger.":"No hay precio reciente. Revisa la pantalla del cargador.","Session fee: not known yet":"Tarifa por sesión: aún no la sabemos","No session fee reported":"No se reporta tarifa por sesión","What did you pay per kWh? (optional)":"¿Cuánto pagaste por kWh? (opcional)","Free":"Libre","free":"libres","Usually quiet now":"Suele estar tranquilo ahora","Might be a short wait":"Puede haber una espera corta","Typical times, sample data":"Horarios típicos, datos de muestra","Usually around now":"Normalmente a esta hora","sample":"muestra","When you get there":"Al llegar","It might be full when you get there. Try the backup?":"Puede estar lleno cuando llegues. ¿Pruebas la alternativa?","Backup":"Alternativa","nearest":"la más cercana","Go to backup":"Ir a la alternativa","Directions":"Cómo llegar","Start charging":"Empezar a cargar","Battery":"Batería","Speed":"Velocidad","So far":"Hasta ahora","Stop charging":"Parar la carga","Done charging":"Carga terminada","Connected ✓":"Conectado ✓","Not connected":"No conectado","Estimated. Connect your car for your real battery level.":"Estimado. Conecta tu auto para ver tu batería real.","Estimated":"Estimado","Move your car when you can.":"Mueve tu auto cuando puedas.","Tesla: only when the station is busy.":"Tesla: solo cuando la estación está ocupada.","Idle fee: check the network\'s app":"No sabemos las tarifas por inactividad de esta red. Revisa el letrero del cargador.","No idle fee reported here":"No se reporta tarifa por inactividad aquí","Charge to":"Cargar hasta","Your battery %":"Tu batería %","Charging safety":"Seguridad al cargar","Plan a trip":"Planear viaje","Where to?":"¿A dónde vas?","Downtown LA":"Centro de LA","No stops needed. You’ve got the range.":"No necesitas paradas. Te alcanza la batería.","Directions will open in your maps app.":"Las indicaciones se abrirán en tu app de mapas.","Save trip":"Guardar viaje","Tell me if a stop goes down":"Avísame si una parada deja de funcionar","Try it: break a stop (sample)":"Pruébalo: simula una parada caída (muestra)","on your trip is down.":"en tu viaje no funciona.","on your trip is down (sample).":"en tu viaje no funciona (muestra).","All stops are already on their backup.":"Todas las paradas ya usan su alternativa.","Got it":"Entendido","One wallet for all major networks.":"Una billetera para las principales redes.","One balance":"Un saldo","One login (coming soon)":"Un inicio de sesión (próximamente)","Your network accounts (sample)":"Tus cuentas de redes (muestra)","Connected":"Conectada","Add payment method (coming soon)":"Agregar forma de pago (próximamente)","Rewards (coming soon)":"Recompensas (próximamente)","Recent charges (sample)":"Cargas recientes (muestra)","See all":"Ver todo","What you save vs gas each month":"Lo que ahorras vs gasolina al mes","With these numbers, gas comes out cheaper":"Con estos números, la gasolina sale más barata","Change the numbers":"Cambiar los números","Language":"Idioma","Saved on this phone":"Guardado en este teléfono","Where our data comes from":"De dónde vienen los datos","Prices, status and ratings are sample":"Precios, estado y calificaciones son de muestra","Offline":"Sin conexión","Heads up, move your car in 2 min to skip the idle fee":"Ojo, mueve tu auto en 2 min para evitar la tarifa por inactividad"};
 ESR=[
 [/^([\d,]+)\+ US public charging stations$/,"Más de $1 estaciones de carga públicas en EE. UU."],
 [/^([\d,]+) stations here\. Tap to zoom in\.$/,"$1 estaciones aquí. Toca para acercar."],[/^([\d,]+) stations$/,"$1 estaciones"],
@@ -361,8 +361,25 @@ body.hc .bay.o{background:#000;border:3px solid #7dffb3}body.hc .bay.u{backgroun
 .c1btns .btn.g{background:#f4f6fb!important;color:#0b0f1a!important;border:0!important;box-shadow:none!important}
 .c1more{display:flex;flex-direction:column}.c1more[hidden]{display:none}
 #s-station>.c1h{margin:8px 14px;padding:16px;border:1px solid var(--b);border-radius:14px;background:rgba(255,255,255,.04)}
-.c1more .tmt,.c1more .cal,.c1more [onclick^="openAlong"]{display:none!important}
+.c1more .tmt,.c1more .cal{display:none!important}
 body.hc .c1b.on{background:#000;color:#7dffb3;border:2px solid #7dffb3}
+
+.c1btns .c1s{flex:1.35!important;line-height:1.2;padding:6px 10px}
+.c1r{display:flex;justify-content:space-between;gap:8px}.c1a{text-decoration:none!important}.c1a::before{content:"⏱ "}
+.c1more [onclick="openStart()"]{display:none!important}
+#okm,#safm{z-index:1600}
+#stbox{max-height:88%;overflow:auto}
+.stp{font-size:.75rem;color:var(--m);margin:8px 0 4px;font-weight:700;letter-spacing:.04em}
+.phc{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.phc .chip{min-height:44px}.phc .chip:disabled{opacity:.35}
+.stalls .chip{min-width:48px}
+.plugi{font-size:3.5rem;text-align:center;margin:8px 0}
+.rcr{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--b);color:inherit;font:inherit;padding:10px 0;min-height:56px;cursor:pointer}.rcr>b{text-align:right;white-space:nowrap}
+.rcp{border:1px dashed var(--b);border-radius:12px;padding:16px;margin:8px 0}.rch{text-align:center;font-weight:800;font-size:1.125rem}
+.rcp dl{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;margin:12px 0}.rcp dt{color:var(--m);font-size:.875rem}.rcp dd{margin:0;text-align:right;font-size:.9375rem}.rcp .tot{font-weight:800;font-size:1.0625rem;border-top:1px solid var(--b);padding-top:8px}.rcp dt.tot{color:inherit}
+.phg{margin:8px 0;padding:8px 0;border-top:1px dashed var(--b)}
+#fload{position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:800;background:#0b0f1aee;color:#fff;border:1px solid var(--b);border-radius:999px;padding:6px 12px;font-size:.8125rem;font-weight:700}
+#s-map #map{min-height:200px!important}
+.marker-cluster-anim .leaflet-marker-icon,.marker-cluster-anim .leaflet-marker-shadow{transition:transform .25s ease-out,opacity .25s ease-in}
 </style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
 <div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
 <script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script><script>/* v19c intro variants */
@@ -408,7 +425,7 @@ body.hc .c1b.on{background:#000;color:#7dffb3;border:2px solid #7dffb3}
  <div style="padding:0 14px"><a class="btn g tmt" id="st-go" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;font-size:1.125rem">🧭 Take me there</a><button class="btn g" onclick="openAlong()">⏱ I’m charging here<br><span style="font-size:.8125rem;font-weight:500">Live, real time</span></button><button class="btn" onclick="openSim()">🔋 Try a practice charge</button><button class="btn" onclick="openArr()">🅿️ Preview arrival</button><button class="btn" onclick="shareSt()">📤 Send this charger</button></div>
  <div class="card row" onclick="openCI()" style="cursor:pointer"><div><b>Driver check-ins</b> <span class="green">★ <span id="st-rate"></span></span>
   <div class="muted">Clean · Well lit · Easy to get to</div></div><span>›</span></div>
- <div style="padding:0 14px 14px"><button class="btn g" onclick="startCharge()">⚡ Start charging</button></div>
+ <div style="padding:0 14px 14px"><button class="btn g" onclick="openStart()">⚡ Start with ChargeOne Key</button></div>
 </section>
 
 <section class="screen" id="s-charge">
@@ -431,6 +448,7 @@ body.hc .c1b.on{background:#000;color:#7dffb3;border:2px solid #7dffb3}
  <div class="navy"><div>One wallet for all major networks. <span class="soon">Coming soon</span></div><div class="row" style="margin-top:12px"><div><b style="font-size:1.125rem">⚡ ChargeOne</b><div style="font-size:0.875rem;opacity:.7">No prepaid balance · Each charge bills your own card</div></div><div class="bal" style="font-size:.875rem">💳 Card on file (demo)</div><span id="bal" hidden></span></div></div>
  <div style="padding:0 14px"><button class="btn" onclick="openCars()">🚗 My cars · Add my car</button></div>
  <div class="card" id="keyc"><div class="row"><b>🔑 ChargeOne Key</b><span class="pill">Demo, coming soon</span></div><div class="muted" style="margin:4px 0 8px">No money is stored in ChargeOne. Each charge bills your own card.</div><div class="row" style="gap:6px"><button class="btn g" style="margin:0" onclick="keyTap()">📶 Tap to start</button><button class="btn" style="margin:0" onclick="$('famc').scrollIntoView({block:'start',behavior:'smooth'})">👨‍👩‍👧 Share key</button></div><button class="btn" style="margin-top:6px" onclick="toast('Demo, coming soon')">📱 Add to phone wallet</button><button class="btn" style="margin-top:6px" onclick="openSafe()">🛡 Safety</button><div class="muted" id="keylock" style="margin-top:6px"></div></div>
+ <div class="card notr" id="rcptc"></div>
  <div class="card" id="famc"></div>
  <div class="card" id="whoc"></div>
  <div class="card" id="savedc"></div>
@@ -560,7 +578,7 @@ function pick(s){cur=s;sheet.innerHTML=`<div class="row"><b style="font-size:1.0
  <div class="green" style="font-size:0.875rem">${s.kw>=50?'Fast · ':''}${s.plugs.join(' · ')}</div><div style="font-size:0.875rem;margin:2px 0 6px">${fitTag(s)}</div><div style="font-size:0.875rem;margin:0 0 6px">${busyTag(s)} <span class="muted" style="font-size:0.875rem">sample</span></div>
  <div class="row" style="gap:8px"><button class="btn" onclick="go('station')">View Station</button><button class="btn g" onclick="directions()">Directions</button></div>`;fillStation();}
 const sheet=document.getElementById('sheet');
-function fillStation(){const s=cur;$('st-trust').textContent=tline(s);$('st-net').textContent=s.net;$('st-rb').innerHTML=rbadge(s);$('st-name').textContent=s.name;$('st-addr').textContent=s.addr+' · Open 24/7';
+function fillStation(){const s=cur;$('st-trust').textContent=tline(s);$('st-net').textContent=s.net;$('st-rb').innerHTML=rbadge(s);$('st-name').textContent=s.name;$('st-addr').textContent=s.addr+'';
  $('st-plugcount').innerHTML=`Plugs (${s.total}) · ${fitTag(s)}`;$('st-rate').textContent=`${s.rate} (${s.n})`;
  $('st-plugs').innerHTML=s.plugs.map(p=>`<div class="plug"><div><b>${p}</b><div class="muted">${Math.max(1,Math.round(s.avail/s.plugs.length))} of ${Math.round(s.total/s.plugs.length)} free</div></div><span class="pill">Free</span></div>`).join('');}
 function $(i){return document.getElementById(i)}
@@ -569,7 +587,7 @@ function go(t){document.querySelectorAll('.screen').forEach(e=>e.classList.toggl
 function checkin(){const r=prompt('Check in: is this station working? (yes/no)');if(r)alert('Thanks, saved. (Preview: on this device only.)');}
 
 let CAR='',LINK=0,TGT=80;const MPP={'Tesla Model 3':3.0,'Tesla Model Y':3.1,'Ford Mustang Mach-E':2.6,'Hyundai Ioniq 5':2.6,'Rivian R1S':3.2,'Chevy Equinox EV':3.0};
-const IDLE={'Tesla':[0.50,5,'only when the station is busy, half or more stalls in use'],'Electrify America':[0.40,10,''],'Rivian':[0.50,10,''],'bp pulse':[0,0,''],'Ionna':[0,0,'']};
+const IDLE={};
 function signupDone(){setTimeout(()=>{if(UNAME)toast(CAR?`Hi, ${UNAME}. Your ${carShort()} is all set ⚡`:`Hi, ${UNAME}`)},400);CAR=$('car').value;UNAME=(($('suname')||{}).value||'').trim().split(/\s+/)[0].slice(0,20);if(CAR&&!F.includes('Fits my car')){F.unshift('Fits my car');chips();}if(cur)pick(cur);$('signup').classList.remove('on');if(CAR)$('perm').classList.add('on');carUI();}
 function eta(){const m=Math.max(0,Math.round((TGT-soc)*1.5));const d=new Date(Date.now()+m*60000);return d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}
 function carUI(){const c=$('carcard');if(!c)return;if(!CAR){c.innerHTML='<b>🚗 Add your car</b><div class="muted">Add your car to see battery and range here.</div>';}
@@ -577,7 +595,7 @@ function carUI(){const c=$('carcard');if(!c)return;if(!CAR){c.innerHTML='<b>🚗
  <div class="muted">${LINK?`Battery ${soc}% · ~${r} mi range`:'Estimated. Connect your car for your real battery level.'}</div>
  <div class="row" style="margin-top:6px"><span>Charge to <select class="chip" onchange="TGT=+this.value;carUI()">${[80,90,100].map(v=>`<option ${v==TGT?'selected':''}>${v}</option>`).join('')}</select>%</span><b class="green">Full by ${eta()}</b></div>
  ${LINK?'':'<button class="btn" style="margin-top:8px" onclick="$(\'perm\').classList.add(\'on\')">Link car (mock)</button>'}`;}
- const n=cur?cur.net:'',f=IDLE[n];let t;if(f&&f[0])t=`$${f[0].toFixed(2)}/min if you stay plugged in more than ${f[1]} min after charging ends${f[2]?' ('+f[2]+')':''}.`;else if(f)t='No idle fee reported here';else t='We don’t know this network’s idle fees. Check the sign at the charger.';
+ const n=cur?cur.net:'',f=IDLE[n];let t;if(f&&f[0])t=`$${f[0].toFixed(2)}/min if you stay plugged in more than ${f[1]} min after charging ends${f[2]?' ('+f[2]+')':''}.`;else if(f)t='No idle fee reported here';else t='Idle fee: check the network\'s app';
  $('idle').innerHTML=`<b>⏳ Idle fees · ${n||'this station'}</b><div class="muted">${t}</div><div class="muted">We'll ping you 2 min before idle fees start.</div>`;}
 function idleTick(){const tt=$("toast");if(!cur||!tt)return;if(soc>=TGT){const f=IDLE[cur.net];tt.style.display='block';tt.textContent=`You're all set ⚡ ${TGT}% reached. ${f&&f[0]?`Move your car in ${f[1]} min to skip the idle fee ($${f[0].toFixed(2)}/min)`:'Unplug whenever you’re ready'}.`;}
  else if(Math.round((TGT-soc)*1.5)<=5){tt.style.display='block';tt.textContent=`About 5 min to ${TGT}%. Good time to head back to your car.`;}else tt.style.display='none';}
@@ -689,7 +707,7 @@ const EX={
  fit(s){s=s||cur;const f=fit(s),p=carPlug(),pl=(s.plugs||[]).join(', ');return f=='unknown'?'We don’t know the plug here, so check at the charger.':!f?'Add your car to see if it fits.':f=='yes'?`Good news, this fits your ${CAR}.`:f=='adapter'?`You’ll need a ${adPl(s)} adapter here.`:`This one won’t fit. Your car uses ${p}, and it only has ${pl}.`},
  price(s){s=s||cur;const p=priceInfo(s);return p.ok?`About ${Math.round(p.v*100)} cents a kilowatt hour, ${p.sample?'sample':'driver-reported'} price. A typical top-up costs about ${money(p.v*40)}.`:'No recent price. Check the screen at the charger.'},
  busy(s){s=s||cur;const x=busyNow(s),q=quietAt(s);return x.c=='q'?'Usually quiet around now. Sample data.':x.c=='m'?'Might be a short wait around now. Sample data.':`Usually busy around now, about a ${x.m} minute wait.${q?' Quieter by '+q+'.':''} Sample data.`},
- idle(){const n=cur?cur.net:'',f=IDLE[n];if(!f)return 'We don’t know this network’s idle fees, so move your car soon after you’re done.';if(!f[0])return 'No idle fee here, but move your car when you’re done.';return `${n=='Tesla'?'When it’s busy, i':'I'}f you stay plugged in ${f[1]} minutes after you’re full, it’s ${Math.round(f[0]*100)} cents a minute. Move within ${f[1]} minutes to skip it.`},
+ idle(){const n=cur?cur.net:'',f=IDLE[n];if(!f)return 'Idle fee: check the network\'s app. Move your car soon after you’re done.';if(!f[0])return 'No idle fee here, but move your car when you’re done.';return `${n=='Tesla'?'When it’s busy, i':'I'}f you stay plugged in ${f[1]} minutes after you’re full, it’s ${Math.round(f[0]*100)} cents a minute. Move within ${f[1]} minutes to skip it.`},
  battery(){const mi=Math.round(soc*(MPP[CAR]||3));return `You’re at ${soc} percent, about ${mi} miles. ${soc>=TGT?`You’ve reached your ${TGT} percent target.`:`Full to ${TGT} percent by ${eta()}.`} ${money(kwh*(cur?cur.price:.42))} so far.${LINK?'':' Battery’s estimated.'}`},
  stop(i){const s=PLAN&&PLAN.stops[i];if(!s)return '';return `Stop ${i+1}: ${s.name}, mile ${s.mile}. You’ll arrive with about ${s.arr} percent and charge to 80 in about ${s.min} minutes. Sample price.`},
  gas(){const g=GASV;if(!g)return '';return `You’d spend about ${money(g.ev)} on charging for this trip versus ${money(g.gs)} on gas. That’s about ${money(Math.max(0,g.gs-g.ev))} saved, as an estimate.`},
@@ -831,7 +849,7 @@ savings();checkRoute();
 const SESSION={ChargePoint:s=>s.kw>=50?[0.49,'with an account ($0.99 as guest)']:[0.25,'with an account ($0.49 as guest)'],Blink:()=>[0.49,'(reported)']}; // ChargePoint fees FAQ; Blink from a secondary source
 var USER_SOC=0;{const bi=()=>{const v=$('batv');if(v&&!v.dataset.u){v.dataset.u=1;v.addEventListener('change',()=>{USER_SOC=1;refreshCost()})}};const _r7=ring;ring=function(){_r7();bi()};}
 function costEst(s){s=s||cur;const kb=KWH[CAR]||75,start=(LINK||USER_SOC)?soc:20,tg=TGT,kwh=Math.max(0,(tg-start)/100*kb*1.1),p=priceInfo(s),pr=p.ok?p.v:p.est,f=IDLE[s.net],sx=SESSION[s.net]?SESSION[s.net](s):null,sf=sx?sx[0]:null;
- const idle=f?(f[0]?`Up to $${(f[0]*Math.max(0,10-f[1])).toFixed(2)} idle fee if you stay 10 min past full${s.net=='Tesla'?' (only when the station is busy)':` (${f[1]} min grace)`}`:'No idle fee reported here'):'We don’t know this network’s idle fees. Check the sign at the charger.';
+ const idle=f?(f[0]?`Up to $${(f[0]*Math.max(0,10-f[1])).toFixed(2)} idle fee if you stay 10 min past full${s.net=='Tesla'?' (only when the station is busy)':` (${f[1]} min grace)`}`:'No idle fee reported here'):'Idle fee: check the network\'s app';
  return {start,tg,kwh,pr,cost:kwh*pr+(sf||0),plab:p.ok?p.txt:'No recent price. Check the screen at the charger.',sample:!!p.sample,sess:sf==null?'Session fee: not known yet':sf?`Plus $${sf.toFixed(2)} per session ${sx[1]}`:'No session fee reported',idle,car:CAR||'typical 75 kWh EV',soc:(LINK?'from your car':USER_SOC?'you entered':'assumed, battery unknown')}}
 function costHTML(s,compact){const c=costEst(s);
  return compact?`<div class="est"><div class="row"><span><b>≈ $${Math.round(c.cost)}</b> to go from ${c.start}% to ${c.tg}% <span class="muted">· ${c.sample?'Sample price':'Driver-reported price'}</span></span>${spkBtn('cost')}</div><div class="muted">${c.sess} · ${c.idle}</div></div>`
@@ -1042,7 +1060,7 @@ function decor18(){const s=cur;if(!s)return;const sh=$('sheet');
 // ===== idle-fee countdown on the charging screen =====
 var T_FULL=null,IDLE_REM=false;
 function idleCD(){const c=$('idlecd')||($('idle')?.insertAdjacentHTML('afterend','<div class="card" id="idlecd" role="timer" aria-live="off"></div>'),$('idlecd'));if(!c||!cur)return;const n=cur.net,f=IDLE[n];if((!f||!f[0])&&soc<TGT&&Math.round((TGT-soc)*1.5*60)<=120&&!IDLE_REM){IDLE_REM=true;const m=LANG=='es'?'Ojo, tu carga termina en 2 min. Mueve tu auto pronto para evitar la tarifa por inactividad':'Heads up, your charge ends in 2 min. Move your car soon to skip any idle fee';toast(m);say(m)}
- if(!f){c.innerHTML='<b>⏱ Idle-fee countdown</b><div class="muted">We don’t know this network’s idle fees. Check the sign at the charger.</div>';return}
+ if(!f){c.innerHTML='<b>⏱ Idle-fee countdown</b><div class="muted">Idle fee: check the network\'s app</div>';return}
  if(!f[0]){c.innerHTML='<b>⏱ Idle-fee countdown</b><div class="muted">No idle fee reported here</div>';return}
  if(soc>=TGT&&!T_FULL)T_FULL=Date.now();if(soc<TGT)T_FULL=null;
  const rem=soc<TGT?Math.round(((TGT-soc)*1.5+f[1])*60):Math.round(f[1]*60-(Date.now()-T_FULL)/1000),mm=String(Math.floor(Math.abs(rem)/60)).padStart(2,'0'),ss=String(Math.abs(rem)%60).padStart(2,'0');
@@ -1065,7 +1083,7 @@ const EXES={
  fit(s){s=s||cur;const f=fit(s),p=carPlug(),pl=(s.plugs||[]).join(', ');return f=='unknown'?'No sabemos qué conector tiene, así que revísalo en el cargador.':!f?'Agrega tu auto para ver si es compatible.':f=='yes'?`Buenas noticias, es compatible con tu ${CAR}.`:f=='adapter'?`Aquí necesitas un adaptador ${adPl(s)}.`:`Este no es compatible. Tu auto usa ${p} y aquí solo hay ${pl}.`},
  price(s){s=s||cur;const p=priceInfo(s);return p.ok?`Unos ${Math.round(p.v*100)} centavos por kilovatio hora, ${p.sample?'precio de muestra':'precio reportado por conductores'}. Una carga típica cuesta unos ${moneyES(p.v*40)}.`:'No hay precio reciente. Revisa la pantalla del cargador.'},
  busy(s){s=s||cur;const x=busyNow(s),q=quietAt(s,1);return x.c=='q'?'Suele estar tranquilo a esta hora. Datos de muestra.':x.c=='m'?'Puede haber una espera corta a esta hora. Datos de muestra.':`Suele estar lleno a esta hora, unos ${x.m} minutos de espera.${q?' Más tranquilo a las '+q+'.':''} Datos de muestra.`},
- idle(){const n=cur?cur.net:'',f=IDLE[n];if(!f)return 'No sabemos las tarifas de esta red, así que mueve tu auto poco después de terminar.';if(!f[0])return 'Aquí no hay tarifa, pero mueve tu auto al terminar.';return `${n=='Tesla'?'Cuando está ocupado, s':'S'}i te quedas conectado ${f[1]} minutos después de llenar, son ${Math.round(f[0]*100)} centavos por minuto. Muévete antes para evitarlo.`},
+ idle(){const n=cur?cur.net:'',f=IDLE[n];if(!f)return 'Tarifa por inactividad: revisa la app de la red. Mueve tu auto poco después de terminar.';if(!f[0])return 'Aquí no hay tarifa, pero mueve tu auto al terminar.';return `${n=='Tesla'?'Cuando está ocupado, s':'S'}i te quedas conectado ${f[1]} minutos después de llenar, son ${Math.round(f[0]*100)} centavos por minuto. Muévete antes para evitarlo.`},
  battery(){const mi=Math.round(soc*(MPP[CAR]||3));return `Vas en ${soc} por ciento, unas ${mi} millas. ${soc>=TGT?`Llegaste a tu meta de ${TGT} por ciento.`:`Llegas a ${TGT} por ciento a las ${dot(etaES())}`} Llevas ${moneyES(kwh*(cur?cur.price:.42))}.${LINK?'':' La batería es estimada.'}`},
  stop(i){const s=PLAN&&PLAN.stops[i];if(!s)return '';return `Parada ${i+1}: ${s.name}, milla ${s.mile}. Llegas con unos ${s.arr} por ciento y cargas hasta 80 en unos ${s.min} minutos. Precio de muestra.`},
  gas(){const g=GASV;if(!g)return '';return `Gastarías unos ${moneyES(g.ev)} en carga para este viaje contra ${moneyES(g.gs)} en gasolina. Es un ahorro estimado de unos ${moneyES(Math.max(0,g.gs-g.ev))}.`},
@@ -1118,7 +1136,7 @@ function shareSt(){const s=typeof cur!='undefined'&&cur;if(!s)return;const url='
  if(navigator.share)navigator.share({title:s.name,text:txt,url}).catch(e=>{if(e&&e.name!='AbortError')copy()});else copy()}
 function tripSet(){const e=$('tsoc');if(!e)return;e.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});e.focus({preventScroll:true});toast('Set your starting battery here.')}
 (function(){
- const LY=['menum','okm','safm','cam','simm','carm','qrm','paym','arrm','acm','cimodal','rbm','dsrc','perm','signup'];
+ const LY=['stm','menum','okm','safm','cam','simm','carm','qrm','paym','arrm','acm','cimodal','rbm','dsrc','perm','signup'];
  const topLy=()=>{for(const id of LY){const e=document.getElementById(id);if(e&&e.classList.contains('on'))return e}return null};
  const scr=()=>{const s=document.querySelector('.screen.on');return s?s.id.slice(2):'map'};
  const nonRoot=()=>!!topLy()||scr()!='map';
@@ -1231,1267 +1249,10 @@ addEventListener('keydown',e=>{if(e.key=='Escape')$('arrm')?.classList.remove('o
 if(cur)try{repRender()}catch(e){}
 </script><script>/* v19c: QR share + mock phone-wallet pay */
 Object.assign(ES,{"Share this test": "Compartir esta prueba", "📲 Share this test": "📲 Compartir esta prueba", "Scan to try ChargeOne. Prototype with sample data, up until Wednesday midnight.": "Escanea para probar ChargeOne. Prototipo con datos de muestra, disponible hasta el miércoles a medianoche.", "Copy link": "Copiar enlace", "Share": "Compartir", "Link copied": "Enlace copiado", "📱 Pay with phone wallet": "📱 Pagar con la billetera del teléfono", "Pay with phone wallet": "Pagar con la billetera del teléfono", "Demo only · No real payment · Nothing is charged": "Solo demostración · Sin pago real · No se cobra nada", "Confirm on your phone": "Confirma en tu teléfono", "Tap to confirm": "Toca para confirmar", "✔ Done. Demo payment complete.": "✔ Listo. Pago de demostración completado.", "Nothing was charged.": "No se cobró nada.", "Cancel": "Cancelar", "Done": "Listo", "Session so far (sample price)": "Sesión hasta ahora (precio de muestra)", "Estimate for 20% to 80% (sample price)": "Estimación de 20% a 80% (precio de muestra)", "QR code of this test page": "Código QR de esta página de prueba", "No prepaid balance · Each charge bills your own card": "Sin saldo prepagado · Cada carga se cobra a tu propia tarjeta", "💳 Card on file (demo)": "💳 Tarjeta guardada (demo)", "Billed to your card on file (demo)": "Se cobra a tu tarjeta guardada (demo)", "👨‍👩‍👧 Share with family": "👨‍👩‍👧 Compartir con la familia", "Add a driver": "Agregar conductor", "Driver name": "Nombre del conductor", "No limit": "Sin límite", "Monthly limit (sample)": "Límite mensual (muestra)", "Remove": "Quitar", "Driver added": "Conductor agregado", "No family drivers yet.": "Aún no hay conductores de la familia.", "🧾 Who charged": "🧾 Quién cargó", "You": "Tú", "sample": "muestra", "demo": "demo", "Saved on this phone only": "Guardado solo en este teléfono", "🔑 ChargeOne Key": "🔑 Llave ChargeOne", "Demo, coming soon": "Demo, próximamente", "No money is stored in ChargeOne. Each charge bills your own card.": "Llave virtual en tu teléfono. Cada carga se cobra a tu tarjeta guardada (demo).", "📶 Tap to start": "📶 Toca para iniciar", "👨‍👩‍👧 Share key": "👨‍👩‍👧 Compartir llave", "📱 Add to phone wallet": "📱 Agregar a la billetera del teléfono", "Key tapped. Starting a demo charge.": "Llave detectada. Iniciando una carga de demostración.", "Each driver’s charges bill your card on file (demo).": "Las cargas de cada conductor se cobran a tu tarjeta guardada (demo)."});
-var qrcode = function() {
-/**
-* qrcode
-* @param typeNumber 1 to 40
-* @param errorCorrectionLevel 'L','M','Q','H'
-*/
-var qrcode = function(typeNumber, errorCorrectionLevel) {
-var PAD0 = 0xEC;
-var PAD1 = 0x11;
-var _typeNumber = typeNumber;
-var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
-var _modules = null;
-var _moduleCount = 0;
-var _dataCache = null;
-var _dataList = [];
-var _this = {};
-var makeImpl = function(test, maskPattern) {
-_moduleCount = _typeNumber * 4 + 17;
-_modules = function(moduleCount) {
-var modules = new Array(moduleCount);
-for (var row = 0; row < moduleCount; row += 1) {
-modules[row] = new Array(moduleCount);
-for (var col = 0; col < moduleCount; col += 1) {
-modules[row][col] = null;
-}
-}
-return modules;
-}(_moduleCount);
-setupPositionProbePattern(0, 0);
-setupPositionProbePattern(_moduleCount - 7, 0);
-setupPositionProbePattern(0, _moduleCount - 7);
-setupPositionAdjustPattern();
-setupTimingPattern();
-setupTypeInfo(test, maskPattern);
-if (_typeNumber >= 7) {
-setupTypeNumber(test);
-}
-if (_dataCache == null) {
-_dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
-}
-mapData(_dataCache, maskPattern);
-};
-var setupPositionProbePattern = function(row, col) {
-for (var r = -1; r <= 7; r += 1) {
-if (row + r <= -1 || _moduleCount <= row + r) continue;
-for (var c = -1; c <= 7; c += 1) {
-if (col + c <= -1 || _moduleCount <= col + c) continue;
-if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
-|| (0 <= c && c <= 6 && (r == 0 || r == 6) )
-|| (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
-_modules[row + r][col + c] = true;
-} else {
-_modules[row + r][col + c] = false;
-}
-}
-}
-};
-var getBestMaskPattern = function() {
-var minLostPoint = 0;
-var pattern = 0;
-for (var i = 0; i < 8; i += 1) {
-makeImpl(true, i);
-var lostPoint = QRUtil.getLostPoint(_this);
-if (i == 0 || minLostPoint > lostPoint) {
-minLostPoint = lostPoint;
-pattern = i;
-}
-}
-return pattern;
-};
-var setupTimingPattern = function() {
-for (var r = 8; r < _moduleCount - 8; r += 1) {
-if (_modules[r][6] != null) {
-continue;
-}
-_modules[r][6] = (r % 2 == 0);
-}
-for (var c = 8; c < _moduleCount - 8; c += 1) {
-if (_modules[6][c] != null) {
-continue;
-}
-_modules[6][c] = (c % 2 == 0);
-}
-};
-var setupPositionAdjustPattern = function() {
-var pos = QRUtil.getPatternPosition(_typeNumber);
-for (var i = 0; i < pos.length; i += 1) {
-for (var j = 0; j < pos.length; j += 1) {
-var row = pos[i];
-var col = pos[j];
-if (_modules[row][col] != null) {
-continue;
-}
-for (var r = -2; r <= 2; r += 1) {
-for (var c = -2; c <= 2; c += 1) {
-if (r == -2 || r == 2 || c == -2 || c == 2
-|| (r == 0 && c == 0) ) {
-_modules[row + r][col + c] = true;
-} else {
-_modules[row + r][col + c] = false;
-}
-}
-}
-}
-}
-};
-var setupTypeNumber = function(test) {
-var bits = QRUtil.getBCHTypeNumber(_typeNumber);
-for (var i = 0; i < 18; i += 1) {
-var mod = (!test && ( (bits >> i) & 1) == 1);
-_modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
-}
-for (var i = 0; i < 18; i += 1) {
-var mod = (!test && ( (bits >> i) & 1) == 1);
-_modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
-}
-};
-var setupTypeInfo = function(test, maskPattern) {
-var data = (_errorCorrectionLevel << 3) | maskPattern;
-var bits = QRUtil.getBCHTypeInfo(data);
-for (var i = 0; i < 15; i += 1) {
-var mod = (!test && ( (bits >> i) & 1) == 1);
-if (i < 6) {
-_modules[i][8] = mod;
-} else if (i < 8) {
-_modules[i + 1][8] = mod;
-} else {
-_modules[_moduleCount - 15 + i][8] = mod;
-}
-}
-for (var i = 0; i < 15; i += 1) {
-var mod = (!test && ( (bits >> i) & 1) == 1);
-if (i < 8) {
-_modules[8][_moduleCount - i - 1] = mod;
-} else if (i < 9) {
-_modules[8][15 - i - 1 + 1] = mod;
-} else {
-_modules[8][15 - i - 1] = mod;
-}
-}
-_modules[_moduleCount - 8][8] = (!test);
-};
-var mapData = function(data, maskPattern) {
-var inc = -1;
-var row = _moduleCount - 1;
-var bitIndex = 7;
-var byteIndex = 0;
-var maskFunc = QRUtil.getMaskFunction(maskPattern);
-for (var col = _moduleCount - 1; col > 0; col -= 2) {
-if (col == 6) col -= 1;
-while (true) {
-for (var c = 0; c < 2; c += 1) {
-if (_modules[row][col - c] == null) {
-var dark = false;
-if (byteIndex < data.length) {
-dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
-}
-var mask = maskFunc(row, col - c);
-if (mask) {
-dark = !dark;
-}
-_modules[row][col - c] = dark;
-bitIndex -= 1;
-if (bitIndex == -1) {
-byteIndex += 1;
-bitIndex = 7;
-}
-}
-}
-row += inc;
-if (row < 0 || _moduleCount <= row) {
-row -= inc;
-inc = -inc;
-break;
-}
-}
-}
-};
-var createBytes = function(buffer, rsBlocks) {
-var offset = 0;
-var maxDcCount = 0;
-var maxEcCount = 0;
-var dcdata = new Array(rsBlocks.length);
-var ecdata = new Array(rsBlocks.length);
-for (var r = 0; r < rsBlocks.length; r += 1) {
-var dcCount = rsBlocks[r].dataCount;
-var ecCount = rsBlocks[r].totalCount - dcCount;
-maxDcCount = Math.max(maxDcCount, dcCount);
-maxEcCount = Math.max(maxEcCount, ecCount);
-dcdata[r] = new Array(dcCount);
-for (var i = 0; i < dcdata[r].length; i += 1) {
-dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
-}
-offset += dcCount;
-var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
-var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
-var modPoly = rawPoly.mod(rsPoly);
-ecdata[r] = new Array(rsPoly.getLength() - 1);
-for (var i = 0; i < ecdata[r].length; i += 1) {
-var modIndex = i + modPoly.getLength() - ecdata[r].length;
-ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
-}
-}
-var totalCodeCount = 0;
-for (var i = 0; i < rsBlocks.length; i += 1) {
-totalCodeCount += rsBlocks[i].totalCount;
-}
-var data = new Array(totalCodeCount);
-var index = 0;
-for (var i = 0; i < maxDcCount; i += 1) {
-for (var r = 0; r < rsBlocks.length; r += 1) {
-if (i < dcdata[r].length) {
-data[index] = dcdata[r][i];
-index += 1;
-}
-}
-}
-for (var i = 0; i < maxEcCount; i += 1) {
-for (var r = 0; r < rsBlocks.length; r += 1) {
-if (i < ecdata[r].length) {
-data[index] = ecdata[r][i];
-index += 1;
-}
-}
-}
-return data;
-};
-var createData = function(typeNumber, errorCorrectionLevel, dataList) {
-var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
-var buffer = qrBitBuffer();
-for (var i = 0; i < dataList.length; i += 1) {
-var data = dataList[i];
-buffer.put(data.getMode(), 4);
-buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
-data.write(buffer);
-}
-var totalDataCount = 0;
-for (var i = 0; i < rsBlocks.length; i += 1) {
-totalDataCount += rsBlocks[i].dataCount;
-}
-if (buffer.getLengthInBits() > totalDataCount * 8) {
-throw 'code length overflow. ('
-+ buffer.getLengthInBits()
-+ '>'
-+ totalDataCount * 8
-+ ')';
-}
-if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
-buffer.put(0, 4);
-}
-while (buffer.getLengthInBits() % 8 != 0) {
-buffer.putBit(false);
-}
-while (true) {
-if (buffer.getLengthInBits() >= totalDataCount * 8) {
-break;
-}
-buffer.put(PAD0, 8);
-if (buffer.getLengthInBits() >= totalDataCount * 8) {
-break;
-}
-buffer.put(PAD1, 8);
-}
-return createBytes(buffer, rsBlocks);
-};
-_this.addData = function(data, mode) {
-mode = mode || 'Byte';
-var newData = null;
-switch(mode) {
-case 'Numeric' :
-newData = qrNumber(data);
-break;
-case 'Alphanumeric' :
-newData = qrAlphaNum(data);
-break;
-case 'Byte' :
-newData = qr8BitByte(data);
-break;
-case 'Kanji' :
-newData = qrKanji(data);
-break;
-default :
-throw 'mode:' + mode;
-}
-_dataList.push(newData);
-_dataCache = null;
-};
-_this.isDark = function(row, col) {
-if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
-throw row + ',' + col;
-}
-return _modules[row][col];
-};
-_this.getModuleCount = function() {
-return _moduleCount;
-};
-_this.make = function() {
-if (_typeNumber < 1) {
-var typeNumber = 1;
-for (; typeNumber < 40; typeNumber++) {
-var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
-var buffer = qrBitBuffer();
-for (var i = 0; i < _dataList.length; i++) {
-var data = _dataList[i];
-buffer.put(data.getMode(), 4);
-buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
-data.write(buffer);
-}
-var totalDataCount = 0;
-for (var i = 0; i < rsBlocks.length; i++) {
-totalDataCount += rsBlocks[i].dataCount;
-}
-if (buffer.getLengthInBits() <= totalDataCount * 8) {
-break;
-}
-}
-_typeNumber = typeNumber;
-}
-makeImpl(false, getBestMaskPattern() );
-};
-_this.createTableTag = function(cellSize, margin) {
-cellSize = cellSize || 2;
-margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
-var qrHtml = '';
-qrHtml += '<table style="';
-qrHtml += ' border-width: 0px; border-style: none;';
-qrHtml += ' border-collapse: collapse;';
-qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
-qrHtml += '">';
-qrHtml += '<tbody>';
-for (var r = 0; r < _this.getModuleCount(); r += 1) {
-qrHtml += '<tr>';
-for (var c = 0; c < _this.getModuleCount(); c += 1) {
-qrHtml += '<td style="';
-qrHtml += ' border-width: 0px; border-style: none;';
-qrHtml += ' border-collapse: collapse;';
-qrHtml += ' padding: 0px; margin: 0px;';
-qrHtml += ' width: ' + cellSize + 'px;';
-qrHtml += ' height: ' + cellSize + 'px;';
-qrHtml += ' background-color: ';
-qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
-qrHtml += ';';
-qrHtml += '"/>';
-}
-qrHtml += '</tr>';
-}
-qrHtml += '</tbody>';
-qrHtml += '</table>';
-return qrHtml;
-};
-_this.createSvgTag = function(cellSize, margin, alt, title) {
-var opts = {};
-if (typeof arguments[0] == 'object') {
-opts = arguments[0];
-cellSize = opts.cellSize;
-margin = opts.margin;
-alt = opts.alt;
-title = opts.title;
-}
-cellSize = cellSize || 2;
-margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
-alt = (typeof alt === 'string') ? {text: alt} : alt || {};
-alt.text = alt.text || null;
-alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
-title = (typeof title === 'string') ? {text: title} : title || {};
-title.text = title.text || null;
-title.id = (title.text) ? title.id || 'qrcode-title' : null;
-var size = _this.getModuleCount() * cellSize + margin * 2;
-var c, mc, r, mr, qrSvg='', rect;
-rect = 'l' + cellSize + ',0 0,' + cellSize +
-' -' + cellSize + ',0 0,-' + cellSize + 'z ';
-qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
-qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
-qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
-qrSvg += ' preserveAspectRatio="xMinYMin meet"';
-qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
-escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
-qrSvg += '>';
-qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
-escapeXml(title.text) + '</title>' : '';
-qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
-escapeXml(alt.text) + '</description>' : '';
-qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
-qrSvg += '<path d="';
-for (r = 0; r < _this.getModuleCount(); r += 1) {
-mr = r * cellSize + margin;
-for (c = 0; c < _this.getModuleCount(); c += 1) {
-if (_this.isDark(r, c) ) {
-mc = c*cellSize+margin;
-qrSvg += 'M' + mc + ',' + mr + rect;
-}
-}
-}
-qrSvg += '" stroke="transparent" fill="black"/>';
-qrSvg += '</svg>';
-return qrSvg;
-};
-_this.createDataURL = function(cellSize, margin) {
-cellSize = cellSize || 2;
-margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
-var size = _this.getModuleCount() * cellSize + margin * 2;
-var min = margin;
-var max = size - margin;
-return createDataURL(size, size, function(x, y) {
-if (min <= x && x < max && min <= y && y < max) {
-var c = Math.floor( (x - min) / cellSize);
-var r = Math.floor( (y - min) / cellSize);
-return _this.isDark(r, c)? 0 : 1;
-} else {
-return 1;
-}
-} );
-};
-_this.createImgTag = function(cellSize, margin, alt) {
-cellSize = cellSize || 2;
-margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
-var size = _this.getModuleCount() * cellSize + margin * 2;
-var img = '';
-img += '<img';
-img += '\u0020src="';
-img += _this.createDataURL(cellSize, margin);
-img += '"';
-img += '\u0020width="';
-img += size;
-img += '"';
-img += '\u0020height="';
-img += size;
-img += '"';
-if (alt) {
-img += '\u0020alt="';
-img += escapeXml(alt);
-img += '"';
-}
-img += '/>';
-return img;
-};
-var escapeXml = function(s) {
-var escaped = '';
-for (var i = 0; i < s.length; i += 1) {
-var c = s.charAt(i);
-switch(c) {
-case '<': escaped += '&lt;'; break;
-case '>': escaped += '&gt;'; break;
-case '&': escaped += '&amp;'; break;
-case '"': escaped += '&quot;'; break;
-default : escaped += c; break;
-}
-}
-return escaped;
-};
-var _createHalfASCII = function(margin) {
-var cellSize = 1;
-margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
-var size = _this.getModuleCount() * cellSize + margin * 2;
-var min = margin;
-var max = size - margin;
-var y, x, r1, r2, p;
-var blocks = {
-'██': '█',
-'█ ': '▀',
-' █': '▄',
-'  ': ' '
-};
-var blocksLastLineNoMargin = {
-'██': '▀',
-'█ ': '▀',
-' █': ' ',
-'  ': ' '
-};
-var ascii = '';
-for (y = 0; y < size; y += 2) {
-r1 = Math.floor((y - min) / cellSize);
-r2 = Math.floor((y + 1 - min) / cellSize);
-for (x = 0; x < size; x += 1) {
-p = '█';
-if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
-p = ' ';
-}
-if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
-p += ' ';
-}
-else {
-p += '█';
-}
-ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
-}
-ascii += '\n';
-}
-if (size % 2 && margin > 0) {
-return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
-}
-return ascii.substring(0, ascii.length-1);
-};
-_this.createASCII = function(cellSize, margin) {
-cellSize = cellSize || 1;
-if (cellSize < 2) {
-return _createHalfASCII(margin);
-}
-cellSize -= 1;
-margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
-var size = _this.getModuleCount() * cellSize + margin * 2;
-var min = margin;
-var max = size - margin;
-var y, x, r, p;
-var white = Array(cellSize+1).join('██');
-var black = Array(cellSize+1).join('  ');
-var ascii = '';
-var line = '';
-for (y = 0; y < size; y += 1) {
-r = Math.floor( (y - min) / cellSize);
-line = '';
-for (x = 0; x < size; x += 1) {
-p = 1;
-if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
-p = 0;
-}
-line += p ? white : black;
-}
-for (r = 0; r < cellSize; r += 1) {
-ascii += line + '\n';
-}
-}
-return ascii.substring(0, ascii.length-1);
-};
-_this.renderTo2dContext = function(context, cellSize) {
-cellSize = cellSize || 2;
-var length = _this.getModuleCount();
-for (var row = 0; row < length; row++) {
-for (var col = 0; col < length; col++) {
-context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
-context.fillRect(row * cellSize, col * cellSize, cellSize, cellSize);
-}
-}
-}
-return _this;
-};
-qrcode.stringToBytesFuncs = {
-'default' : function(s) {
-var bytes = [];
-for (var i = 0; i < s.length; i += 1) {
-var c = s.charCodeAt(i);
-bytes.push(c & 0xff);
-}
-return bytes;
-}
-};
-qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
-/**
-* @param unicodeData base64 string of byte array.
-* [16bit Unicode],[16bit Bytes], ...
-* @param numChars
-*/
-qrcode.createStringToBytes = function(unicodeData, numChars) {
-var unicodeMap = function() {
-var bin = base64DecodeInputStream(unicodeData);
-var read = function() {
-var b = bin.read();
-if (b == -1) throw 'eof';
-return b;
-};
-var count = 0;
-var unicodeMap = {};
-while (true) {
-var b0 = bin.read();
-if (b0 == -1) break;
-var b1 = read();
-var b2 = read();
-var b3 = read();
-var k = String.fromCharCode( (b0 << 8) | b1);
-var v = (b2 << 8) | b3;
-unicodeMap[k] = v;
-count += 1;
-}
-if (count != numChars) {
-throw count + ' != ' + numChars;
-}
-return unicodeMap;
-}();
-var unknownChar = '?'.charCodeAt(0);
-return function(s) {
-var bytes = [];
-for (var i = 0; i < s.length; i += 1) {
-var c = s.charCodeAt(i);
-if (c < 128) {
-bytes.push(c);
-} else {
-var b = unicodeMap[s.charAt(i)];
-if (typeof b == 'number') {
-if ( (b & 0xff) == b) {
-bytes.push(b);
-} else {
-bytes.push(b >>> 8);
-bytes.push(b & 0xff);
-}
-} else {
-bytes.push(unknownChar);
-}
-}
-}
-return bytes;
-};
-};
-var QRMode = {
-MODE_NUMBER :    1 << 0,
-MODE_ALPHA_NUM : 1 << 1,
-MODE_8BIT_BYTE : 1 << 2,
-MODE_KANJI :     1 << 3
-};
-var QRErrorCorrectionLevel = {
-L : 1,
-M : 0,
-Q : 3,
-H : 2
-};
-var QRMaskPattern = {
-PATTERN000 : 0,
-PATTERN001 : 1,
-PATTERN010 : 2,
-PATTERN011 : 3,
-PATTERN100 : 4,
-PATTERN101 : 5,
-PATTERN110 : 6,
-PATTERN111 : 7
-};
-var QRUtil = function() {
-var PATTERN_POSITION_TABLE = [
-[],
-[6, 18],
-[6, 22],
-[6, 26],
-[6, 30],
-[6, 34],
-[6, 22, 38],
-[6, 24, 42],
-[6, 26, 46],
-[6, 28, 50],
-[6, 30, 54],
-[6, 32, 58],
-[6, 34, 62],
-[6, 26, 46, 66],
-[6, 26, 48, 70],
-[6, 26, 50, 74],
-[6, 30, 54, 78],
-[6, 30, 56, 82],
-[6, 30, 58, 86],
-[6, 34, 62, 90],
-[6, 28, 50, 72, 94],
-[6, 26, 50, 74, 98],
-[6, 30, 54, 78, 102],
-[6, 28, 54, 80, 106],
-[6, 32, 58, 84, 110],
-[6, 30, 58, 86, 114],
-[6, 34, 62, 90, 118],
-[6, 26, 50, 74, 98, 122],
-[6, 30, 54, 78, 102, 126],
-[6, 26, 52, 78, 104, 130],
-[6, 30, 56, 82, 108, 134],
-[6, 34, 60, 86, 112, 138],
-[6, 30, 58, 86, 114, 142],
-[6, 34, 62, 90, 118, 146],
-[6, 30, 54, 78, 102, 126, 150],
-[6, 24, 50, 76, 102, 128, 154],
-[6, 28, 54, 80, 106, 132, 158],
-[6, 32, 58, 84, 110, 136, 162],
-[6, 26, 54, 82, 110, 138, 166],
-[6, 30, 58, 86, 114, 142, 170]
-];
-var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
-var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
-var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
-var _this = {};
-var getBCHDigit = function(data) {
-var digit = 0;
-while (data != 0) {
-digit += 1;
-data >>>= 1;
-}
-return digit;
-};
-_this.getBCHTypeInfo = function(data) {
-var d = data << 10;
-while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
-d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
-}
-return ( (data << 10) | d) ^ G15_MASK;
-};
-_this.getBCHTypeNumber = function(data) {
-var d = data << 12;
-while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
-d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
-}
-return (data << 12) | d;
-};
-_this.getPatternPosition = function(typeNumber) {
-return PATTERN_POSITION_TABLE[typeNumber - 1];
-};
-_this.getMaskFunction = function(maskPattern) {
-switch (maskPattern) {
-case QRMaskPattern.PATTERN000 :
-return function(i, j) { return (i + j) % 2 == 0; };
-case QRMaskPattern.PATTERN001 :
-return function(i, j) { return i % 2 == 0; };
-case QRMaskPattern.PATTERN010 :
-return function(i, j) { return j % 3 == 0; };
-case QRMaskPattern.PATTERN011 :
-return function(i, j) { return (i + j) % 3 == 0; };
-case QRMaskPattern.PATTERN100 :
-return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
-case QRMaskPattern.PATTERN101 :
-return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
-case QRMaskPattern.PATTERN110 :
-return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
-case QRMaskPattern.PATTERN111 :
-return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
-default :
-throw 'bad maskPattern:' + maskPattern;
-}
-};
-_this.getErrorCorrectPolynomial = function(errorCorrectLength) {
-var a = qrPolynomial([1], 0);
-for (var i = 0; i < errorCorrectLength; i += 1) {
-a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
-}
-return a;
-};
-_this.getLengthInBits = function(mode, type) {
-if (1 <= type && type < 10) {
-switch(mode) {
-case QRMode.MODE_NUMBER    : return 10;
-case QRMode.MODE_ALPHA_NUM : return 9;
-case QRMode.MODE_8BIT_BYTE : return 8;
-case QRMode.MODE_KANJI     : return 8;
-default :
-throw 'mode:' + mode;
-}
-} else if (type < 27) {
-switch(mode) {
-case QRMode.MODE_NUMBER    : return 12;
-case QRMode.MODE_ALPHA_NUM : return 11;
-case QRMode.MODE_8BIT_BYTE : return 16;
-case QRMode.MODE_KANJI     : return 10;
-default :
-throw 'mode:' + mode;
-}
-} else if (type < 41) {
-switch(mode) {
-case QRMode.MODE_NUMBER    : return 14;
-case QRMode.MODE_ALPHA_NUM : return 13;
-case QRMode.MODE_8BIT_BYTE : return 16;
-case QRMode.MODE_KANJI     : return 12;
-default :
-throw 'mode:' + mode;
-}
-} else {
-throw 'type:' + type;
-}
-};
-_this.getLostPoint = function(qrcode) {
-var moduleCount = qrcode.getModuleCount();
-var lostPoint = 0;
-for (var row = 0; row < moduleCount; row += 1) {
-for (var col = 0; col < moduleCount; col += 1) {
-var sameCount = 0;
-var dark = qrcode.isDark(row, col);
-for (var r = -1; r <= 1; r += 1) {
-if (row + r < 0 || moduleCount <= row + r) {
-continue;
-}
-for (var c = -1; c <= 1; c += 1) {
-if (col + c < 0 || moduleCount <= col + c) {
-continue;
-}
-if (r == 0 && c == 0) {
-continue;
-}
-if (dark == qrcode.isDark(row + r, col + c) ) {
-sameCount += 1;
-}
-}
-}
-if (sameCount > 5) {
-lostPoint += (3 + sameCount - 5);
-}
-}
-};
-for (var row = 0; row < moduleCount - 1; row += 1) {
-for (var col = 0; col < moduleCount - 1; col += 1) {
-var count = 0;
-if (qrcode.isDark(row, col) ) count += 1;
-if (qrcode.isDark(row + 1, col) ) count += 1;
-if (qrcode.isDark(row, col + 1) ) count += 1;
-if (qrcode.isDark(row + 1, col + 1) ) count += 1;
-if (count == 0 || count == 4) {
-lostPoint += 3;
-}
-}
-}
-for (var row = 0; row < moduleCount; row += 1) {
-for (var col = 0; col < moduleCount - 6; col += 1) {
-if (qrcode.isDark(row, col)
-&& !qrcode.isDark(row, col + 1)
-&&  qrcode.isDark(row, col + 2)
-&&  qrcode.isDark(row, col + 3)
-&&  qrcode.isDark(row, col + 4)
-&& !qrcode.isDark(row, col + 5)
-&&  qrcode.isDark(row, col + 6) ) {
-lostPoint += 40;
-}
-}
-}
-for (var col = 0; col < moduleCount; col += 1) {
-for (var row = 0; row < moduleCount - 6; row += 1) {
-if (qrcode.isDark(row, col)
-&& !qrcode.isDark(row + 1, col)
-&&  qrcode.isDark(row + 2, col)
-&&  qrcode.isDark(row + 3, col)
-&&  qrcode.isDark(row + 4, col)
-&& !qrcode.isDark(row + 5, col)
-&&  qrcode.isDark(row + 6, col) ) {
-lostPoint += 40;
-}
-}
-}
-var darkCount = 0;
-for (var col = 0; col < moduleCount; col += 1) {
-for (var row = 0; row < moduleCount; row += 1) {
-if (qrcode.isDark(row, col) ) {
-darkCount += 1;
-}
-}
-}
-var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
-lostPoint += ratio * 10;
-return lostPoint;
-};
-return _this;
-}();
-var QRMath = function() {
-var EXP_TABLE = new Array(256);
-var LOG_TABLE = new Array(256);
-for (var i = 0; i < 8; i += 1) {
-EXP_TABLE[i] = 1 << i;
-}
-for (var i = 8; i < 256; i += 1) {
-EXP_TABLE[i] = EXP_TABLE[i - 4]
-^ EXP_TABLE[i - 5]
-^ EXP_TABLE[i - 6]
-^ EXP_TABLE[i - 8];
-}
-for (var i = 0; i < 255; i += 1) {
-LOG_TABLE[EXP_TABLE[i] ] = i;
-}
-var _this = {};
-_this.glog = function(n) {
-if (n < 1) {
-throw 'glog(' + n + ')';
-}
-return LOG_TABLE[n];
-};
-_this.gexp = function(n) {
-while (n < 0) {
-n += 255;
-}
-while (n >= 256) {
-n -= 255;
-}
-return EXP_TABLE[n];
-};
-return _this;
-}();
-function qrPolynomial(num, shift) {
-if (typeof num.length == 'undefined') {
-throw num.length + '/' + shift;
-}
-var _num = function() {
-var offset = 0;
-while (offset < num.length && num[offset] == 0) {
-offset += 1;
-}
-var _num = new Array(num.length - offset + shift);
-for (var i = 0; i < num.length - offset; i += 1) {
-_num[i] = num[i + offset];
-}
-return _num;
-}();
-var _this = {};
-_this.getAt = function(index) {
-return _num[index];
-};
-_this.getLength = function() {
-return _num.length;
-};
-_this.multiply = function(e) {
-var num = new Array(_this.getLength() + e.getLength() - 1);
-for (var i = 0; i < _this.getLength(); i += 1) {
-for (var j = 0; j < e.getLength(); j += 1) {
-num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
-}
-}
-return qrPolynomial(num, 0);
-};
-_this.mod = function(e) {
-if (_this.getLength() - e.getLength() < 0) {
-return _this;
-}
-var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
-var num = new Array(_this.getLength() );
-for (var i = 0; i < _this.getLength(); i += 1) {
-num[i] = _this.getAt(i);
-}
-for (var i = 0; i < e.getLength(); i += 1) {
-num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
-}
-return qrPolynomial(num, 0).mod(e);
-};
-return _this;
-};
-var QRRSBlock = function() {
-var RS_BLOCK_TABLE = [
-[1, 26, 19],
-[1, 26, 16],
-[1, 26, 13],
-[1, 26, 9],
-[1, 44, 34],
-[1, 44, 28],
-[1, 44, 22],
-[1, 44, 16],
-[1, 70, 55],
-[1, 70, 44],
-[2, 35, 17],
-[2, 35, 13],
-[1, 100, 80],
-[2, 50, 32],
-[2, 50, 24],
-[4, 25, 9],
-[1, 134, 108],
-[2, 67, 43],
-[2, 33, 15, 2, 34, 16],
-[2, 33, 11, 2, 34, 12],
-[2, 86, 68],
-[4, 43, 27],
-[4, 43, 19],
-[4, 43, 15],
-[2, 98, 78],
-[4, 49, 31],
-[2, 32, 14, 4, 33, 15],
-[4, 39, 13, 1, 40, 14],
-[2, 121, 97],
-[2, 60, 38, 2, 61, 39],
-[4, 40, 18, 2, 41, 19],
-[4, 40, 14, 2, 41, 15],
-[2, 146, 116],
-[3, 58, 36, 2, 59, 37],
-[4, 36, 16, 4, 37, 17],
-[4, 36, 12, 4, 37, 13],
-[2, 86, 68, 2, 87, 69],
-[4, 69, 43, 1, 70, 44],
-[6, 43, 19, 2, 44, 20],
-[6, 43, 15, 2, 44, 16],
-[4, 101, 81],
-[1, 80, 50, 4, 81, 51],
-[4, 50, 22, 4, 51, 23],
-[3, 36, 12, 8, 37, 13],
-[2, 116, 92, 2, 117, 93],
-[6, 58, 36, 2, 59, 37],
-[4, 46, 20, 6, 47, 21],
-[7, 42, 14, 4, 43, 15],
-[4, 133, 107],
-[8, 59, 37, 1, 60, 38],
-[8, 44, 20, 4, 45, 21],
-[12, 33, 11, 4, 34, 12],
-[3, 145, 115, 1, 146, 116],
-[4, 64, 40, 5, 65, 41],
-[11, 36, 16, 5, 37, 17],
-[11, 36, 12, 5, 37, 13],
-[5, 109, 87, 1, 110, 88],
-[5, 65, 41, 5, 66, 42],
-[5, 54, 24, 7, 55, 25],
-[11, 36, 12, 7, 37, 13],
-[5, 122, 98, 1, 123, 99],
-[7, 73, 45, 3, 74, 46],
-[15, 43, 19, 2, 44, 20],
-[3, 45, 15, 13, 46, 16],
-[1, 135, 107, 5, 136, 108],
-[10, 74, 46, 1, 75, 47],
-[1, 50, 22, 15, 51, 23],
-[2, 42, 14, 17, 43, 15],
-[5, 150, 120, 1, 151, 121],
-[9, 69, 43, 4, 70, 44],
-[17, 50, 22, 1, 51, 23],
-[2, 42, 14, 19, 43, 15],
-[3, 141, 113, 4, 142, 114],
-[3, 70, 44, 11, 71, 45],
-[17, 47, 21, 4, 48, 22],
-[9, 39, 13, 16, 40, 14],
-[3, 135, 107, 5, 136, 108],
-[3, 67, 41, 13, 68, 42],
-[15, 54, 24, 5, 55, 25],
-[15, 43, 15, 10, 44, 16],
-[4, 144, 116, 4, 145, 117],
-[17, 68, 42],
-[17, 50, 22, 6, 51, 23],
-[19, 46, 16, 6, 47, 17],
-[2, 139, 111, 7, 140, 112],
-[17, 74, 46],
-[7, 54, 24, 16, 55, 25],
-[34, 37, 13],
-[4, 151, 121, 5, 152, 122],
-[4, 75, 47, 14, 76, 48],
-[11, 54, 24, 14, 55, 25],
-[16, 45, 15, 14, 46, 16],
-[6, 147, 117, 4, 148, 118],
-[6, 73, 45, 14, 74, 46],
-[11, 54, 24, 16, 55, 25],
-[30, 46, 16, 2, 47, 17],
-[8, 132, 106, 4, 133, 107],
-[8, 75, 47, 13, 76, 48],
-[7, 54, 24, 22, 55, 25],
-[22, 45, 15, 13, 46, 16],
-[10, 142, 114, 2, 143, 115],
-[19, 74, 46, 4, 75, 47],
-[28, 50, 22, 6, 51, 23],
-[33, 46, 16, 4, 47, 17],
-[8, 152, 122, 4, 153, 123],
-[22, 73, 45, 3, 74, 46],
-[8, 53, 23, 26, 54, 24],
-[12, 45, 15, 28, 46, 16],
-[3, 147, 117, 10, 148, 118],
-[3, 73, 45, 23, 74, 46],
-[4, 54, 24, 31, 55, 25],
-[11, 45, 15, 31, 46, 16],
-[7, 146, 116, 7, 147, 117],
-[21, 73, 45, 7, 74, 46],
-[1, 53, 23, 37, 54, 24],
-[19, 45, 15, 26, 46, 16],
-[5, 145, 115, 10, 146, 116],
-[19, 75, 47, 10, 76, 48],
-[15, 54, 24, 25, 55, 25],
-[23, 45, 15, 25, 46, 16],
-[13, 145, 115, 3, 146, 116],
-[2, 74, 46, 29, 75, 47],
-[42, 54, 24, 1, 55, 25],
-[23, 45, 15, 28, 46, 16],
-[17, 145, 115],
-[10, 74, 46, 23, 75, 47],
-[10, 54, 24, 35, 55, 25],
-[19, 45, 15, 35, 46, 16],
-[17, 145, 115, 1, 146, 116],
-[14, 74, 46, 21, 75, 47],
-[29, 54, 24, 19, 55, 25],
-[11, 45, 15, 46, 46, 16],
-[13, 145, 115, 6, 146, 116],
-[14, 74, 46, 23, 75, 47],
-[44, 54, 24, 7, 55, 25],
-[59, 46, 16, 1, 47, 17],
-[12, 151, 121, 7, 152, 122],
-[12, 75, 47, 26, 76, 48],
-[39, 54, 24, 14, 55, 25],
-[22, 45, 15, 41, 46, 16],
-[6, 151, 121, 14, 152, 122],
-[6, 75, 47, 34, 76, 48],
-[46, 54, 24, 10, 55, 25],
-[2, 45, 15, 64, 46, 16],
-[17, 152, 122, 4, 153, 123],
-[29, 74, 46, 14, 75, 47],
-[49, 54, 24, 10, 55, 25],
-[24, 45, 15, 46, 46, 16],
-[4, 152, 122, 18, 153, 123],
-[13, 74, 46, 32, 75, 47],
-[48, 54, 24, 14, 55, 25],
-[42, 45, 15, 32, 46, 16],
-[20, 147, 117, 4, 148, 118],
-[40, 75, 47, 7, 76, 48],
-[43, 54, 24, 22, 55, 25],
-[10, 45, 15, 67, 46, 16],
-[19, 148, 118, 6, 149, 119],
-[18, 75, 47, 31, 76, 48],
-[34, 54, 24, 34, 55, 25],
-[20, 45, 15, 61, 46, 16]
-];
-var qrRSBlock = function(totalCount, dataCount) {
-var _this = {};
-_this.totalCount = totalCount;
-_this.dataCount = dataCount;
-return _this;
-};
-var _this = {};
-var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
-switch(errorCorrectionLevel) {
-case QRErrorCorrectionLevel.L :
-return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
-case QRErrorCorrectionLevel.M :
-return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
-case QRErrorCorrectionLevel.Q :
-return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
-case QRErrorCorrectionLevel.H :
-return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
-default :
-return undefined;
-}
-};
-_this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
-var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
-if (typeof rsBlock == 'undefined') {
-throw 'bad rs block @ typeNumber:' + typeNumber +
-'/errorCorrectionLevel:' + errorCorrectionLevel;
-}
-var length = rsBlock.length / 3;
-var list = [];
-for (var i = 0; i < length; i += 1) {
-var count = rsBlock[i * 3 + 0];
-var totalCount = rsBlock[i * 3 + 1];
-var dataCount = rsBlock[i * 3 + 2];
-for (var j = 0; j < count; j += 1) {
-list.push(qrRSBlock(totalCount, dataCount) );
-}
-}
-return list;
-};
-return _this;
-}();
-var qrBitBuffer = function() {
-var _buffer = [];
-var _length = 0;
-var _this = {};
-_this.getBuffer = function() {
-return _buffer;
-};
-_this.getAt = function(index) {
-var bufIndex = Math.floor(index / 8);
-return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
-};
-_this.put = function(num, length) {
-for (var i = 0; i < length; i += 1) {
-_this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
-}
-};
-_this.getLengthInBits = function() {
-return _length;
-};
-_this.putBit = function(bit) {
-var bufIndex = Math.floor(_length / 8);
-if (_buffer.length <= bufIndex) {
-_buffer.push(0);
-}
-if (bit) {
-_buffer[bufIndex] |= (0x80 >>> (_length % 8) );
-}
-_length += 1;
-};
-return _this;
-};
-var qrNumber = function(data) {
-var _mode = QRMode.MODE_NUMBER;
-var _data = data;
-var _this = {};
-_this.getMode = function() {
-return _mode;
-};
-_this.getLength = function(buffer) {
-return _data.length;
-};
-_this.write = function(buffer) {
-var data = _data;
-var i = 0;
-while (i + 2 < data.length) {
-buffer.put(strToNum(data.substring(i, i + 3) ), 10);
-i += 3;
-}
-if (i < data.length) {
-if (data.length - i == 1) {
-buffer.put(strToNum(data.substring(i, i + 1) ), 4);
-} else if (data.length - i == 2) {
-buffer.put(strToNum(data.substring(i, i + 2) ), 7);
-}
-}
-};
-var strToNum = function(s) {
-var num = 0;
-for (var i = 0; i < s.length; i += 1) {
-num = num * 10 + chatToNum(s.charAt(i) );
-}
-return num;
-};
-var chatToNum = function(c) {
-if ('0' <= c && c <= '9') {
-return c.charCodeAt(0) - '0'.charCodeAt(0);
-}
-throw 'illegal char :' + c;
-};
-return _this;
-};
-var qrAlphaNum = function(data) {
-var _mode = QRMode.MODE_ALPHA_NUM;
-var _data = data;
-var _this = {};
-_this.getMode = function() {
-return _mode;
-};
-_this.getLength = function(buffer) {
-return _data.length;
-};
-_this.write = function(buffer) {
-var s = _data;
-var i = 0;
-while (i + 1 < s.length) {
-buffer.put(
-getCode(s.charAt(i) ) * 45 +
-getCode(s.charAt(i + 1) ), 11);
-i += 2;
-}
-if (i < s.length) {
-buffer.put(getCode(s.charAt(i) ), 6);
-}
-};
-var getCode = function(c) {
-if ('0' <= c && c <= '9') {
-return c.charCodeAt(0) - '0'.charCodeAt(0);
-} else if ('A' <= c && c <= 'Z') {
-return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
-} else {
-switch (c) {
-case ' ' : return 36;
-case '$' : return 37;
-case '%' : return 38;
-case '*' : return 39;
-case '+' : return 40;
-case '-' : return 41;
-case '.' : return 42;
-case '/' : return 43;
-case ':' : return 44;
-default :
-throw 'illegal char :' + c;
-}
-}
-};
-return _this;
-};
-var qr8BitByte = function(data) {
-var _mode = QRMode.MODE_8BIT_BYTE;
-var _data = data;
-var _bytes = qrcode.stringToBytes(data);
-var _this = {};
-_this.getMode = function() {
-return _mode;
-};
-_this.getLength = function(buffer) {
-return _bytes.length;
-};
-_this.write = function(buffer) {
-for (var i = 0; i < _bytes.length; i += 1) {
-buffer.put(_bytes[i], 8);
-}
-};
-return _this;
-};
-return qrcode;
-}();
+
 function testURL(){return location.origin&&location.origin!='null'?location.origin+location.pathname:location.href.split(/[?#]/)[0]}
 document.querySelector('.phone').insertAdjacentHTML('beforeend','<div class="modal" id="qrm" onclick="if(event.target===this)this.classList.remove(\'on\')"><div class="mbox" role="dialog" aria-label="Share this test" id="qrbox"></div></div><div class="modal" id="paym" onclick="if(event.target===this)this.classList.remove(\'on\')"><div class="mbox" role="dialog" aria-label="Pay with phone wallet" id="paybox"></div></div>');
-function openQR(){const u=testURL();let svg='';try{const q=qrcode(0,'M');q.addData(u);q.make();svg=q.createSvgTag({cellSize:4,margin:2,scalable:true,alt:'QR code of this test page'})}catch(e){}
+function openQR(){if(typeof qrcode=='undefined'){if(openQR.l)return;openQR.l=1;const j=document.createElement('script');j.src='qr.js';j.onload=()=>{openQR.l=0;openQR()};j.onerror=()=>{openQR.l=0;window.qrcode=function(){throw 0};openQR()};document.head.appendChild(j);return}const u=testURL();let svg='';try{const q=qrcode(0,'M');q.addData(u);q.make();svg=q.createSvgTag({cellSize:4,margin:2,scalable:true,alt:'QR code of this test page'})}catch(e){}
  $('qrbox').innerHTML=`<div class="row"><b>📲 Share this test</b><button class="lnk mx" aria-label="Close" onclick="$('qrm').classList.remove('on')">✕</button></div><div class="qrbox" role="img" aria-label="QR code of this test page">${svg}</div><p style="text-align:center;font-weight:600">Scan to try ChargeOne. Prototype with sample data, up until Wednesday midnight.</p><div class="muted notr" style="text-align:center;word-break:break-all;margin:4px 0 10px">${u}</div><button class="btn g" onclick="copyLink()">Copy link</button>${navigator.share?'<button class="btn" onclick="navigator.share({title:\'ChargeOne\',url:testURL()}).catch(()=>{})">Share</button>':''}`;$('qrm').classList.add('on')}
 function copyLink(){const u=testURL();try{navigator.clipboard.writeText(u).then(()=>toast('Link copied'),()=>toast(u))}catch(e){toast(u)}}
 function payAmt(){if(typeof kwh!='undefined'&&kwh>0&&cur)return [kwh*cur.price,'Session so far (sample price)'];const c=costEst(cur);return [c.cost,'Estimate for 20% to 80% (sample price)']}
@@ -2515,7 +1276,7 @@ function whoUI(){const c=$('whoc');if(!c)return;const f=famL(),smp=[['You','Rive
 {const _o=openPay;openPay=function(step){_o.apply(this,arguments);if(step){const [a]=payAmt(),p=payL();p.unshift({w:'You',s:cur?cur.name:'',a:+a.toFixed(2),t:Date.now()});localStorage.setItem('c1_pays',JSON.stringify(p.slice(0,20)));whoUI()}
  const d=document.querySelector('#paybox .demo');d&&d.insertAdjacentHTML('afterend','<div class="muted" style="text-align:center;margin-top:6px">Billed to your card on file (demo)</div>')}}
 {const _g=go;go=function(t){const r=_g.apply(this,arguments);if(t=='wallet')famUI();return r}}
-function keyTap(){toast('Key tapped. Starting a demo charge.');setTimeout(()=>{if(cur)startCharge()},600)}
+function keyTap(){if(cur)openStart();else{toast(T('Pick a station on the map first'));go('map')}}
 setTimeout(famUI,300);
 if(cur)try{repRender()}catch(e){}
 </script><script>/* v19d: my cars + practice charge */
@@ -2525,7 +1286,8 @@ const EVS=[["Tesla Model 3",82,"NACS",250,4.0],["Tesla Model Y",81,"NACS",250,3.
 ["Hyundai Ioniq 5",84,"CCS",235,3.4],["Hyundai Ioniq 6",77,"CCS",235,4.0],["Kia EV6",84,"CCS",235,3.4],["Kia EV9",100,"CCS",210,2.8],["Ford Mustang Mach-E",91,"CCS",150,3.0],["Ford F-150 Lightning",131,"CCS",155,2.3],
 ["Chevy Bolt EV",65,"CCS",55,3.6],["Chevy Equinox EV",85,"CCS",150,3.4],["Chevy Blazer EV",85,"CCS",150,3.0],["Rivian R1S",135,"CCS",220,2.6],["Rivian R1T",135,"CCS",220,2.6],["Volkswagen ID.4",82,"CCS",135,3.3],
 ["Nissan Leaf",62,"CHADEMO",100,3.6],["Nissan Ariya",87,"CCS",130,3.2],["BMW i4",84,"CCS",205,3.5],["Mercedes EQE",91,"CCS",170,3.0],["Polestar 2",82,"CCS",205,3.3],["Lucid Air",112,"CCS",300,4.2],["Honda Prologue",85,"CCS",150,3.2],
-["Toyota bZ4X",72,"CCS",100,3.3],["Plug-in hybrid (Level 2 only)",18,"J1772",0,3.0]];
+["Toyota bZ4X",72,"CCS",100,3.3],["Plug-in hybrid (Level 2 only)",18,"J1772",0,3.0],["Toyota RAV4 Plug-in Hybrid", 18, "J1772", 0, 2.6], ["Toyota Prius Prime", 13.6, "J1772", 0, 3.3], ["Jeep Wrangler 4xe", 17, "J1772", 0, 1.6], ["Ford Escape Plug-in Hybrid", 14, "J1772", 0, 2.6], ["Kia Sportage Plug-in Hybrid", 14, "J1772", 0, 2.4], ["Chrysler Pacifica Hybrid", 16, "J1772", 0, 2.0], ["BMW X5 xDrive50e", 26, "J1772", 0, 1.9], ["Volvo XC60 Recharge", 19, "J1772", 0, 2.2]];
+const PHEV=new Set(["Plug-in hybrid (Level 2 only)","Toyota RAV4 Plug-in Hybrid","Toyota Prius Prime","Jeep Wrangler 4xe","Ford Escape Plug-in Hybrid","Kia Sportage Plug-in Hybrid","Chrysler Pacifica Hybrid","BMW X5 xDrive50e","Volvo XC60 Recharge"]);
 const PLUGS=[["CCS","CCS"],["NACS","NACS (Tesla)"],["CHADEMO","CHAdeMO"],["J1772","J1772"]],DEFKW={CCS:150,NACS:250,CHADEMO:50,J1772:0};
 var MAXKW={};
 function myCars(){try{return JSON.parse(localStorage.getItem('c1_cars'))||[]}catch(e){return []}}
@@ -2544,11 +1306,11 @@ document.querySelector('.phone').insertAdjacentHTML('beforeend','<div class="mod
 var EDIT=-1;
 function openCars(){EDIT=-1;carsUI(1);$('carm').classList.add('on')}
 function carsUI(form){const b=$('carbox');if(!b)return;const a=myCars(),f=form||b.dataset.f=='1';b.dataset.f=f?'1':'';const c=EDIT>=0?a[EDIT]:null;
- const list=a.length?a.map((x,i)=>`<div class="row" style="margin-top:6px;gap:6px"><span><b class="notr">${x.nick.replace(/[<>&]/g,'')}</b> <span class="muted">· ${x.kwh} kWh · ${x.plug=='CHADEMO'?'CHAdeMO':x.plug}</span>${x.nick==CAR?' <span class="pill">Active</span>':''}</span><span style="white-space:nowrap">${x.nick==CAR?'':`<button class="lnk" onclick="useCar(${i})">Use this car</button>`}<button class="lnk" onclick="EDIT=${i};carsUI(1)">Edit</button><button class="lnk" onclick="delCar(${i})">Delete</button></span></div>`).join(''):'<div class="muted">No cars yet.</div>';
+ const list=a.length?a.map((x,i)=>`<div class="row" style="margin-top:6px;gap:6px"><span><b class="notr">${x.nick.replace(/[<>&]/g,'')}</b> <span class="muted">· ${PHEV.has(x.model)?'~'+x.kwh+' kWh ('+L2('approx.','aprox.')+') · '+L2('Plug-in hybrid','Híbrido enchufable'):x.kwh+' kWh'} · ${x.plug=='CHADEMO'?'CHAdeMO':x.plug}</span>${x.nick==CAR?' <span class="pill">Active</span>':''}</span><span style="white-space:nowrap">${x.nick==CAR?'':`<button class="lnk" onclick="useCar(${i})">Use this car</button>`}<button class="lnk" onclick="EDIT=${i};carsUI(1)">Edit</button><button class="lnk" onclick="delCar(${i})">Delete</button></span></div>`).join(''):'<div class="muted">No cars yet.</div>';
  b.innerHTML=`<div class="row"><b>🚗 My cars</b><button class="lnk mx" aria-label="Close" onclick="$('carm').classList.remove('on')">✕</button></div>${list}
  <div class="carf" style="margin-top:12px;border-top:1px solid var(--b);padding-top:10px"><b>${c?'Edit':'What do you drive?'}</b>
  <label>Make and model<input class="inp" id="cf-model" list="evlist" autocomplete="off" placeholder="Type to search, e.g. Ioniq 5" value="${c?(c.model||'').replace(/"/g,''):''}" onchange="cfPre(this.value)"></label><datalist id="evlist">${EVS.map(e=>`<option value="${e[0]}">`).join('')}</datalist>
- <button type="button" class="lnk" onclick="cfManual()">My car isn’t listed</button>
+ <button type="button" class="lnk" onclick="cfManual()">My car isn’t listed</button><div class="phg notr"><b style="font-size:.9375rem">${L2('Plug-in hybrid','Híbrido enchufable')}</b><div class="muted" style="font-size:.8125rem">${L2('Level 2 (J1772) only, no DC fast. Battery sizes are approximate.','Solo Nivel 2 (J1772), sin carga rápida DC. Tamaños de batería aproximados.')}</div><div class="phc">${[...PHEV].slice(1).map(n=>`<button type="button" class="chip" onclick="cfPre('${n}');phNote()">${n}</button>`).join('')}</div><div class="muted" id="phn" style="font-size:.8125rem"></div></div>
  <label>Nickname<input class="inp" id="cf-nick" maxlength="24" placeholder="e.g. My Ioniq" value="${c?c.nick.replace(/"/g,''):''}"></label>
  <div class="row" style="gap:8px"><label style="flex:1">Battery size (kWh)<input class="inp" id="cf-kwh" type="number" inputmode="decimal" min="10" max="250" value="${c?c.kwh:''}"></label><label style="flex:1">Plug type<select class="inp" id="cf-plug" onchange="if(!$('cf-kw').dataset.t)$('cf-kw').placeholder=DEFKW[this.value]||''">${PLUGS.map(p=>`<option value="${p[0]}" ${c&&c.plug==p[0]?'selected':''}>${p[1]}</option>`).join('')}</select></label></div>
  <div class="row" style="gap:8px"><label style="flex:1">Max DC charge speed (kW, optional)<input class="inp" id="cf-kw" type="number" inputmode="numeric" min="0" max="400" placeholder="150" value="${c&&c.kwSet?c.kw:''}" oninput="this.dataset.t=1"></label></div>
@@ -2673,11 +1435,11 @@ Object.assign(ES,{"Fast":"Rápida","Level 2":"Nivel 2","Price not listed":"Preci
 var MORE_OPEN=!!new URLSearchParams(location.search).get('scene');
 function L2(en,es){return LANG=='es'?es:en}
 function cardHTML(s,where){const open=s.avail||0,tot=s.total||0,ok=open>0,f=fit(s);
- const fitL=!CAR?L2('Add your car to see if it fits','Agrega tu auto para ver si es compatible'):f=='yes'?'✓ '+L2('Fits your ','Compatible con tu ')+carShort():f=='adapter'?L2('Fits with an adapter: ','Funciona con adaptador: ')+T(adNote(s)):L2('Doesn’t fit your car','No es compatible con tu auto');
+ const fitL=!CAR?L2('Add your car to see if it fits','Agrega tu auto para ver si es compatible'):f=='yes'?'✓ '+L2('Fits your ','Compatible con tu ')+carShort():f=='adapter'?L2('Fits with an adapter: ','Funciona con adaptador: ')+T(adNote(s)):(carKW()==0&&!(s.plugs||[]).includes('J1772'))?L2('DC fast only. Your car uses Level 2, so it won’t fit','Solo carga rápida DC. Tu auto usa Nivel 2, no es compatible'):L2('Doesn’t fit your car','No es compatible con tu auto');
  return `<div class="c1h notr"><div class="c1n">${s.name}</div><span class="c1b${ok?' on':''}">${L2(`${open} of ${tot} open (sample)`,`${open} de ${tot} libres (muestra)`)}</span>
  <div class="c1i">${T(infoTxt(s))}</div><div class="c1f">${fitL}</div>
- <div class="c1btns"><a class="btn g" target="_blank" rel="noopener" href="${goURL(s)}">${L2('Take me there','Llévame')}</a><button type="button" class="btn c1o" onclick="openAlong()">${L2('Charge along','Cargar en vivo')}</button></div>
- <button type="button" class="c1t" aria-expanded="${MORE_OPEN}" onclick="toggleMore()">${MORE_OPEN?L2('Fewer details ▴','Menos detalles ▴'):L2('More details ▾','Más detalles ▾')}</button></div>`}
+ <div class="c1btns"><button type="button" class="btn g c1s" onclick="openStart()">${L2('Start with ChargeOne Key','Iniciar con ChargeOne Key')}</button><a class="btn c1o" target="_blank" rel="noopener" href="${goURL(s)}">${L2('Take me there','Llévame')}</a></div>
+ <div class="c1r"><button type="button" class="c1t" aria-expanded="${MORE_OPEN}" onclick="toggleMore()">${MORE_OPEN?L2('Fewer details ▴','Menos detalles ▴'):L2('More details ▾','Más detalles ▾')}</button><button type="button" class="c1t c1a" onclick="openAlong()">${L2('Charge along','Cargar en vivo')}</button></div></div>`}
 function toggleMore(){MORE_OPEN=!MORE_OPEN;cardAll()}
 function cardInto(root,where,keep){if(!root||!cur)return;let h=root.querySelector(':scope>.c1h'),m=root.querySelector(':scope>.c1more');
  if(!m){m=document.createElement('div');m.className='c1more';root.appendChild(m)}
@@ -2696,4 +1458,120 @@ ESR.unshift([/^\$([\d.]+)\/kWh \(sample\)$/,'$$$1/kWh (muestra)']);
 setTimeout(cardAll,0);
 setTimeout(keyLockUI,300);
 if(cur)try{repRender()}catch(e){}
+</script><script>/* v19f: Start with ChargeOne Key (simulation) · receipts · all US stations */
+Object.assign(ES,{"Idle fee: check the network's app":"Tarifa por inactividad: revisa la app de la red","Pick a station on the map first":"Primero elige una estación en el mapa","⚡ Start with ChargeOne Key":"⚡ Iniciar con ChargeOne Key","Loading stations…":"Cargando estaciones…"});
+ESR.unshift([/^Idle fee: check the network's app$/,'Tarifa por inactividad: revisa la app de la red']);
+// ---------- receipts ----------
+function rcpts(){try{return JSON.parse(localStorage.getItem('c1_rcpt'))||[]}catch(e){return []}}
+function rcSave(r){const a=rcpts();a.unshift(r);localStorage.setItem('c1_rcpt',JSON.stringify(a.slice(0,60)))}
+function m$(v){return '$'+(+v).toFixed(2)}
+function hms(sec){sec=Math.round(sec);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h} h ${m} min`:m?`${m} min ${s<10?'0':''}${s} s`:`${s} s`}
+function dtx(ts){return new Date(ts).toLocaleString(LANG=='es'?'es-US':'en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+function rcptUI(){const c=$('rcptc');if(!c)return;const a=rcpts();
+ c.innerHTML=`<div class="row"><b>🧾 ${L2('Receipts','Recibos')}</b><span class="pill">${L2('Demo','Demo')}</span></div><div class="muted" style="font-size:.8125rem;margin:4px 0 8px">${L2('Every network, one list. Sample prices. Billed to your own card (demo).','Todas las redes, una lista. Precios de muestra. Se cobra a tu propia tarjeta (demo).')}</div>`+
+ (a.length?a.slice(0,12).map((r,i)=>`<button type="button" class="rcr" onclick="rcShow(${i})"><span><b>${esc(r.net)}</b><span class="muted"> · ${esc(r.st)}</span><br><span class="muted" style="font-size:.8125rem">${dtx(r.ts1)} · ${r.kwh.toFixed(1)} kWh · ${hms(r.secs)}</span></span><b>${m$(r.total)}<br><span class="muted" style="font-size:.75rem;font-weight:500">${L2('sample','muestra')}</span></b></button>`).join(''):`<div class="muted">${L2('No receipts yet. Start a charge with your ChargeOne Key (demo) and it shows up here.','Aún no hay recibos. Inicia una carga con tu ChargeOne Key (demo) y aparecerá aquí.')}</div>`)}
+function esc(x){return String(x==null?'':x).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+function rcHTML(r){return `<div class="rcp"><div class="rch">⚡ ChargeOne</div><div class="muted" style="text-align:center;font-size:.8125rem">${L2('Receipt','Recibo')} #${r.id}</div>
+ <dl><dt>${L2('Network','Red')}</dt><dd>${esc(r.net)}</dd><dt>${L2('Station','Estación')}</dt><dd>${esc(r.st)}</dd><dt>${L2('Stall · plug','Puesto · conector')}</dt><dd>${r.stall} · ${esc(r.plug)} <span class="muted">(${L2('sample','muestra')})</span></dd>
+ <dt>${L2('Started','Inicio')}</dt><dd>${dtx(r.ts0)}</dd><dt>${L2('Charging time','Tiempo de carga')}</dt><dd>${hms(r.secs)}${r.x>1?` <span class="muted">(${L2('simulated at','simulado a')} ${r.x}×)</span>`:''}</dd>
+ <dt>${L2('Energy','Energía')}</dt><dd>${r.kwh.toFixed(2)} kWh</dd><dt>${L2('Battery','Batería')}</dt><dd>${r.soc0}% → ${r.soc1}%</dd><dt>${L2('Price','Precio')}</dt><dd>${m$(r.ppk)}/kWh <span class="muted">(${L2('sample','muestra')})</span></dd>
+ <dt class="tot">${L2('Total','Total')}</dt><dd class="tot">${m$(r.total)} <span class="muted" style="font-weight:500">(${L2('sample','muestra')})</span></dd></dl>
+ <div class="muted" style="text-align:center">💳 ${L2('Billed to your own card (demo)','Se cobra a tu propia tarjeta (demo)')}</div><div class="muted" style="text-align:center;font-size:.75rem;margin-top:4px">${L2('Nothing was charged. No real charger was started.','No se cobró nada. No se encendió ningún cargador real.')}</div></div>`}
+function rcShow(i){const r=rcpts()[i];if(!r)return;SK=null;stBox(`${stLab(r.net)}<div class="row"><b>🧾 ${L2('Receipt','Recibo')}</b>${stX()}</div>${rcHTML(r)}<button class="btn" onclick="stClose()">${L2('Done','Listo')}</button>`)}
+// ---------- Start flow ----------
+document.querySelector('.phone').insertAdjacentHTML('beforeend','<div class="modal" id="stm"><div class="mbox notr" role="dialog" aria-label="Start with ChargeOne Key" id="stbox"></div></div>');
+var SK=null;
+function stLab(net){return `<div class="simlab">${L2(`Demo · Not connected to ${esc(net)} · No real charger or payment`,`Demo · Sin conexión con ${esc(net)} · Sin cargador ni pago reales`)}<div style="font-weight:600;font-size:.75rem">${L2('Simulation · Network partnerships coming','Simulación · Alianzas con redes próximamente')}</div></div>`}
+function stX(){return `<button class="lnk mx" aria-label="${L2('Close','Cerrar')}" onclick="stClose()">✕</button>`}
+function stBox(h){$('stbox').innerHTML=h;$('stm').classList.add('on');$('stbox').scrollTop=0}
+function stClose(){if(SK&&SK.iv)clearInterval(SK.iv);if(SK&&SK.live&&SK.kwh>0.01){stStop();return}SK=null;$('stm').classList.remove('on')}
+function stHead(s,title){return `${stLab(s.net)}<div class="row"><b>${title}</b>${stX()}</div><div class="muted">${esc(s.name)} · ${esc(s.net)}</div>`}
+function todaySpent(){const d=new Date().toDateString();return rcpts().filter(r=>new Date(r.ts1).toDateString()==d).reduce((a,r)=>a+r.total,0)}
+function openStart(s){s=s&&s.name?s:cur;if(!s){toast(T('Pick a station on the map first'));return}if(SK&&SK.iv)clearInterval(SK.iv);SK={s};
+ const o=sf(),H=stHead(s,'⚡ '+L2('Start with ChargeOne Key','Iniciar con ChargeOne Key'));
+ if(o.lock){stBox(`${H}<p style="margin:12px 0;font-weight:700">🔒 ${L2('Your key is locked.','Tu llave está bloqueada.')}</p><p class="muted">${L2('No one can start a charge with it. Unlock it in Safety.','Nadie puede iniciar una carga con ella. Desbloquéala en Seguridad.')}</p><button class="btn g" onclick="stClose();openSafe()">🛡 ${L2('Open Safety','Abrir Seguridad')}</button>`);return}
+ if(o.day&&todaySpent()>=o.day){stBox(`${H}<p style="margin:12px 0;font-weight:700">${L2(`You’ve reached today’s ${m$(o.day)} limit.`,`Llegaste a tu límite de hoy de ${m$(o.day)}.`)}</p><button class="btn" onclick="stClose();openSafe()">🛡 ${L2('Change it in Safety','Cámbialo en Seguridad')}</button>`);return}
+ if(!CAR){stBox(`${H}<p style="margin:12px 0">${L2('Add your car first so we can check the plug.','Primero agrega tu auto para revisar el conector.')}</p><button class="btn g" onclick="stClose();openCars()">🚗 ${L2('Add my car','Agregar mi auto')}</button>`);return}
+ const f=fit(s);if(f=='no'){stBox(`${H}<p style="margin:12px 0;font-weight:700">✖ ${L2('This station has no plug your car can use.','Esta estación no tiene un conector que tu auto pueda usar.')}</p><p class="muted">${carKW()==0?L2('Your car charges on Level 2 (J1772). This station is DC fast only.','Tu auto carga en Nivel 2 (J1772). Esta estación es solo carga rápida DC.'):L2('Try another station.','Prueba otra estación.')}</p><button class="btn" onclick="stClose()">${L2('Close','Cerrar')}</button>`);return}
+ const pl=(s.plugs||['J1772']).map(p=>({p,ok:stPlugOk(p)})),tot=Math.max(1,Math.min(s.total||1,12)),fr=Math.max(1,s.avail||1);
+ const dcp=carKW()>0&&s.kw>=50;SK.plug=((dcp&&pl.find(x=>x.ok&&x.p!='J1772'&&x.p!='NEMA'))||pl.find(x=>x.ok)||pl[0]).p;SK.stall=1;
+ stBox(`${H}<div class="stp">1 / 3</div><b>${L2('Pick your plug','Elige tu conector')}</b><div class="phc" role="group">${pl.map(x=>`<button type="button" class="chip${x.p==SK.plug?' on':''}" ${x.ok?'':'disabled'} onclick="SK.plug='${x.p}';[...this.parentNode.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${plN(x.p)}${x.ok?'':' ✖'}</button>`).join('')}</div>
+ ${f=='adapter'?`<div class="muted" style="font-size:.875rem">🔌 ${L2('Needs an adapter: ','Necesitas adaptador: ')}${T(adNote(s))}</div>`:''}
+ <b style="display:block;margin-top:12px">${L2('Stall number','Número de puesto')} <span class="muted" style="font-weight:500">(${L2('sample','muestra')})</span></b><div class="phc stalls" role="group">${Array.from({length:tot},(_,i)=>`<button type="button" class="chip${i==0?' on':''}" ${i<fr?'':'disabled'} aria-label="${L2('Stall','Puesto')} ${i+1}${i<fr?'':' '+L2('in use','ocupado')}" onclick="SK.stall=${i+1};[...this.parentNode.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${i+1}</button>`).join('')}</div>
+ <div class="muted" style="font-size:.8125rem">${L2('Gray stalls are in use (sample).','Los puestos grises están ocupados (muestra).')}</div>
+ <button class="btn g" style="margin-top:12px" onclick="confirmYou(stLimits)">${L2('Continue','Continuar')}</button>`)}
+function plN(p){return p=='NACS'?'NACS (Tesla)':p=='CHADEMO'?'CHAdeMO':p=='CCS'?'CCS':p}
+function stPlugOk(p){const c=carPlug();if(!c)return true;if(p=='NEMA')return false;if(c=='J1772')return p=='J1772'||p=='NACS'&&!(SK.s.kw>=50);if(c=='NACS')return p!='CHADEMO';if(c=='CHADEMO')return p=='CHADEMO'||p=='J1772';return p=='CCS'||p=='J1772'||p=='NACS'}
+function stPrice(s){const p=priceInfo(s);return p.ok?p.v:(p.est||s.price||0.4)}
+function stLimits(){const s=SK.s,o=sf(),day=o.day?Math.max(0,o.day-todaySpent()):0,cap=[o.max||0,day].filter(Boolean);SK.cap=cap.length?Math.min(...cap):0;
+ SK.kb=KWH[CAR]||75;SK.soc=Math.min(typeof soc=='number'?soc:20,90);if(SK.soc>=80)SK.soc=25;SK.soc0=Math.round(SK.soc);SK.ppk=stPrice(s);SK.tg=SK.tg||80;
+ SK.ac=carKW()==0||!(s.kw>=25)||SK.plug=='J1772';SK.pmax=SK.ac?Math.min(s.kw>=25?7.2:(s.kw||7),7.2):Math.min(s.kw||50,carKW());
+ const est=(SK.tg-SK.soc)/100*SK.kb*1.08*SK.ppk;
+ stBox(`${stHead(s,'🔌 '+L2('Plug in your car','Conecta tu auto'))}<div class="stp">2 / 3</div><div class="plugi" aria-hidden="true">🔌</div>
+ <p style="font-size:1.0625rem;font-weight:700;text-align:center;margin:4px 0">${L2(`Stall ${SK.stall} · ${plN(SK.plug)}`,`Puesto ${SK.stall} · ${plN(SK.plug)}`)}</p>
+ <p class="muted" style="text-align:center">${L2('Plug in, then tap the button. We’ll start the charge.','Conecta y toca el botón. Iniciamos la carga.')}</p>
+ ${SK.cap?`<div class="card" style="margin:8px 0"><b>🛡 ${L2(`Limit: ${m$(SK.cap)} for this charge`,`Límite: ${m$(SK.cap)} para esta carga`)}</b><div class="muted" style="font-size:.8125rem">${L2('From your Safety settings. We’ll ask before going over.','De tu configuración de Seguridad. Te preguntamos antes de pasarnos.')}${est>SK.cap?' '+L2(`This charge may cost about ${m$(est)} (sample).`,`Esta carga podría costar unos ${m$(est)} (muestra).`):''}</div></div>`:''}
+ <b style="display:block;margin-top:8px">${L2('Stop at','Parar en')}</b><div class="phc">${[80,90,100].map(v=>`<button type="button" class="chip${v==SK.tg?' on':''}" onclick="SK.tg=${v};[...this.parentNode.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}%</button>`).join('')}</div>
+ <button class="btn g" style="margin-top:12px" onclick="stLive()">✅ ${L2('My car is plugged in','Mi auto está conectado')}</button>`)}
+function stLive(){const s=SK.s;Object.assign(SK,{live:1,kwh:0,secs:0,x:SK.x||60,ts0:Date.now(),ask:0});
+ stBox(`${stHead(s,'⚡ '+L2('Charging','Cargando'))}<div class="stp">3 / 3</div>
+ <div class="simbar" aria-hidden="true"><i id="st-bar"></i></div><div class="simg" role="status" aria-live="off">
+ <div><span class="muted">${L2('Battery','Batería')}</span><b id="st-soc"></b></div><div><span class="muted">${L2('Power','Potencia')}</span><b id="st-kw"></b></div>
+ <div><span class="muted">${L2('Energy','Energía')}</span><b id="st-kwh"></b></div><div><span class="muted">${L2('Time','Tiempo')}</span><b id="st-t"></b></div>
+ <div style="grid-column:1/-1"><span class="muted">${L2('Cost so far','Costo hasta ahora')} (${L2('sample','muestra')})</span><b id="st-c"></b></div></div>
+ <div id="st-ask"></div>
+ <b style="display:block;margin-top:8px">${L2('Speed','Velocidad')}</b><div class="phc">${[1,10,60].map(v=>`<button type="button" class="chip${v==SK.x?' on':''}" onclick="SK.x=${v};[...this.parentNode.children].forEach(b=>b.classList.remove('on'));this.classList.add('on')">${v}×</button>`).join('')}</div>
+ <button class="btn" style="margin-top:12px;border-color:#ff4d6d" onclick="stStop()">■ ${L2('Stop','Detener')}</button>`);
+ stDraw();SK.iv=setInterval(stTick,250)}
+function stTick(){if(!SK||!SK.live||SK.ask)return;let left=0.25*SK.x;while(left>0&&SK.soc<SK.tg){const dt=Math.min(left,1),kw=Math.max(0.5,SK.pmax*(SK.ac?1:curve(SK.soc)));const e=kw*dt/3600;left-=dt;
+ SK.kwh+=e*1.08;SK.soc=Math.min(SK.tg,SK.soc+e/SK.kb*100);SK.secs+=dt;SK.kwnow=kw;if(SK.cap&&!SK.over&&SK.kwh*SK.ppk>=SK.cap)break}
+ if(SK.cap&&SK.kwh*SK.ppk>=SK.cap&&!SK.over){SK.ask=1;$('st-ask').innerHTML=`<div class="card" style="margin:8px 0;border-color:#ffd60a"><b>🛡 ${L2(`You’ve reached your ${m$(SK.cap)} limit.`,`Llegaste a tu límite de ${m$(SK.cap)}.`)}</b><div class="row" style="gap:8px;margin-top:8px"><button class="btn g" style="margin:0" onclick="stStop()">${L2('Stop here','Parar aquí')}</button><button class="btn" style="margin:0" onclick="confirmYou(()=>{SK.over=1;SK.ask=0;$('st-ask').innerHTML=''})">${L2('Keep going','Seguir')}</button></div></div>`}
+ stDraw();if(SK.soc>=SK.tg)stStop()}
+function stDraw(){if(!SK||!$('st-soc'))return;$('st-soc').textContent=Math.floor(SK.soc)+'%';$('st-kw').textContent=(SK.kwnow||SK.pmax).toFixed(SK.ac?1:0)+' kW';$('st-kwh').textContent=SK.kwh.toFixed(2)+' kWh';$('st-t').textContent=hms(SK.secs);$('st-c').textContent=m$(SK.kwh*SK.ppk);$('st-bar').style.transform=`scaleX(${SK.soc/100})`}
+function stStop(){if(!SK||!SK.live)return;clearInterval(SK.iv);SK.live=0;const s=SK.s,r={id:String(Date.now()).slice(-6),ts0:SK.ts0,ts1:Date.now(),net:s.net,st:s.name,stall:SK.stall,plug:plN(SK.plug),kwh:+SK.kwh.toFixed(3),secs:SK.secs,x:SK.x,ppk:SK.ppk,total:+(SK.kwh*SK.ppk).toFixed(2),soc0:SK.soc0,soc1:Math.floor(SK.soc),car:CAR};
+ rcSave(r);rcptUI();try{soc=r.soc1}catch(e){}
+ stBox(`${stLab(s.net)}<div class="row"><b>✅ ${L2('All done','Listo')}</b>${stX()}</div>${rcHTML(r)}<div class="row" style="gap:8px"><button class="btn g" style="margin:0" onclick="stClose()">${L2('Done','Listo')}</button><button class="btn" style="margin:0" onclick="stClose();go('wallet');setTimeout(()=>$('rcptc').scrollIntoView({block:'start'}),300)">🧾 ${L2('All receipts','Todos los recibos')}</button></div>`);SK=null}
+{const mo=new MutationObserver(()=>window.hSync&&hSync());mo.observe($('stm'),{attributes:true,attributeFilter:['class']})}
+addEventListener('keydown',e=>{if(e.key=='Escape'&&$('stm').classList.contains('on'))stClose()});
+{const _g=go;go=function(t){const r=_g.apply(this,arguments);if(t=='wallet')rcptUI();return r}}
+{const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);rcptUI();return r}}
+function phNote(){const e=$('phn');if(e)e.textContent=L2('Battery size is approximate. Change it if you know yours.','El tamaño de batería es aproximado. Cámbialo si conoces el tuyo.')}
+setTimeout(rcptUI,0);
+// ---------- all US stations: lazy state chunks + clustering ----------
+var FIDX={"CA1":[10654,32.53,-120.2,34.61,-114.55],"CA3":[8192,37.2,-124.28,41.97,-118.38],"VT":[550,42.82,-73.37,45.01,-71.87],"OR":[1664,42.04,-124.51,55.25,-116.85],"WA":[3228,45.55,-124.67,49.0,-117.03],"IL":[1932,37.15,-91.42,42.51,-87.52],"ID":[259,42.22,-117.02,48.71,-111.1],"WI":[909,42.49,-92.75,46.96,-87.1],"CA2":[1549,34.59,-122.16,37.2,-114.58],"IA":[486,40.61,-96.47,43.46,-90.18],"TX":[3871,25.93,-106.6,36.42,-93.74],"NY":[5540,40.5,-79.75,45.01,-71.93],"SC":[712,32.13,-83.11,35.19,-78.61],"CT":[1667,41.01,-73.68,42.03,-71.8],"OH":[1937,38.52,-84.78,41.93,-80.56],"WV":[182,37.24,-82.5,40.59,-77.76],"MO":[1342,36.22,-95.39,40.51,-89.51],"GA":[2410,30.63,-85.55,35.0,-80.83],"KS":[589,37.02,-101.74,39.85,-94.6],"FL":[4449,24.54,-87.5,30.95,-80.02],"MA":[4618,41.23,-73.39,42.87,-69.93],"CO":[2927,37.11,-109.02,40.82,-102.21],"MI":[2081,41.73,-90.18,47.48,-82.42],"NC":[1925,33.86,-84.04,36.54,-75.46],"VA":[1851,36.54,-83.04,39.3,-75.34],"TN":[1131,34.98,-90.12,36.63,-81.79],"AL":[573,30.22,-88.35,34.99,-84.99],"AZ":[1573,31.35,-114.79,36.93,-109.22],"HI":[403,19.19,-159.68,22.24,-154.95],"MD":[1695,37.98,-79.42,39.72,-75.05],"AR":[386,33.13,-94.55,36.42,-89.96],"MN":[1163,43.54,-97.04,48.92,-89.68],"NJ":[2144,38.92,-75.54,41.32,-73.92],"RI":[361,41.3,-71.86,42.02,-71.15],"PA":[2089,39.75,-80.5,42.16,-74.71],"LA":[260,29.49,-93.99,32.91,-89.73],"DC":[312,38.83,-77.11,38.99,-76.93],"ME":[659,43.08,-70.99,47.37,-66.97],"KY":[412,36.6,-88.7,39.11,-82.51],"MS":[223,30.23,-91.42,34.99,-88.35],"SD":[117,42.49,-103.9,45.67,-96.47],"DE":[229,38.45,-75.77,39.84,-75.04],"IN":[728,37.92,-87.9,41.76,-84.81],"OK":[397,33.72,-101.65,36.88,-94.44],"UT":[1032,37.0,-114.04,41.97,-109.33],"NM":[497,31.82,-109.04,36.91,-103.12],"ND":[108,46.08,-103.65,49.01,-96.6],"NH":[303,42.69,-72.44,45.07,-70.74],"NE":[338,40.09,-103.69,42.84,-95.65],"NV":[644,35.13,-120.01,42.0,-114.05],"WY":[126,41.05,-111.0,44.99,-104.06],"AK":[71,55.11,-162.3,64.86,-131.54],"MT":[158,44.62,-115.87,48.76,-104.68],"PR":[19,18.0,-66.86,18.5,-65.76]},FNETS=null,FLOAD={},FPTS=[],FN=0,FMC=null,FZ=7,FREADY=0,FERR=0;
+const SKEY=new Set(S.map(s=>s.lat.toFixed(3)+','+s.lng.toFixed(3)+'|'+(s.name||'').slice(0,10)));
+const NFM=[[/^Tesla/,'Tesla'],[/^ChargePoint/,'ChargePoint'],[/^eVgo/i,'EVgo'],[/^Electrify America/,'Electrify America'],[/^Blink/,'Blink'],[/^FLO$/,'FLO'],[/^EV Connect/,'EV Connect'],[/^RIVIAN/,'Rivian'],[/^IONNA/,'Ionna'],[/^BP_PULSE/,'bp pulse'],[/^MERCEDES/,'Mercedes-Benz'],[/^SHELL/,'Shell Recharge']];
+function nfOf(n){for(const [r,v] of NFM)if(r.test(n))return v;return 'Other'}
+function hsh(str){let h=0;for(let i=0;i<str.length;i++)h=(h*31+str.charCodeAt(i))|0;return Math.abs(h)}
+function mkSt(a){const [name,ni,lat,lng,street,city,l2,dc,m,d]=a,net=FNETS[ni]||'Other',h=hsh(name+lat),tot=Math.max(1,l2+dc),plugs=[];
+ if(m&1)plugs.push('J1772');if(m&2)plugs.push('CCS');if(m&4)plugs.push('CHADEMO');if(m&8)plugs.push('NACS');if(m&16)plugs.push('NEMA');
+ const cd=d?new Date(Date.UTC(2020,0,1)+d*864e5).toISOString().slice(0,10):'';
+ return {name,net,nf:nfOf(net),lat,lng,addr:[street,city].filter(Boolean).join(', '),addr0:[street,city].filter(Boolean).join(', '),plugs,kw:dc?150:7,l2,dc,avail:Math.max(0,tot-(h%3==0?Math.min(tot,1+h%2):0)),total:tot,price:dc?0.45:0.32,rate:+(3.8+(h%12)/10).toFixed(1),n:5+h%90,conf:cd,ix:h%1000,full:1}}
+function fPass(s){try{if(typeof maxP!='undefined'&&s.price>maxP)return false;if(!xf(s))return false;return [...on].every(f=>f=="Reliable only"||f=="Favorites"?true:f=="Fits my car"?fit(s)!="no":f=="Fast (50 kW+)"?s.kw>=50:NETS.includes(f)?s.nf==f:f=="Other"?s.nf=="Other":(s.plugs||[]).includes(f))}catch(e){return true}}
+var CANV=null;
+function fMk(s){const m=L.circleMarker([s.lat,s.lng],{renderer:CANV,radius:s.dc?8:6,color:'#fff',weight:2,fillColor:NC[s.nf]||NC.Other||'#94a3b8',fillOpacity:.95});m.on('click',()=>{pick(s);if(window.cardAll)cardAll()});m._st=s;return m}
+function fLoadLib(cb){if(window.L&&L.markerClusterGroup)return cb();if(fLoadLib.p){fLoadLib.p.push(cb);return}fLoadLib.p=[cb];
+ const c=document.createElement('link');c.rel='stylesheet';c.href='https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css';document.head.appendChild(c);
+ const j=document.createElement('script');j.src='https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js';j.onload=()=>{fLoadLib.p.forEach(f=>f());fLoadLib.p=null};j.onerror=()=>{FERR=1;fLoadLib.p=null;fNote()};document.head.appendChild(j)}
+function fInit(){if(FMC||!L.markerClusterGroup)return;CANV=L.canvas({padding:.3});FMC=L.markerClusterGroup({chunkedLoading:true,chunkInterval:120,chunkDelay:30,maxClusterRadius:z=>z>=13?40:60,disableClusteringAtZoom:17,showCoverageOnHover:false,spiderfyOnMaxZoom:true,removeOutsideVisibleBounds:true,
+ iconCreateFunction:c=>{const n=c.getChildCount(),sz=Math.round(26+Math.min(28,Math.log10(n)*9));return L.divIcon({className:'cluw',html:`<div class="clu" style="width:100%;height:100%">${fmt(n)}</div>`,iconSize:[sz,sz]})}});FREADY=1}
+function fNote(msg){let e=$('fload');if(!e){$('map').insertAdjacentHTML('beforeend','<div id="fload" role="status" class="notr"></div>');e=$('fload')}
+ if(FERR){e.textContent=L2('Couldn’t load all stations. Showing counts.','No se pudieron cargar todas las estaciones. Mostrando conteos.');e.hidden=false;return}e.hidden=!msg;if(msg)e.textContent=msg}
+function fVisible(){return map.getZoom()>=FZ}
+function fSync(){if(NOMAP_())return;const z=map.getZoom();if(z<FZ){if(FMC&&map.hasLayer(FMC))map.removeLayer(FMC);fNote('');return}
+ fLoadLib(()=>{fInit();if(!FMC)return;if(!map.hasLayer(FMC))map.addLayer(FMC);clu.clearLayers();drawClusters.z=null;try{clusterVis(z,map.getBounds())}catch(e){}
+  const b=map.getBounds().pad(0.25),need=Object.keys(FIDX).filter(k=>!FLOAD[k]&&L.latLngBounds([FIDX[k][1],FIDX[k][2]],[FIDX[k][3],FIDX[k][4]]).intersects(b));need.forEach(fChunk);
+  const fn=$('fullnote');if(fn)fn.hidden=true})}
+function NOMAP_(){return !!window.NOMAP||!window.map}
+async function fNets(){if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}
+function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json');if(!r.ok)throw 0;const a=await r.json();const pts=[];
+  for(const row of a){if(SKEY.has(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10)))continue;const s=mkSt(row);s.ck=k;pts.push(s)}FPTS.push(...pts);FN+=a.length;FLOAD[k]=2;
+  const ms=pts.filter(fPass).map(fMk);FMC.addLayers(ms);fNote('');fCount()}catch(e){FLOAD[k]=0;FERR=1;fNote()}})()}
+function fCount(){const e=document.querySelector('.usbox');if(e&&!e.querySelector('.fl')){e.insertAdjacentHTML('beforeend','<div class="fl notr" style="font-size:.75rem;opacity:.8"></div>')}const f=e&&e.querySelector('.fl');if(f)f.textContent=L2(`${FN.toLocaleString()} stations loaded so far`,`${FN.toLocaleString()} estaciones cargadas hasta ahora`)}
+function fRefilter(){if(!FMC)return;const sig=[...on].sort().join('|')+'|'+(typeof maxP!='undefined'?maxP:'')+'|'+CAR;if(sig==fRefilter.s)return;fRefilter.s=sig;FMC.clearLayers();FMC.addLayers(FPTS.filter(fPass).map(fMk))}
+{const _d=draw;draw=function(){const r=_d.apply(this,arguments);try{fRefilter()}catch(e){}return r}}
+{const _dc=drawClusters;drawClusters=function(){if(FMC&&map.getZoom()>=FZ&&!FERR){clu.clearLayers();drawClusters.z=null;try{clusterVis(map.getZoom(),map.getBounds())}catch(e){}const fn=$('fullnote');if(fn)fn.hidden=true;return}return _dc.apply(this,arguments)}}
+if(!window.NOMAP){map.on('moveend zoomend',()=>{clearTimeout(fSync.t);fSync.t=setTimeout(fSync,150)});setTimeout(fSync,1200)}
+// nearest station from the full set, for "Fits your car" users outside LA
+function fNearest(p){let best=null,bd=1e18;for(const s of FPTS){if(CAR&&fit(s)!='yes')continue;const d=(s.lat-p[0])**2+((s.lng-p[1])*Math.cos(p[0]*Math.PI/180))**2;if(d<bd){bd=d;best=s}}return best}
 </script></body></html>
