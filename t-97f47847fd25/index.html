@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19a</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>ChargeOne mock v19b</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -314,6 +314,18 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
 .ring.chg .rflow{will-change:transform}
 @media (max-width:500px){.card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+.tmt{display:flex!important;align-items:center;justify-content:center;min-height:52px}
+.lot{perspective:760px;margin:-30px 0 4px;padding:0}
+.lotp{transform:rotateX(48deg);transform-origin:50% 100%;background:linear-gradient(#1a2338,#0f1626);border:1px solid var(--b);border-radius:14px;padding:12px 10px 26px;position:relative;box-shadow:0 18px 30px #0008}
+.lotg{display:flex;flex-wrap:wrap-reverse;gap:6px}.lotg .bay{flex:0 0 calc(20% - 5px)}
+.bay{height:58px;border-radius:6px;border:2px solid #ffffff55;display:flex;align-items:flex-end;justify-content:center;font-weight:800;font-size:.875rem;padding-bottom:4px;color:#fff}
+.bay.o{background:#00c26a;border-color:#7dffb3}.bay.u{background:#2a3a66}.bay.d{background:#555b66;color:#cfd3da;text-decoration:line-through}
+.bay.best{outline:3px solid #ffd60a;outline-offset:2px}
+.ent{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:.75rem;letter-spacing:.1em;color:#ffd60a}
+.lgd{display:flex;gap:12px;font-size:.8125rem;margin-top:6px}.lgd i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+@media (prefers-reduced-motion:no-preference){.lotp{animation:tilt .6s ease-out both}@keyframes tilt{from{transform:rotateX(0)}to{transform:rotateX(48deg)}}}
+body.hc .bay.o{background:#000;border:3px solid #7dffb3}body.hc .bay.u{background:#000;border:3px dashed #fff}body.hc .bay.d{background:#000;border:3px dotted #888}
 </style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
 <div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
 <script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script>
@@ -348,7 +360,7 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
   <div class="muted" style="font-size:0.875rem;margin-top:4px">Typical times, sample data</div></div>
  <div class="card"><div class="row"><b>Nearby (within 300 m)</b><span class="muted" style="font-size:0.875rem">OpenStreetMap</span></div><div id="st-near" style="margin-top:6px"></div></div>
  <div class="card" id="myrep"></div>
- <div style="padding:0 14px"><button class="btn" onclick="shareSt()">📤 Send this charger</button></div>
+ <div style="padding:0 14px"><a class="btn g tmt" id="st-go" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;font-size:1.125rem">🧭 Take me there</a><button class="btn" onclick="openArr()">🅿️ Preview arrival</button><button class="btn" onclick="shareSt()">📤 Send this charger</button></div>
  <div class="card row" onclick="openCI()" style="cursor:pointer"><div><b>Driver check-ins</b> <span class="green">★ <span id="st-rate"></span></span>
   <div class="muted">Clean · Well lit · Easy to get to</div></div><span>›</span></div>
  <div style="padding:0 14px 14px"><button class="btn g" onclick="startCharge()">⚡ Start charging</button></div>
@@ -1057,7 +1069,7 @@ function shareSt(){const s=typeof cur!='undefined'&&cur;if(!s)return;const url='
  if(navigator.share)navigator.share({title:s.name,text:txt,url}).catch(e=>{if(e&&e.name!='AbortError')copy()});else copy()}
 function tripSet(){const e=$('tsoc');if(!e)return;e.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});e.focus({preventScroll:true});toast('Set your starting battery here.')}
 (function(){
- const LY=['cimodal','rbm','dsrc','perm','signup'];
+ const LY=['arrm','acm','cimodal','rbm','dsrc','perm','signup'];
  const topLy=()=>{for(const id of LY){const e=document.getElementById(id);if(e&&e.classList.contains('on'))return e}return null};
  const scr=()=>{const s=document.querySelector('.screen.on');return s?s.id.slice(2):'map'};
  const nonRoot=()=>!!topLy()||scr()!='map';
@@ -1126,4 +1138,46 @@ function walletCards(){const sv=$('savedc');if(sv){const x=($('sv-save')?.textCo
 {const _g=go;go=function(t){const r=_g.apply(this,arguments);if(t=='wallet')setTimeout(walletCards,50);if(t=='station'){RSTEP.st=0;repRender()}if(t=='trip')setTimeout(recap,300);return r}}
 {const _sv=savings;savings=function(){const r=_sv.apply(this,arguments);setTimeout(walletCards,0);return r}}
 setTimeout(walletCards,300);setInterval(()=>{if($('s-trip')?.classList.contains('on')&&PLAN&&!$('recapl'))recap()},1000);
+</script><script>/* v19b */
+Object.assign(ES,{"🧭 Take me there": "🧭 Llévame ahí", "Take me there": "Llévame ahí", "🅿️ Preview arrival": "🅿️ Ver la llegada", "Arrival preview": "Vista de llegada", "Sample data · Live stall status coming soon": "Datos de muestra · Estado en vivo de los espacios próximamente", "Open": "Libre", "In use": "En uso", "Down": "Sin servicio", "ENTRANCE": "ENTRADA", "All bays are in use right now.": "Todos los espacios están en uso ahora.", "💬 Send my feedback": "💬 Enviar mis comentarios", "Feedback questions copied. Paste them into a text.": "Preguntas copiadas. Pégalas en un mensaje.", "You’re here. Here’s the lot.": "Ya llegaste. Así está el estacionamiento."});
+ESR.unshift([/^Bay (\d+) is open, the one closest to the entrance\.$/,"El espacio $1 está libre, el más cercano a la entrada."],[/^Showing (\d+) of (\d+) bays$/,"Mostrando $1 de $2 espacios"]);
+// 2. clean cut-off addresses (data is cut at 32 chars)
+const CITYX=["Los Angeles","Culver City","South Gate","Santa Monica","Beverly Hills","West Hollywood","Pasadena","South Pasadena","Glendale","Burbank","Long Beach","Inglewood","Torrance","El Monte","South El Monte","Montebello","Commerce","Vernon","Huntington Park","Bell","Bell Gardens","Maywood","Lynwood","Paramount","Cerritos","Arcadia","San Gabriel","Rosemead","Monterey Park","Alhambra","El Segundo","Manhattan Beach","Hermosa Beach","Redondo Beach","Gardena","Hawthorne","Lawndale","Carson","Compton","Downey","Norwalk","Whittier","Pico Rivera","San Fernando","Universal City","Marina del Rey","Calabasas","Malibu","San Marino","Sierra Madre","Monrovia","Duarte","Azusa","West Covina","Baldwin Park","Industry","City of Industry","La Puente","Signal Hill","Lakewood","Bellflower","North Hollywood","Hollywood","Van Nuys","Sherman Oaks","Studio City","Encino","Tarzana","Woodland Hills","Northridge","Reseda","Sun Valley","Panorama City","Altadena","La Canada Flintridge","Temple City","Santa Fe Springs","La Mirada","Bellflower","Gardena","Wilmington","San Pedro","Playa Vista","Venice","Westwood"].concat(typeof AREAS!='undefined'?AREAS:[]);
+function cleanAddr(s){const a=s.addr0||s.addr||'';if(a.length<32)return a.replace(/,\s*$/,'');const i=a.indexOf(','),fromName=(s.name.match(/^([^,]{3,30}), CA\b/)||[])[1];
+ if(i<0){const st=a.replace(/\s+\S*$/,'').replace(/[,\s]+$/,'');return fromName?st+', '+fromName:st}
+ const st=a.slice(0,i).trim(),fr=a.slice(i+1).trim();let city='';
+ if(fr){const m=CITYX.filter(c=>c.toLowerCase().startsWith(fr.toLowerCase())).sort((x,y)=>x.length-y.length);city=m.length==1||(m.length&&m[0].toLowerCase()==fr.toLowerCase())?m[0]:(m.length?m[0]:'')}
+ if(!city&&fromName)city=fromName;return city?st+', '+city:st}
+S.forEach(s=>{if(s.addr0==null)s.addr0=s.addr;s.addr=cleanAddr(s)});
+// 4. take me there
+const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function goURL(s){return IOS?`https://maps.apple.com/?daddr=${s.lat},${s.lng}`:`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}`}
+// 6. feedback
+function fbText(){return LANG=='es'?'Comentarios de prueba de ChargeOne\nMi auto: \nCalificación 0-10: \nAlgo que fue fácil: \nAlgo que fue confuso: \n¿Podemos citarte? (sí/no): ':'ChargeOne test feedback\nMy car: \nScore 0-10: \nOne thing that was easy: \nOne thing that was confusing: \nOK to quote you? (yes/no): '}
+function sendFb(){const b=fbText();if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||IOS){location.href='sms:?&body='+encodeURIComponent(b);return}
+ try{navigator.clipboard.writeText(b).then(()=>toast('Feedback questions copied. Paste them into a text.'),()=>toast('Feedback questions copied. Paste them into a text.'))}catch(e){toast('Feedback questions copied. Paste them into a text.')}}
+// station extras: sheet + station screen
+function stExtras(){const s=cur;if(!s)return;const g=$('st-go');if(g)g.href=goURL(s);const sh=$('sheet');if(!sh)return;sh.querySelector('.v19b')?.remove();
+ sh.insertAdjacentHTML('beforeend',`<div class="v19b"><a class="btn g tmt" target="_blank" rel="noopener" href="${goURL(s)}" style="text-decoration:none;margin-top:10px">🧭 Take me there</a><button type="button" class="lnk" style="display:block;margin:6px auto 0" onclick="sendFb()">💬 Send my feedback</button></div>`)}
+{const _r=repRender;repRender=function(){const x=_r.apply(this,arguments);stExtras();return x}}
+// 5. arrival view
+document.querySelector('.phone').insertAdjacentHTML('beforeend','<div class="modal" id="arrm" onclick="if(event.target===this)this.classList.remove(\'on\')"><div class="mbox" role="dialog" aria-label="Arrival preview" id="arrbox"></div></div>');
+function hsh(x){let h=7;for(const c of x)h=(h*31+c.charCodeAt(0))>>>0;return h}
+function bays(s){const n=Math.min(s.total||4,10),open=Math.min(s.avail||0,n),h=hsh(s.name),down=(n-open>1&&h%3==0)?1:0,st=Array(n).fill('u');
+ const idx=[...Array(n).keys()].sort((a,b)=>((hsh(s.name+a)%97)-(hsh(s.name+b)%97)));idx.slice(0,open).forEach(i=>st[i]='o');idx.slice(open).slice(0,down).forEach(i=>st[i]='d');return st}
+function openArr(here){const s=cur;if(!s)return;const b=bays(s),best=b.indexOf('o'),n=s.total||b.length;
+ const line=best>=0?`Bay ${best+1} is open, the one closest to the entrance.`:'All bays are in use right now.';
+ $('arrbox').innerHTML=`<div class="row"><b>${here?'You’re here. Here’s the lot.':'Arrival preview'}</b><button class="lnk mx" aria-label="Close" onclick="$('arrm').classList.remove('on')">✕</button></div><div class="muted">${s.name}</div>
+ <div class="lot" aria-hidden="true"><div class="lotp"><div class="lotg">${b.map((x,i)=>`<div class="bay ${x}${i==best?' best':''}">${i+1}</div>`).join('')}</div><div class="ent">▲ ENTRANCE</div></div></div>
+ <div style="font-weight:700;margin-top:4px" role="status">${line}</div>${n>b.length?`<div class="muted">Showing ${b.length} of ${n} bays</div>`:''}
+ <div class="lgd"><span><i style="background:#00c26a"></i>Open</span><span><i style="background:#2a3a66"></i>In use</span><span><i style="background:#555b66"></i>Down</span></div>
+ <div class="muted" style="margin-top:8px;font-size:.8125rem">Sample data · Live stall status coming soon</div>`;
+ $('arrm').classList.add('on')}
+{const mo=new MutationObserver(()=>window.hSync&&hSync());['acm','arrm'].forEach(id=>{const e=$(id);e&&mo.observe(e,{attributes:true,attributeFilter:['class']})})}
+addEventListener('keydown',e=>{if(e.key=='Escape')$('arrm')?.classList.remove('on')});
+// auto arrival when the simulated You position is within ~150 m
+{const _sl=startLoc;startLoc=function(toLA){_sl(toLA);let k=0;const iv=setInterval(()=>{if(++k>20)return clearInterval(iv);if(youMk&&cur){clearInterval(iv);const p=youMk.getLatLng();if(dist(p.lat,p.lng,cur.lat,cur.lng)<=150)setTimeout(()=>openArr(1),2200)}},500)}}
+// 3. You/Tú label follows language
+{const _sl2=setLang;setLang=function(l){const r=_sl2.apply(this,arguments);try{youMk&&youMk.setTooltipContent(T('You'))}catch(e){}if($('arrm').classList.contains('on'))openArr();return r}}
+if(cur)try{repRender()}catch(e){}
 </script></body></html>
