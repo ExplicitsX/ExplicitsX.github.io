@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19o</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>ChargeOne mock v19p</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -517,6 +517,20 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 #shm h2{margin:0;font-size:1.375rem;color:#fff}#shm .shq{background:#fff;border-radius:16px;padding:12px;width:min(68vw,250px)}#shm .shq svg{display:block;width:100%;height:auto}
 #shm .shu{color:#c9d6ea;font-size:.8125rem;word-break:break-all}#shm .shh{color:#e6f1ff;font-size:.9375rem;max-width:320px}#shm .btn{width:100%;max-width:340px;margin:0;min-height:52px}#shm .shx{min-height:60px;font-size:1.125rem}
 .mshare{display:flex;gap:8px;align-items:stretch}.mshare .btn{flex:1;margin:0}.mshare .lnk{min-height:44px;white-space:nowrap;padding:0 10px}
+
+/* v19p touch effects */
+.c1pr{transform:scale(.96)!important;transition:transform .08s ease-out!important}
+.c1sp{transition:transform .4s cubic-bezier(.3,1.9,.55,1)!important}
+#s-charge .evh{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+#s-charge .evh svg.c1lh{animation:c1lh .62s cubic-bezier(.3,.7,.4,1)}
+@keyframes c1lh{0%{transform:translateY(0)}35%{transform:translateY(-10px)}68%{transform:translateY(0) scale(1.04,.93)}84%{transform:translateY(-1px) scale(.99,1.02)}100%{transform:none}}
+.c1zb{position:absolute;left:50%;top:6px;z-index:5;font-size:1.375rem;line-height:1;margin-left:-.5em;pointer-events:none;opacity:0}
+.c1zb.on{animation:c1zb .9s ease-out forwards}
+@keyframes c1zb{0%{opacity:0;transform:translateY(-8px) scale(.6)}25%{opacity:1;transform:translateY(10px) scale(1.1)}45%{transform:translateY(2px) scale(.95)}62%{transform:translateY(6px) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(4px)}}
+.c1gm{color:#e6f1ff;font-size:.9375rem;text-align:center;margin:6px 0 2px;opacity:0;transition:opacity .5s ease}.c1gm.on{opacity:.92}
+.c1rg{position:absolute;z-index:650;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:2px solid rgba(0,255,157,.55);pointer-events:none;animation:c1rg .55s ease-out forwards}
+@keyframes c1rg{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){.c1pr,.c1sp{transform:none!important;transition:none!important}#s-charge .evh svg.c1lh,.c1zb.on,.c1rg{animation:none!important}.c1zb,.c1rg{display:none}.c1gm{transition:none}}
 </style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
 <div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
 <script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script><script>/* v19c intro variants */
@@ -2047,4 +2061,43 @@ addEventListener('keydown',e=>{if(e.key=='Escape'&&$('shm').classList.contains('
 {const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');if(b&&!b.querySelector('.mshare')){const st=[...b.querySelectorAll('button')].find(x=>/Share this test|Compartir esta prueba/.test(x.textContent));
  const h=`<div class="mshare"><button type="button" class="btn" onclick="$('menum').classList.remove('on');shareC1()">📤 ${L2('Share ChargeOne','Compartir ChargeOne')}</button><button type="button" class="lnk" onclick="$('menum').classList.remove('on');openShQR()" aria-label="${L2('Show QR code','Mostrar código QR')}">QR</button></div>`;
  if(st)st.insertAdjacentHTML('beforebegin',h);else{const row=b.querySelector('.row');row?row.insertAdjacentHTML('afterend',h):b.insertAdjacentHTML('afterbegin',h)}}return r}}
+</script><script>/* v19p: touch effects (no rewards; never block a flow) */
+{const rm=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+// 1) press and spring
+const PSEL='button,.btn,.chip,.tab,.card[onclick],[role=button]';let pe=null;
+const skip=el=>el.closest('#safm,.clhd,.leaflet-container')||/sfSet\('lock'/.test(el.getAttribute('onclick')||'')||el.disabled||getComputedStyle(el).transform!='none';
+document.addEventListener('pointerdown',e=>{if(rm()||e.button>0)return;const el=e.target.closest&&e.target.closest(PSEL);if(!el||skip(el))return;el.classList.remove('c1sp');el.classList.add('c1pr');pe=el},true);
+const rel=()=>{const el=pe;if(!el)return;pe=null;el.classList.remove('c1pr');el.classList.add('c1sp');clearTimeout(el._c1sp);el._c1sp=setTimeout(()=>el.classList.remove('c1sp'),420)};
+['pointerup','pointercancel','dragstart'].forEach(k=>document.addEventListener(k,rel,true));document.addEventListener('pointermove',e=>{if(pe&&!pe.contains(document.elementFromPoint(e.clientX,e.clientY)))rel()},true);
+// 2) buzz: Start charging and STOP only
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button,.btn');if(!b)return;const oc=b.getAttribute('onclick')||'';
+ if(/openStart\(/.test(oc)||/^stStop\(\)$|^chStop\(\)$/.test(oc.trim())){try{if('vibrate' in navigator)navigator.vibrate(15)}catch(_){}}},true);
+// 3) car hop: long-press the hero car on the Charging tab
+let ct=null,cx=0,cy=0;document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.closest('#s-charge .evh');if(!c)return;cx=e.clientX;cy=e.clientY;clearTimeout(ct);
+ ct=setTimeout(()=>{ct=null;if(rm())return;const s=c.querySelector('svg');if(!s)return;s.classList.remove('c1lh');void s.getBoundingClientRect();s.classList.add('c1lh');setTimeout(()=>s.classList.remove('c1lh'),700)},450)});
+const cc=()=>{clearTimeout(ct);ct=null};['pointerup','pointercancel'].forEach(k=>document.addEventListener(k,cc));document.addEventListener('pointermove',e=>{if(ct&&Math.hypot(e.clientX-cx,e.clientY-cy)>10)cc()});
+document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#s-charge .evh'))e.preventDefault()});
+// 4) pull-down ⚡ on the Closest to you sheet
+let py=null,pz=0;const zap=()=>{const c=$('clo');if(!c||rm()||Date.now()-pz<1200)return;pz=Date.now();let z=c.querySelector('.c1zb');if(!z){z=document.createElement('span');z.className='c1zb';z.textContent='⚡';z.setAttribute('aria-hidden','true');c.appendChild(z)}
+ z.style.top=(c.scrollTop+6)+'px';z.classList.remove('on');void z.offsetWidth;z.classList.add('on');setTimeout(()=>z.classList.remove('on'),950)};
+document.addEventListener('touchstart',e=>{const c=e.target.closest&&e.target.closest('#clo');py=c&&!e.target.closest('.clhd')&&c.scrollTop<=0?e.touches[0].clientY:null},{passive:true});
+document.addEventListener('touchmove',e=>{if(py==null)return;const c=$('clo');if(c.scrollTop>0){py=null;return}if(e.touches[0].clientY-py>48){py=null;zap()}},{passive:true});
+document.addEventListener('touchend',()=>py=null,{passive:true});
+document.addEventListener('wheel',e=>{const c=e.target.closest&&e.target.closest('#clo');if(c&&e.deltaY<-20&&c.scrollTop<=0)zap()},{passive:true});
+window.c1Zap=zap;
+// 5) good morning, first demo charge start of the local day, before noon
+const _sl=stLive;stLive=function(){const r=_sl.apply(this,arguments);try{const d=new Date(),k=d.toLocaleDateString('en-CA');if(d.getHours()<12&&localStorage.getItem('c1_gm')!=k){localStorage.setItem('c1_gm',k);const b=$('stbox');if(b){const g=document.createElement('div');g.className='c1gm';g.setAttribute('role','status');g.textContent=L2('Good morning, driver ☀️','Buenos días, conductor ☀️');
+ const h=b.firstElementChild;h?h.after(g):b.prepend(g);requestAnimationFrame(()=>requestAnimationFrame(()=>g.classList.add('on')));setTimeout(()=>{g.classList.remove('on');setTimeout(()=>g.remove(),rm()?0:550)},4000)}}}catch(_){}return r};
+// 6) pin pop: long-press a station pin on the map
+let mt=null,mx=0,my=0,lp=0;const mc=map.getContainer();
+mc.addEventListener('pointerdown',e=>{lp=0;if(!e.isPrimary||(e.target.closest&&e.target.closest('.leaflet-marker-icon,.leaflet-control,.leaflet-popup,button,a'))){clearTimeout(mt);mt=null;return}const r=mc.getBoundingClientRect(),p=L.point(e.clientX-r.left,e.clientY-r.top);mx=e.clientX;my=e.clientY;clearTimeout(mt);
+ mt=setTimeout(()=>{mt=null;let best=null,bd=1e9;map.eachLayer(l=>{if(!(l instanceof L.CircleMarker)||l.options.interactive===false||!l.listens||!l.listens('click'))return;const q=map.latLngToContainerPoint(l.getLatLng()),d=q.distanceTo(p);if(d<l.getRadius()+12&&d<bd){bd=d;best=[l,q]}});
+  if(!best)return;lp=1;if(rm())return;const [m,q]=best,r0=m._c1r0||m.getRadius();m._c1r0=r0;const t0=performance.now();
+  const f=n=>{const t=Math.min(1,(n-t0)/600),s=t<.28?1+.75*(t/.28):1+.75*Math.exp(-(t-.28)*9)*Math.cos((t-.28)*15);m.setRadius(r0*s);if(t<1)requestAnimationFrame(f);else{m.setRadius(r0);delete m._c1r0}};requestAnimationFrame(f);
+  const g=document.createElement('div');g.className='c1rg';g.style.left=q.x+'px';g.style.top=q.y+'px';mc.appendChild(g);setTimeout(()=>g.remove(),600)},450)},true);
+const mcc=()=>{clearTimeout(mt);mt=null};mc.addEventListener('pointerup',mcc,true);mc.addEventListener('pointercancel',mcc,true);mc.addEventListener('pointermove',e=>{if(mt&&Math.hypot(e.clientX-mx,e.clientY-my)>8)mcc()},true);
+map.on('movestart zoomstart',mcc);
+mc.addEventListener('click',e=>{if(lp){lp=0;e.stopPropagation();e.preventDefault()}},true);
+mc.addEventListener('contextmenu',e=>{if(lp)e.preventDefault()},true);
+}
 </script></body></html>
