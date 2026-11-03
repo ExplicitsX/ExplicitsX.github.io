@@ -1,5 +1,5 @@
-<!DOCTYPE html><html><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v18c</title><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ChargeOne mock v19a</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -332,7 +332,7 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
 <section class="screen on" id="s-map">
  <div class="hdr"><i onclick="soon()">☰</i><span>Map</span><i id="hcbtn" onclick="hcToggle()" aria-pressed="false">◐</i></div>
  <div class="chips" id="chips"></div>
- <div class="nfit"><button class="btn g" onclick="nearestFit()" id="nfbtn" style="flex:1">⚡ Nearest charger that fits my car</button><button class="btn" id="stybtn" style="width:auto;white-space:nowrap" onclick="setStyle(MSTYLE=='sat'?'dark':'sat',1)"></button></div>
+ <div class="nfit"><button class="btn g" onclick="nearestFit()" id="nfbtn" style="flex:1">⚡ Show chargers near me</button><button class="btn" id="stybtn" style="width:auto;white-space:nowrap" onclick="setStyle(MSTYLE=='sat'?'dark':'sat',1)"></button></div>
  <div id="map" role="region" aria-label="Charger map. Use &quot;Nearest charger&quot; or the filters to find one fast."></div>
  <div class="sheet" id="sheet" role="region" aria-label="Selected station" aria-live="polite"></div>
 </section>
@@ -347,6 +347,8 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
   <div class="bars" id="st-bars"></div><div class="bx"><span>12a</span><span>6a</span><span>12p</span><span>6p</span><span>11p</span></div>
   <div class="muted" style="font-size:0.875rem;margin-top:4px">Typical times, sample data</div></div>
  <div class="card"><div class="row"><b>Nearby (within 300 m)</b><span class="muted" style="font-size:0.875rem">OpenStreetMap</span></div><div id="st-near" style="margin-top:6px"></div></div>
+ <div class="card" id="myrep"></div>
+ <div style="padding:0 14px"><button class="btn" onclick="shareSt()">📤 Send this charger</button></div>
  <div class="card row" onclick="openCI()" style="cursor:pointer"><div><b>Driver check-ins</b> <span class="green">★ <span id="st-rate"></span></span>
   <div class="muted">Clean · Well lit · Easy to get to</div></div><span>›</span></div>
  <div style="padding:0 14px 14px"><button class="btn g" onclick="startCharge()">⚡ Start charging</button></div>
@@ -370,6 +372,8 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
  <div class="card" id="greet" hidden></div>
  <div class="card row" id="langcard"><span><b>🌐 Language</b><div class="muted">Saved on this phone</div></span><div class="lgw notr" role="group" aria-label="Language / Idioma" style=""><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div></div>
  <div class="navy"><div>One wallet for all major networks. <span class="soon">Coming soon</span></div><div class="row" style="margin-top:12px"><div><b style="font-size:1.125rem">⚡ ChargeOne</b><div style="font-size:0.875rem;opacity:.7">One balance · One login (coming soon)</div></div><div class="bal" id="bal">$52.40</div></div></div>
+ <div class="card" id="savedc"></div>
+ <div class="card" id="votes"></div>
  <div class="card" id="savcard" role="region" aria-label="What you save vs gas each month"><div class="row"><b>⛽ What you save vs gas each month</b><span data-spk="savings"></span><span class="muted">Estimate</span></div>
   <div class="res3"><div><span class="muted">EV / month</span><b id="sv-ev">–</b></div><div><span class="muted">Gas / month</span><b id="sv-gas">–</b></div><div><span class="muted">You save</span><b class="green" id="sv-save">–</b></div></div>
   <div class="green" style="text-align:center;margin-top:6px;font-weight:700" id="sv-year"></div>
@@ -393,8 +397,9 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
  <div class="card"><div class="row"><b id="tcar">Your car</b><span style="white-space:nowrap">Start <select class="chip" id="tsoc" onchange="trip()"><option >30</option><option >50</option><option selected>68</option><option >80</option><option >100</option></select>%</span></div><div class="muted" id="tsum"></div></div>
  <div id="stops"></div>
  <div class="card" id="gasc"></div>
+ <div class="card" id="recap"></div>
 </section>
-<div class="ov on" id="welcome"><div class="lgw notr" role="group" aria-label="Language / Idioma" style="align-self:flex-end"><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+<div class="ov" id="welcome"><div class="lgw notr" role="group" aria-label="Language / Idioma" style="align-self:flex-end"><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
  <div style="font-size:3.375rem">⚡</div><h2 style="color:var(--g);font-size:1.875rem">ChargeOne</h2><p class="muted" style="font-size:1rem;margin-top:8px">Every charger. One app.</p>
  <p style="margin-top:24px;font-size:0.875rem">One map, all major networks · Trips planned for your car · Driver check-ins · One wallet (coming soon)</p></div>
  <button class="btn g" onclick="$('welcome').classList.remove('on');$('signup').classList.add('on')">Get started</button>
@@ -592,7 +597,7 @@ document.addEventListener('keydown',e=>{if((e.key=='Enter'||e.key==' ')&&e.targe
 function hcToggle(on){on=on??!document.body.classList.contains('hc');document.body.classList.toggle('hc',on);$('hcbtn').setAttribute('aria-pressed',on);localStorage.setItem('c1_hc',on?1:'');}
 // colorblind-safe trust badge: icon + word + number
 var TLEAD={good:'Drivers say this one’s reliable',mixed:'Mixed reports lately',bad:'Drivers say this one’s been acting up'};rbadge=function(s){const r=rel(s),t=trust(s),ic={good:'✔',mixed:'⚠',bad:'✖'}[r],w={good:'Reliable',mixed:'Mixed reports',bad:'Problems lately'}[r];return `<span class="rb ${r}" aria-label="Trust score ${t.sc} out of 100, ${w}">${ic} ${TLEAD[r]}</span> <span class="muted tsc">Trust ${t.sc}</span>`};
-{const _ft=fitTag;fitTag=function(s){const f=fit(s);return f=='yes'?`<span class="green">✔ Fits your ${carShort()}</span>`:f=='adapter'?'<span style="color:#ffb020">⚠ Needs an adapter</span>':f=='no'?'<span style="color:#ff6b84">✖ Won\'t fit your car</span>':_ft(s)};}
+{const _ft=fitTag;fitTag=function(s){const f=fit(s);return f=='yes'?`<span class="green">✔ Fits your ${carShort()}</span>`:f=='adapter'?adTag(s):f=='no'?'<span style="color:#ff6b84">✖ Won\'t fit your car</span>':_ft(s)};}
 {const _r=ring;ring=function(){_r();const e=$('srsoc');if(e&&(soc%5==0||soc>=TGT)){const m='Battery '+soc+' percent';if(e.textContent!=m)e.textContent=m;}};}
 {const _g2=go;go=function(t){_g2(t);a11y();if(t=='wallet')savings();const s=$('s-'+t);if(s){const h=s.querySelector('.hdr');if(h){h.tabIndex=-1;}}};}
 {const _p=pick;pick=function(s){_p(s);a11y($('sheet'));};}
@@ -602,10 +607,10 @@ let meMk;function nearestFit(){const b=$('nfbtn');b.textContent='Finding you…'
   if(meMk)map.removeLayer(meMk);meMk=L.circleMarker([la,lo],{radius:7,color:'#fff',fillColor:'#00c2ff',fillOpacity:1}).addTo(map);
   go('map');pick(s[1]);emptyState(CAR&&(!ok.length||s[0]>24140));b.textContent=`⚡ Nearest: ${s[1].name.slice(0,26)} · ${(s[0]/1609).toFixed(1)} mi ${src}`;
   const d=sheet.querySelector('.btn.g');if(d)d.focus();};
- let done=0;const fb=()=>{if(!done){done=1;run(34.0522,-118.2437,'from downtown LA')}};setTimeout(fb,4000);
- if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{if(!done){done=1;run(p.coords.latitude,p.coords.longitude,'away')}},fb,{timeout:3500,maximumAge:6e5});else fb();}
-if(!CAR)$('nfbtn').textContent='⚡ Nearest fast charger';
-{const _sd=signupDone;signupDone=function(){_sd();$('nfbtn').textContent=CAR?'⚡ Nearest charger that fits my car':'⚡ Nearest fast charger';savings();};}
+ let done=0;const fb=()=>{if(!done){done=1;toast('No problem. Search a city or address instead.');run(34.0522,-118.2437,'from downtown LA')}};setTimeout(fb,6500);
+ if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>{if(!done){done=1;run(p.coords.latitude,p.coords.longitude,'away')}},fb,{timeout:6000,maximumAge:6e5});else fb();}
+if(!CAR)$('nfbtn').textContent='⚡ Show chargers near me';
+{const _sd=signupDone;signupDone=function(){_sd();$('nfbtn').textContent='⚡ Show chargers near me';savings();};}
 if(localStorage.getItem('c1_hc'))hcToggle(true);a11y();savings();pick(cur);
 // v13: selecting a station -> Satellite + close zoom on the lot (user toggle still overrides afterwards)
 var BOOT=1,FOCUS=null;function focusLot(s){FOCUS=s;if(MSTYLE!='sat')setStyle('sat');map.invalidateSize();map.setView([s.lat,s.lng],18);}
@@ -837,7 +842,7 @@ $('map').insertAdjacentHTML('beforeend','<div id="fullnote" role="status" hidden
 map.on('zoomend moveend',()=>{clearTimeout(drawClusters.t);drawClusters.t=setTimeout(drawClusters,60)});
 // start on the whole-US view; fly to LA once the welcome intro ends (instant with reduced motion)
 map.setView([39.5,-98.5],3,{animate:false});drawClusters();
-var FLEW=0;function flyIn(){if(FLEW)return;FLEW=1;map.invalidateSize();const la=[34.05,-118.27];RM?map.setView(la,11,{animate:false}):map.flyTo(la,11,{duration:2.5})}
+var FLEW=0;function flyIn(){if(FLEW)return;FLEW=1;map.invalidateSize();const la=[34.05,-118.27],toLA=()=>RM?map.setView(la,11,{animate:false}):map.flyTo(la,11,{duration:2.5});if(new URLSearchParams(location.search).get('scene'))return toLA();startLoc(toLA)}
 (function w(){const i=document.getElementById('intro'),c=['welcome','signup','perm'].some(x=>{const e=document.getElementById(x);return e&&e.classList.contains('on')});if((!i||i.classList.contains('out'))&&!c)setTimeout(flyIn,300);else setTimeout(w,200)})();
 // ===== v17b motion helpers (JS-driven parts; all skipped under reduced motion) =====
 function tween(ms,fn,done){if(RM){fn(1);done&&done();return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);fn(e);if(k<1)requestAnimationFrame(f);else done&&done()})(t0)}
@@ -975,7 +980,7 @@ function decor18(){const s=cur;if(!s)return;const sh=$('sheet');
 {const _p18=pick;pick=function(s){_p18(s);decor18()};const _f18=fillStation;fillStation=function(){_f18();decor18()};}
 // ===== idle-fee countdown on the charging screen =====
 var T_FULL=null,IDLE_REM=false;
-function idleCD(){const c=$('idlecd')||($('idle')?.insertAdjacentHTML('afterend','<div class="card" id="idlecd" role="timer" aria-live="off"></div>'),$('idlecd'));if(!c||!cur)return;const n=cur.net,f=IDLE[n];
+function idleCD(){const c=$('idlecd')||($('idle')?.insertAdjacentHTML('afterend','<div class="card" id="idlecd" role="timer" aria-live="off"></div>'),$('idlecd'));if(!c||!cur)return;const n=cur.net,f=IDLE[n];if((!f||!f[0])&&soc<TGT&&Math.round((TGT-soc)*1.5*60)<=120&&!IDLE_REM){IDLE_REM=true;const m=LANG=='es'?'Ojo, tu carga termina en 2 min. Mueve tu auto pronto para evitar la tarifa por inactividad':'Heads up, your charge ends in 2 min. Move your car soon to skip any idle fee';toast(m);say(m)}
  if(!f){c.innerHTML='<b>⏱ Idle-fee countdown</b><div class="muted">We don’t know this network’s idle fees. Check the sign at the charger.</div>';return}
  if(!f[0]){c.innerHTML='<b>⏱ Idle-fee countdown</b><div class="muted">No idle fee reported here</div>';return}
  if(soc>=TGT&&!T_FULL)T_FULL=Date.now();if(soc<TGT)T_FULL=null;
@@ -1047,7 +1052,7 @@ Object.keys(TALKES).forEach(k=>{const o=TALK[k];TALK[k]=function(...a){return LA
  }[sc]||(()=>{}))();})();
 </script><script>/* v18c: back gesture / browser back closes sheets, Escape closes, dead buttons answer */
 function soon(){toast('Coming soon. It’s not in this preview yet.')}
-function shareSt(){const s=typeof cur!='undefined'&&cur;if(!s)return;const url='https://www.google.com/maps/search/?api=1&query='+s.lat+','+s.lng,txt=s.name+(s.addr?' · '+s.addr:'');
+function shareSt(){const s=typeof cur!='undefined'&&cur;if(!s)return;const url='https://www.google.com/maps/search/?api=1&query='+s.lat+','+s.lng,txt=LANG=='es'?`Aquí hay un cargador que funciona: ${s.name}, ${s.addr||''}. Lo encontré en ChargeOne ⚡`:`Here's a working charger: ${s.name}, ${s.addr||''}. Found it on ChargeOne ⚡`;
  const copy=()=>{try{navigator.clipboard.writeText(txt+' '+url).then(()=>toast('Station details copied'),()=>toast(txt))}catch(e){toast(txt)}};
  if(navigator.share)navigator.share({title:s.name,text:txt,url}).catch(e=>{if(e&&e.name!='AbortError')copy()});else copy()}
 function tripSet(){const e=$('tsoc');if(!e)return;e.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});e.focus({preventScroll:true});toast('Set your starting battery here.')}
@@ -1068,4 +1073,57 @@ function tripSet(){const e=$('tsoc');if(!e)return;e.scrollIntoView({block:'cente
  setTimeout(hSync,0);
  if(window.NOMAP){const msg='<div class="nomap" role="alert"><b aria-hidden="true">🗺</b><p>The map couldn’t load. Check your signal and tap Retry. Everything else still works.</p><button type="button" class="btn g" onclick="location.reload()">Retry</button></div>';['map','tmap'].forEach(id=>{const e=document.getElementById(id);e&&e.insertAdjacentHTML('beforeend',msg)})}
 })();
+</script><script>/* v19a features */
+Object.assign(ES,{"⚡ Show chargers near me": "⚡ Ver cargadores cerca de mí", "No problem. Search a city or address instead.": "No hay problema. Busca una ciudad o dirección.", "Showing LA (location off)": "Mostrando LA (ubicación desactivada)", "You": "Tú", "Did it work?": "¿Funcionó?", "👍 Worked great": "👍 Funcionó muy bien", "👎 Had trouble": "👎 Tuve problemas", "Thanks! You just helped the next driver ⚡": "¡Gracias! Acabas de ayudar al próximo conductor ⚡", "What did you pay?": "¿Cuánto pagaste?", "Skip": "Omitir", "Save": "Guardar", "Got it, that helps everyone see real prices.": "Listo, eso ayuda a todos a ver precios reales.", "Test data · saved only on this phone · Anonymous driver": "Datos de prueba · guardados solo en este teléfono · Conductor anónimo", "Delete": "Borrar", "Report deleted": "Reporte borrado", "Worked great": "Funcionó muy bien", "Had trouble": "Tuve problemas", "How did it go?": "¿Cómo te fue?", "Close": "Cerrar", "Which one?": "¿Cuál?", "⚠ Fits with an adapter": "⚠ Funciona con adaptador", "Use a NACS-to-CCS adapter (check the station allows your car)": "Usa un adaptador de NACS a CCS (revisa que la estación permita tu auto)", "Use a CCS-to-NACS adapter": "Usa un adaptador de CCS a NACS", "Use the J1772 adapter that came with most Teslas": "Usa el adaptador J1772 que viene con la mayoría de los Tesla", "📤 Send this charger": "📤 Enviar este cargador", "📤 Share trip": "📤 Compartir viaje", "🧾 Trip recap": "🧾 Resumen del viaje", "Sample data": "Datos de muestra", "Estimate from the numbers below, not your real charges.": "Estimación con los números de abajo, no con tus cargas reales.", "🗳 Coming soon: vote for what’s next": "🗳 Próximamente: vota por lo que sigue", "Wallet": "Billetera", "CarPlay": "CarPlay", "Widgets": "Widgets", "Tap-to-charge": "Tocar para cargar", "Vote": "Votar", "✔ Voted": "✔ Votado", "Thanks for your vote": "Gracias por tu voto", "Saved on this phone only": "Guardado solo en este teléfono", "Trip copied": "Viaje copiado"});
+ESR.unshift([/^Reported by you: (\d+)$/,"Reportado por ti: $1"],[/^You saved \$([\d,]+) this month$/,"Ahorraste $$$1 este mes"],[/^(.+) to (.+), (\d+) stops?, \$([\d.]+) sample$/,(m,a,b,n,c)=>`${a=='LA'?'LA':a} a ${b}, ${n} parada${n==1?'':'s'}, $${c} de muestra`],[/^Paid \$([\d.]+)$/,"Pagaste $$$1"]);
+// 1. location on start
+var youMk;
+function startLoc(toLA){let done=0;const off=()=>{if(done)return;done=1;toLA();toast('Showing LA (location off)')};
+ if(!navigator.geolocation)return off();const tm=setTimeout(off,6500);
+ navigator.geolocation.getCurrentPosition(p=>{if(done)return;const la=p.coords.latitude,lo=p.coords.longitude;
+  const near=S.map(x=>[dist(la,lo,x.lat,x.lng),x]).sort((a,b)=>a[0]-b[0]);if(!near.length||near[0][0]>80000){clearTimeout(tm);return off()}
+  done=1;clearTimeout(tm);me=[la,lo];ME_OK=true;if(youMk)map.removeLayer(youMk);
+  youMk=L.circleMarker([la,lo],{radius:8,color:'#fff',weight:3,fillColor:'#00c2ff',fillOpacity:1}).addTo(map).bindTooltip(T('You'),{permanent:true,direction:'top',offset:[0,-8]});
+  const b0=BOOT;BOOT=1;try{pick(near[0][1])}finally{BOOT=b0}RM?map.setView([la,lo],14,{animate:false}):map.flyTo([la,lo],14,{duration:2});
+ },()=>{clearTimeout(tm);off()},{timeout:6000,maximumAge:6e5})}
+// 2. after-charge taps
+function myR(){try{return JSON.parse(localStorage.getItem('c1_myrep'))||[]}catch(e){return []}}
+function myW(a){localStorage.setItem('c1_myrep',JSON.stringify(a))}
+var RSTEP={};
+function repHTML(s,id){if(!s)return'';const st=RSTEP[id]||0,mine=myR().map((r,i)=>[r,i]).filter(([r])=>r.st==s.name);
+ let h='';if(st==0)h=`<b>Did it work?</b><div class="row" style="gap:8px;margin-top:8px"><button class="btn" style="margin:0" onclick="repOk('${id}',1)">👍 Worked great</button><button class="btn" style="margin:0" onclick="repOk('${id}',0)">👎 Had trouble</button></div>`;
+ else h=`<b>What did you pay?</b><div class="row" style="gap:8px;margin-top:8px"><span style="white-space:nowrap">$<input id="pay-${id}" class="inp" type="number" inputmode="decimal" step="0.01" min="0" placeholder="__" style="width:110px;margin:0 0 0 4px" aria-label="What did you pay?"></span><button class="btn g" style="margin:0" onclick="repPay('${id}',1)">Save</button><button class="btn" style="margin:0;width:auto;padding:12px 18px" onclick="repPay('${id}',0)">Skip</button></div>`;
+ h+=`<div class="muted" style="margin-top:8px;font-size:.8125rem">Test data · saved only on this phone · Anonymous driver</div>`;
+ if(mine.length)h+=`<div style="margin-top:8px"><b class="green">Reported by you: ${mine.length}</b>${mine.map(([r,i])=>`<div class="row" style="margin-top:4px"><span class="muted">${r.ok?'👍 Worked great':'👎 Had trouble'}${r.paid!=null?' · Paid $'+r.paid.toFixed(2):''} · ${new Date(r.ts).toLocaleDateString(LANG=='es'?'es-US':'en-US',{month:'short',day:'numeric'})}</span><button class="lnk" onclick="repDel(${i})">Delete</button></div>`).join('')}</div>`;
+ return h}
+function repRender(){const c=$('myrep');if(c)c.innerHTML=repHTML(cur,'st');const m=$('acbox');if(m&&$('acm').classList.contains('on'))m.innerHTML='<div class="row"><b>How did it go?</b><button class="lnk mx" aria-label="Close" onclick="$(\'acm\').classList.remove(\'on\')">✕</button></div><div class="muted" style="margin-bottom:6px">'+cur.name+'</div>'+repHTML(cur,'ac');
+ const sh=$('sheet');if(sh&&cur){sh.querySelector('.myn')?.remove();const n=myR().filter(r=>r.st==cur.name).length;if(n)sh.insertAdjacentHTML('beforeend',`<div class="muted myn" style="margin-top:6px">Reported by you: ${n}</div>`)}}
+var REPI=-1;
+function repOk(id,ok){const a=myR();a.unshift({st:cur.name,ok:!!ok,paid:null,ts:Date.now()});myW(a);REPI=0;RSTEP[id]=1;toast('Thanks! You just helped the next driver ⚡');repRender();setTimeout(()=>$('pay-'+id)?.focus({preventScroll:true}),50)}
+function repPay(id,save){const v=parseFloat($('pay-'+id)?.value);if(save&&v>=0&&v<1000){const a=myR();if(a[0]&&a[0].st==cur.name){a[0].paid=+v.toFixed(2);myW(a)}toast('Got it, that helps everyone see real prices.')}RSTEP[id]=0;repRender();if(id=='ac')setTimeout(()=>$('acm').classList.remove('on'),save?1200:0)}
+function repDel(i){const a=myR();a.splice(i,1);myW(a);toast('Report deleted');repRender()}
+document.querySelector('.phone').insertAdjacentHTML('beforeend','<div class="modal" id="acm" onclick="if(event.target===this)this.classList.remove(\'on\')"><div class="mbox" role="dialog" aria-label="How did it go?" id="acbox"></div></div>');
+{const _f=fillStation;fillStation=function(){_f.apply(this,arguments);RSTEP.st=0;repRender()}}
+{const _p=pick;pick=function(){_p.apply(this,arguments);repRender()}}
+{const _s=stopCharge;stopCharge=function(){const c=cur;_s.apply(this,arguments);setTimeout(()=>{if(!c)return;RSTEP.ac=0;$('acm').classList.add('on');repRender()},1000)}}
+addEventListener('keydown',e=>{if(e.key=='Escape')$('acm')?.classList.remove('on')});
+// 3. adapter note
+function adNote(s){const p=carPlug(),n=s.plugs||[];if(p=='NACS')return n.includes('CCS')?'Use a CCS-to-NACS adapter':'Use the J1772 adapter that came with most Teslas';return 'Use a NACS-to-CCS adapter (check the station allows your car)'}
+function adTag(s){return `<span style="color:#ffb020">⚠ Fits with an adapter</span> <button type="button" class="lnk" style="min-height:32px" onclick="event.stopPropagation();const n=this.nextElementSibling;n.hidden=!n.hidden">Which one?</button><span class="muted" hidden style="display:block">${adNote(s)}</span>`}
+// 5. trip recap
+function recap(){const c=$('recap'),P=PLAN;if(!c)return;if(!P){c.hidden=true;return}c.hidden=false;const cost=P.stops.reduce((a,s)=>a+s.usd,0),o=P.olabel=='Downtown LA'?'LA':P.olabel,d=(P.dlabel||'').split(',')[0];
+ const line=`${o} to ${d}, ${P.stops.length} stop${P.stops.length==1?'':'s'}, $${cost.toFixed(2)} sample`;
+ c.innerHTML=`<b>🧾 Trip recap</b><div style="margin:6px 0;font-weight:700" id="recapl">${line}</div><div class="muted" style="font-size:.8125rem">Sample data</div><button class="btn" onclick="shareTrip()">📤 Share trip</button>`}
+function shareTrip(){const l=$('recapl');if(!l)return;const txt=l.textContent+' · ChargeOne ⚡';const copy=()=>{try{navigator.clipboard.writeText(txt).then(()=>toast('Trip copied'),()=>toast(txt))}catch(e){toast(txt)}};
+ if(navigator.share)navigator.share({title:'ChargeOne',text:txt}).catch(e=>{if(e&&e.name!='AbortError')copy()});else copy()}
+{const _t=renderTrip;renderTrip=function(){const r=_t.apply(this,arguments);setTimeout(recap,0);return r}}
+// 6 + 7. wallet cards
+const VOTE=['Wallet','CarPlay','Widgets','Tap-to-charge'];
+function myV(){try{return JSON.parse(localStorage.getItem('c1_votes'))||{}}catch(e){return {}}}
+function vote(k){const v=myV();v[k]=!v[k];localStorage.setItem('c1_votes',JSON.stringify(v));if(v[k])toast('Thanks for your vote');walletCards()}
+function walletCards(){const sv=$('savedc');if(sv){const x=($('sv-save')?.textContent||'').replace(/[^\d.,]/g,'');sv.innerHTML=x?`<div class="row"><b class="green" style="font-size:1.125rem">You saved $${x} this month</b><span class="pill">Sample data</span></div><div class="muted">Estimate from the numbers below, not your real charges.</div>`:'';sv.hidden=!x}
+ const vc=$('votes');if(vc){const v=myV();vc.innerHTML='<b>🗳 Coming soon: vote for what’s next</b>'+VOTE.map(k=>`<div class="row" style="margin-top:6px"><span>${k}</span><button type="button" class="chip${v[k]?' on':''}" aria-pressed="${!!v[k]}" onclick="vote('${k}')">${v[k]?'✔ Voted':'Vote'}</button></div>`).join('')+'<div class="muted" style="margin-top:6px;font-size:.8125rem">Saved on this phone only</div>'}}
+{const _g=go;go=function(t){const r=_g.apply(this,arguments);if(t=='wallet')setTimeout(walletCards,50);if(t=='station'){RSTEP.st=0;repRender()}if(t=='trip')setTimeout(recap,300);return r}}
+{const _sv=savings;savings=function(){const r=_sv.apply(this,arguments);setTimeout(walletCards,0);return r}}
+setTimeout(walletCards,300);setInterval(()=>{if($('s-trip')?.classList.contains('on')&&PLAN&&!$('recapl'))recap()},1000);
 </script></body></html>
