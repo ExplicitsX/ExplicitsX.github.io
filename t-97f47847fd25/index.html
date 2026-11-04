@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>ChargeOne mock v19q</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>ChargeOne mock v19r</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -540,16 +540,34 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 .screen.c1done,.screen.c1done>.card,.modal.c1done .mbox,#sheet.c1done{animation:none!important}
 #intro.out{pointer-events:none}#clo.c1drag{transition:none;box-shadow:none}
 @media (max-width:600px),(hover:none){.sheet,.mbox,.ov{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.mbox{background:#0e1630!important}.ov{background:#0a1020!important}}
-</style></head><body><div id="intro" role="dialog" aria-label="Welcome to ChargeOne"><div class="road"></div><svg class="car c1" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L10 22 Q30 8 58 8 Q80 8 96 20 L114 24 Q118 26 116 32 Z" fill="#2de2e6"/><path d="M34 20 Q46 12 60 12 L62 20 Z M66 12 Q80 12 88 20 L66 20 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c2" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L8 16 Q12 6 30 6 L82 6 Q92 6 100 16 L114 20 Q118 22 116 32 Z" fill="#7cf29a"/><path d="M22 18 L28 10 L56 10 L56 18 Z M60 10 L82 10 L92 18 L60 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="car c3" viewBox="0 0 120 40" aria-hidden="true"><path d="M6 32 L6 14 Q8 8 22 8 L60 8 L66 18 L114 20 Q118 22 116 32 Z" fill="#ffd400"/><path d="M14 18 L20 11 L40 11 L40 18 Z M44 11 L58 11 L62 18 L44 18 Z" fill="#05080d" opacity=".7"/><g class="wh"><circle cx="28" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M28 29.5v9M23.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g><g class="wh"><circle cx="92" cy="34" r="6" fill="#0b1620" stroke="#9fd8e0" stroke-width="2"/><path d="M92 29.5v9M87.5 34h9" stroke="#9fd8e0" stroke-width="1.5"/></g></svg><svg class="cable" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="cb" pathLength="100" d="M0 16 C30 24 62 24 100 6"/><path class="pl" pathLength="100" d="M0 16 C30 24 62 24 100 6"/></svg><div class="post"></div>
-<div class="logo"><b><span class="bolt">⚡</span> <span class="word">ChargeOne</span></b><span class="tag">Every charger. One app.</span></div><button type="button" onclick="endIntro()">Skip</button></div>
-<script>function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),550)}setTimeout(endIntro,matchMedia('(prefers-reduced-motion: reduce)').matches?1200:5000);document.getElementById('intro')?.addEventListener('click',endIntro);document.addEventListener('keydown',e=>{if(e.key=='Escape')endIntro()})</script><script>/* v19c intro variants */
-(function(){const e=document.getElementById('intro');if(!e)return;const q=+new URLSearchParams(location.search).get('intro'),k=q>=1&&q<=4?q:1+Math.floor(Math.random()*4),rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
- const logo='<div class="ilogo"><b>⚡ ChargeOne</b><span>Every charger. One app.</span></div>',skip='<button type="button" onclick="endIntro()">Skip</button>';
- const V={1:'<svg class="ibolt" viewBox="0 0 64 100" aria-hidden="true"><defs><clipPath id="bc"><path d="M38 2 L6 58 H28 L22 98 L58 38 H36 Z"/></clipPath></defs><path d="M38 2 L6 58 H28 L22 98 L58 38 H36 Z" fill="none" stroke="#00ff9d" stroke-width="3"/><g clip-path="url(#bc)"><rect class="bfill" x="0" y="0" width="64" height="100" fill="#00ff9d"/></g></svg>',
-  2:'<div class="imap" aria-hidden="true"><div class="idots"></div><i class="ipin"></i></div>',
-  3:'<div class="irain" aria-hidden="true">'+Array.from({length:12},(_,i)=>`<i style="left:${6+i*7.6}%;animation-delay:${(i*53%600)}ms"></i>`).join('')+'</div>',
-  4:'<svg class="iring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="#ffffff22" stroke-width="10"/><circle class="rarc" cx="60" cy="60" r="50" fill="none" stroke="#00ff9d" stroke-width="10" stroke-linecap="round" transform="rotate(-90 60 60)"/><text x="60" y="68" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">⚡</text></svg>'};
- e.className='iv iv'+k;e.dataset.v=k;e.innerHTML=(rm?'':V[k])+logo+skip;setTimeout(endIntro,rm?900:1900)})();
+
+/* v19r opening */
+#intro.c1op{background:#05080d;display:block;transition:transform .3s ease-in,opacity .3s;will-change:transform}
+#intro.c1op.out{transform:translateY(-100%);pointer-events:none}#intro.c1op.rm.out{transform:none;opacity:0}
+#intro.c1op .opln{position:absolute;left:50%;bottom:0;width:20px;height:72%;margin-left:-10px;overflow:visible}
+#intro.c1op .opln path{fill:none;stroke:#00ff9d;stroke-width:4;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 6px #00ff9d)}
+#intro.c1op .c1bz{position:absolute;left:50%;bottom:0;font-size:28px;margin-left:-14px;opacity:0}
+#intro.c1op .c1nm{position:absolute;top:16%;width:100%;text-align:center;font:800 2.4rem system-ui;color:#fff;opacity:0;transform:scale(1.25)}
+#intro.c1op .c1tg{position:absolute;top:calc(16% + 3.4rem);width:100%;text-align:center;font:500 1.0625rem system-ui;color:#c9f5e4;opacity:0}
+#intro.c1op.go .opln path{animation:c1ld .45s ease-out forwards}
+#intro.c1op.go .c1bz{animation:c1bz .5s .25s cubic-bezier(.5,0,.2,1) forwards}
+#intro.c1op.go .c1nm{animation:c1nm .2s .5s cubic-bezier(.2,1.4,.4,1) forwards}
+#intro.c1op.go .c1tg{animation:c1tg .2s .64s ease-out forwards}
+@keyframes c1ld{to{stroke-dashoffset:0}}
+@keyframes c1bz{0%{opacity:1;transform:translateY(0)}70%{opacity:1;transform:translateY(-62vh)}85%{opacity:1;transform:translateY(-62vh) scale(1.8)}100%{opacity:0;transform:translateY(-62vh) scale(2.4)}}
+@keyframes c1nm{to{opacity:1;transform:none}}@keyframes c1tg{to{opacity:1}}
+#intro.c1op.rm .c1nm,#intro.c1op.rm .c1tg{opacity:1;transform:none;animation:none}#intro.c1op.rm .opln path{stroke-dashoffset:0;animation:none}
+.c1mt{font-size:.8125rem;margin:2px 0 8px}.c1snd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0}
+</style></head><body><div id="intro" class="c1op" role="dialog" aria-label="Welcome to ChargeOne"><svg class="opln" viewBox="0 0 20 400" preserveAspectRatio="none" aria-hidden="true"><path d="M10 400 L10 150" pathLength="100"/></svg><span class="c1bz" aria-hidden="true">⚡</span><div class="c1nm">ChargeOne</div><div class="c1tg" id="c1tg">Every charge. ⚡ One lane.</div></div>
+<script>/* v19r opening: once per visit, tap skips, always removed */
+function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),320)}
+(function(){const e=document.getElementById('intro');if(!e)return;let seen=0;try{seen=sessionStorage.getItem('c1_intro')=='1';sessionStorage.setItem('c1_intro','1')}catch(_){}
+ if(seen){e.remove();return}
+ let es=0;try{es=(localStorage.getItem('c1_lang')||((navigator.language||'en').toLowerCase().startsWith('es')?'es':'en'))=='es'}catch(_){}
+ if(es)document.getElementById('c1tg').textContent='Cada carga. ⚡ Un carril.';
+ const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;if(rm)e.classList.add('rm');else e.classList.add('go');
+ e.addEventListener('pointerdown',endIntro);e.addEventListener('click',endIntro);
+ setTimeout(endIntro,rm?800:1200);setTimeout(()=>{const x=document.getElementById('intro');if(x)x.remove()},2000)})();
 </script>
 <h1><span>ChargeOne</span> – Every charger. One app.</h1>
 <div class="phone">
@@ -2141,4 +2159,17 @@ mc.addEventListener('contextmenu',e=>{if(lp)e.preventDefault()},true);
  // trip planner waits for dc.js
  if(typeof trip=='function'){const _tr=trip;trip=function(){if(!DCOK){dcLoad(()=>{if($('s-trip')&&$('s-trip').classList.contains('on'))_tr()});return}return _tr.apply(this,arguments)}}
 }
+</script><script>/* v19r: menu tagline, Sound switch, zap */
+{const sndOn=()=>{try{return localStorage.getItem('c1_snd')!='0'}catch(e){return true}};let AC=null;
+ const ac=()=>{try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();console.log('[c1] AudioContext created',AC.state)}if(AC.state=='suspended')AC.resume();return AC}catch(e){return null}};
+ window.c1ZapSnd=function(){if(!sndOn())return;try{const c=ac();if(!c)return;const t=c.currentTime,g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.25);g.connect(c.destination);
+  const o=c.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(220,t);o.frequency.exponentialRampToValueAtTime(1500,t+.2);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;o.connect(lp);lp.connect(g);o.start(t);o.stop(t+.26);
+  const n=c.createBufferSource(),b=c.createBuffer(1,Math.floor(c.sampleRate*.25),c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=b;
+  const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=3000;bp.Q.value=1.2;const ng=c.createGain();ng.gain.value=.25;n.connect(bp);bp.connect(ng);ng.connect(g);n.start(t);n.stop(t+.25)}catch(e){}};
+ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button,.btn');if(b&&/openStart\(/.test(b.getAttribute('onclick')||'')&&sndOn())ac()},true);
+ if(typeof stLive=='function'){const _sl=stLive;stLive=function(){const r=_sl.apply(this,arguments);c1ZapSnd();return r}}
+ window.c1SndTog=function(btn){const on=!sndOn();try{localStorage.setItem('c1_snd',on?'1':'0')}catch(e){}btn.setAttribute('aria-checked',on);btn.classList.toggle('on',on);btn.textContent=on?L2('On','Sí'):L2('Off','No')};
+ const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');if(b&&!b.querySelector('.c1snd')){const on=sndOn();const row=b.querySelector('.row');
+  const h=`<div class="muted c1mt">${L2('Every charge. ⚡ One lane.','Cada carga. ⚡ Un carril.')}</div><div class="c1snd"><span>🔊 ${L2('Sound','Sonido')}</span><button type="button" class="chip${on?' on':''}" role="switch" aria-checked="${on}" aria-label="${L2('Sound','Sonido')}" onclick="c1SndTog(this)">${on?L2('On','Sí'):L2('Off','No')}</button></div>`;
+  row?row.insertAdjacentHTML('afterend',h):b.insertAdjacentHTML('afterbegin',h)}return r}}
 </script></body></html>
