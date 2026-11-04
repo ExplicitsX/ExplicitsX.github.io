@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Voltlane mock v19s</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Voltlane mock v19t</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -267,27 +267,27 @@ body.hc .est,body.hc .act button,body.hc .rchip{border:2px solid #fff}body.hc #o
 </style><style id="intro-css">
 #intro{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 70%,#0f2a3a 0%,#05080d 70%);overflow:hidden;transition:opacity .5s}
 #intro.out{opacity:0;pointer-events:none}
-#intro .road{position:absolute;left:0;right:0;top:64%;height:2px;background:linear-gradient(90deg,transparent,#2de2e6,transparent);opacity:.5}
-#intro .car{position:absolute;top:calc(64% - 28px);width:92px;height:31px;left:var(--x);animation:drive 1.6s var(--d) cubic-bezier(.2,.7,.2,1) both}
-#intro .c1{--x:2%;--d:.1s}#intro .c2{--x:26%;--d:.5s}#intro .c3{--x:50%;--d:.9s}
+
+
+
 @keyframes drive{from{transform:translateX(-110vw)}to{transform:none}}
-#intro .wh{transform-box:fill-box;transform-origin:center;animation:spin .4s var(--d) linear 4 both}
+
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-#intro .post{position:absolute;top:calc(64% - 70px);right:5%;width:20px;height:70px;border-radius:6px;background:#132232;border:2px solid #2de2e6}
-#intro .post::after{content:'';position:absolute;inset:-8px;border-radius:12px;box-shadow:0 0 26px 6px #2de2e6;opacity:0;animation:pglow 1.1s 2.3s ease-in-out infinite alternate}
+
+
 @keyframes pglow{from{opacity:.15}to{opacity:.9}}
-#intro .cable{position:absolute;left:calc(50% + 84px);right:calc(5% + 20px);top:calc(64% - 32px);height:22px;overflow:visible}
-#intro .cable path{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round}
-#intro .cb{stroke:#2de2e6;stroke-width:3;stroke-dasharray:100;stroke-dashoffset:100;animation:draw .5s 2.0s ease-out forwards}
-#intro .pl{stroke:#fff;stroke-width:5;stroke-dasharray:10 90;stroke-dashoffset:110;opacity:0;animation:flow .7s 2.5s linear infinite}
+
+
+
+
 @keyframes draw{to{stroke-dashoffset:0}}@keyframes flow{0%{stroke-dashoffset:10;opacity:1}100%{stroke-dashoffset:-90;opacity:1}}
-#intro .logo{position:absolute;top:24%;width:100%;text-align:center;opacity:0;animation:logo .7s 2.7s ease-out forwards}
-#intro .logo b{display:inline-block;font:800 2.4rem system-ui;letter-spacing:.02em;color:#fff;filter:drop-shadow(0 0 14px rgba(45,226,230,.7))}
-#intro .bolt{display:inline-block;animation:bolt 1s 2.9s ease-in-out infinite}
+
+
+
 @keyframes bolt{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.2);opacity:.8}}
-#intro .word{background:linear-gradient(100deg,#fff 35%,#7ff6ff 48%,#fff 62%) 120% 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sweep 1.3s 3.0s ease-in-out both}
+
 @keyframes sweep{from{background-position:120% 0}to{background-position:-20% 0}}
-#intro .tag{display:block;margin-top:.4rem;font:500 1rem system-ui;color:#9fd8e0;opacity:0;animation:logo .6s 3.4s ease-out forwards}
+
 @keyframes logo{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
 #intro button{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;min-width:64px;min-height:44px;border-radius:22px;border:1px solid #2de2e6;background:#0b1620;color:#fff;font:600 .95rem system-ui}
 #intro button:focus-visible{outline:3px solid #ffd400;outline-offset:2px}
@@ -328,12 +328,12 @@ input,select,textarea,.inp,select.chip,.sav input{font-size:max(16px,1rem)!impor
 body.hc .bay.o{background:#000;border:3px solid #7dffb3}body.hc .bay.u{background:#000;border:3px dashed #fff}body.hc .bay.d{background:#000;border:3px dotted #888}
 
 /* v19c */
-#intro.iv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
-#intro.iv .ilogo{text-align:center;opacity:0;animation:logo .45s 1s ease-out forwards}
-#intro.iv .ilogo b{display:block;font:800 2.2rem system-ui;color:#fff;filter:drop-shadow(0 0 14px rgba(0,255,157,.6))}#intro.iv .ilogo span{color:#9fd8e0;font:500 1rem system-ui}
+
+
+
 .ibolt{width:96px;height:150px;filter:drop-shadow(0 0 18px rgba(0,255,157,.7))}
 .bfill{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);animation:bfill 1s .1s cubic-bezier(.4,0,.2,1) forwards}@keyframes bfill{to{transform:scaleY(1)}}
-#intro.iv1.out .ibolt{transform:scale(14);opacity:0;transition:transform .5s ease-in,opacity .5s}
+
 .imap{width:220px;height:150px;position:relative;overflow:hidden;border-radius:16px}
 .idots{position:absolute;inset:-60%;background:radial-gradient(circle,#2de2e6 1.3px,transparent 1.6px) 0 0/12px 12px;opacity:.7;animation:mzoom 1.3s ease-in-out forwards;transform-origin:30% 60%}@keyframes mzoom{from{transform:scale(.45)}to{transform:scale(2.4)}}
 .ipin{position:absolute;left:28%;top:52%;width:16px;height:16px;border-radius:50% 50% 50% 0;background:#00ff9d;transform:rotate(-45deg) scale(0);animation:pin .35s 1s ease-out forwards}@keyframes pin{to{transform:rotate(-45deg) scale(1)}}
@@ -558,18 +558,51 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 @keyframes c1nm{to{opacity:1;transform:none}}@keyframes c1tg{to{opacity:1}}
 #intro.c1op.rm .c1nm,#intro.c1op.rm .c1tg{opacity:1;transform:none;animation:none}#intro.c1op.rm .opln path{stroke-dashoffset:0;animation:none}
 .c1mt{font-size:.8125rem;margin:2px 0 8px}.c1wn{font-size:.6875rem;color:var(--m);border:1px solid var(--b);border-radius:999px;padding:1px 6px;margin-left:4px;vertical-align:1px}.c1snd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0}
-</style></head><body><div id="intro" class="c1op" role="dialog" aria-label="Welcome to Voltlane"><svg class="opln" viewBox="0 0 20 400" preserveAspectRatio="none" aria-hidden="true"><path d="M10 400 L10 150" pathLength="100"/></svg><span class="c1bz" aria-hidden="true">⚡</span><div class="c1nm">Voltlane</div><div class="c1tg" id="c1tg">Every charge. ⚡ One lane.</div></div>
-<script>/* v19r opening: once per visit, tap skips, always removed */
+
+/* v19t: Power core + Eye scan intros, wordmark eye (green only) */
+#intro.c1op .c1nm{display:block}
+.vey{display:inline-block;position:relative;width:.62em;height:.62em;border-radius:50%;border:.085em solid #00ff9d;background:#03140c;box-sizing:border-box;vertical-align:-.04em;margin:0 .03em;overflow:hidden;box-shadow:0 0 .22em rgba(0,255,157,.55)}
+.vey>i{position:absolute;left:50%;top:50%;width:46%;height:46%;margin:-23% 0 0 -23%;border-radius:50%;background:radial-gradient(circle at 40% 40%,#eafff5 0 22%,#00ff9d 55%,#00b86f)}
+.vey.sm>i{animation:vsc 1.1s .5s ease-in-out 1}
+.vey.sm::after{content:'';position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 .15em #00ff9d;opacity:.4;animation:vgl 5s 2s ease-in-out infinite alternate}
+@keyframes vsc{0%,100%{transform:none}30%{transform:translateX(-55%)}70%{transform:translateX(55%)}}
+@keyframes vgl{to{opacity:1}}
+#intro.v-eye.go .vey.ix{transform:scaleY(.08);animation:vop .25s .2s ease-out forwards}#intro.v-eye.go .vey.ix>i{animation:vsc .55s .5s ease-in-out 1}
+@keyframes vop{to{transform:none}}
+#intro.v-eye.go .c1nm{animation:c1nm .2s ease-out forwards}#intro.v-eye.go .c1tg{animation:c1tg .2s .95s ease-out forwards}
+#intro .crw{position:absolute;left:50%;top:46%;width:120px;height:120px;margin:-60px 0 0 -60px}
+#intro .crg{width:100%;height:100%;filter:drop-shadow(0 0 8px #00ff9d)}
+#intro .crg circle{fill:none;stroke:#00ff9d;stroke-width:5;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
+#intro .cbz{position:absolute;left:0;right:0;top:50%;margin-top:-.6em;text-align:center;font-size:34px;line-height:1.2em}
+#intro .cln{position:absolute;left:50%;width:4px;margin-left:-2px;top:calc(16% + 5.2rem);bottom:calc(54% + 50px);background:#00ff9d;box-shadow:0 0 8px #00ff9d;transform:scaleY(0);transform-origin:50% 100%}
+#intro.v-core.go .crg circle{animation:c1ld .4s ease-out forwards}
+#intro.v-core.go .crg{animation:crs .9s cubic-bezier(.5,0,.6,1) forwards}
+#intro.v-core.go .crw{animation:crp .25s .9s ease-out 1}
+#intro.v-core.go .cln{animation:cls .25s 1.0s ease-out forwards}
+#intro.v-core.go .c1nm{animation:c1nm .2s 1.18s cubic-bezier(.2,1.4,.4,1) forwards}#intro.v-core.go .c1tg{animation:c1tg .2s 1.3s ease-out forwards}
+@keyframes crs{from{transform:rotate(0)}to{transform:rotate(540deg)}}@keyframes crp{50%{transform:scale(1.15)}}@keyframes cls{to{transform:none}}
+.c1ti{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}.c1ti span{font-size:.8125rem;color:var(--m);margin-right:2px}.c1ti .chip{min-height:36px}
+@media (prefers-reduced-motion:reduce){.vey>i,.vey::after,#intro .vey.ix{animation:none!important;transform:none!important}}
+</style></head><body><script>/* v19t openings: A Zap, B Power core, C Eye scan. Once per visit, tap skips, always removed */
+var C1INTRO='zap';
 function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),320)}
-(function(){const e=document.getElementById('intro');if(!e)return;let seen=0;try{seen=sessionStorage.getItem('c1_intro')=='1';sessionStorage.setItem('c1_intro','1')}catch(_){}
- if(seen){e.remove();return}
+function c1IntroRun(id,rm){let o=document.getElementById('intro');if(o)o.remove();C1INTRO=id;
  let es=0;try{es=(localStorage.getItem('c1_lang')||((navigator.language||'en').toLowerCase().startsWith('es')?'es':'en'))=='es'}catch(_){}
- if(es)document.getElementById('c1tg').textContent='Cada carga. ⚡ Un carril.';
- const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;if(rm)e.classList.add('rm');else e.classList.add('go');
- e.addEventListener('pointerdown',endIntro);e.addEventListener('click',endIntro);
- setTimeout(endIntro,rm?800:1200);setTimeout(()=>{const x=document.getElementById('intro');if(x)x.remove()},2000)})();
+ const tg='<div class="c1tg" id="c1tg">'+(es?'Cada carga. ⚡ Un carril.':'Every charge. ⚡ One lane.')+'</div>';
+ const nm='<div class="c1nm" role="img" aria-label="Voltlane">'+(id=='eye'?'V<i class="vey ix" aria-hidden="true"><i></i></i>ltlane':'Voltlane')+'</div>';
+ const art=rm?'':id=='zap'?'<svg class="opln" viewBox="0 0 20 400" preserveAspectRatio="none" aria-hidden="true"><path d="M10 400 L10 150" pathLength="100"/></svg><span class="c1bz" aria-hidden="true">⚡</span>'
+  :id=='core'?'<div class="crw" aria-hidden="true"><svg class="crg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="44" pathLength="100"/></svg><span class="cbz">⚡</span></div><i class="cln" aria-hidden="true"></i>':'';
+ const e=document.createElement('div');e.id='intro';e.className='c1op v-'+id+(rm?' rm':' go');e.setAttribute('role','dialog');e.setAttribute('aria-label','Welcome to Voltlane');
+ e.innerHTML=art+nm+tg;document.body.prepend(e);e.addEventListener('pointerdown',endIntro);e.addEventListener('click',endIntro);
+ setTimeout(()=>{if(e.isConnected&&document.getElementById('intro')===e)endIntro()},rm?800:{zap:1200,core:1700,eye:1400}[id]);setTimeout(()=>{if(e.isConnected)e.remove()},2500)}
+(function(){const ids=['zap','core','eye'];let q=null;try{q=new URLSearchParams(location.search).get('intro')}catch(_){}
+ let seen=0;try{seen=sessionStorage.getItem('c1_intro')=='1';sessionStorage.setItem('c1_intro','1')}catch(_){}
+ let last=null;try{last=localStorage.getItem('c1_intro_last')}catch(_){}
+ let id=ids.includes(q)?q:null;if(!id){if(seen){try{C1INTRO=sessionStorage.getItem('c1_intro_id')||last||'zap'}catch(_){}return}const p=ids.filter(x=>x!=last);id=p[Math.floor(Math.random()*p.length)]}
+ try{localStorage.setItem('c1_intro_last',id);sessionStorage.setItem('c1_intro_id',id)}catch(_){}
+ c1IntroRun(id,matchMedia('(prefers-reduced-motion: reduce)').matches)})();
 </script>
-<h1><span>Voltlane</span> – Every charger. One app.</h1>
+<h1><span><span class="vlw" role="img" aria-label="Voltlane">V<i class="vey sm" aria-hidden="true"><i></i></i>ltlane</span></span> – Every charger. One app.</h1>
 <div class="phone">
 <div id="okt" role="status" aria-live="polite" hidden></div>
 <div class="modal" id="rbm" onclick="if(event.target===this)closeRB()"><div class="mbox" role="dialog" aria-label="Report a problem"><div class="row"><b>⚠ Report a problem · <span id="rb-name"></span></b><button class="lnk" onclick="closeRB()" aria-label="Close">Close</button></div>
@@ -623,7 +656,7 @@ function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.
  <div class="hdr"><i onclick="soon()">▣</i>Wallet<i onclick="soon()">+</i></div>
  <div class="card" id="greet" hidden></div>
  <div class="card row" id="langcard"><span><b>🌐 Language</b><div class="muted">Saved on this phone</div></span><div class="lgw notr" role="group" aria-label="Language / Idioma" style=""><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div></div>
- <div class="navy"><div>One wallet for all major networks. <span class="soon">Coming soon</span></div><div class="row" style="margin-top:12px"><div><b style="font-size:1.125rem">⚡ Voltlane</b><div style="font-size:0.875rem;opacity:.7">No prepaid balance · Each charge bills your own card</div></div><div class="bal" style="font-size:.875rem">💳 Card on file (demo)</div><span id="bal" hidden></span></div></div>
+ <div class="navy"><div>One wallet for all major networks. <span class="soon">Coming soon</span></div><div class="row" style="margin-top:12px"><div><b style="font-size:1.125rem">⚡ <span class="vlw" role="img" aria-label="Voltlane">V<i class="vey sm" aria-hidden="true"><i></i></i>ltlane</span></b><div style="font-size:0.875rem;opacity:.7">No prepaid balance · Each charge bills your own card</div></div><div class="bal" style="font-size:.875rem">💳 Card on file (demo)</div><span id="bal" hidden></span></div></div>
  <div style="padding:0 14px"><button class="btn" onclick="openCars()">🚗 My cars · Add my car</button></div>
  <div class="card" id="keyc"><div class="row"><b>🔑 Voltlane Key</b><span class="pill">Demo, coming soon</span></div><div class="muted" style="margin:4px 0 8px">No money is stored in Voltlane. Each charge bills your own card.</div><div class="row" style="gap:6px"><button class="btn g" style="margin:0" onclick="keyTap()">📶 Tap to start</button><button class="btn" style="margin:0" onclick="$('famc').scrollIntoView({block:'start',behavior:'smooth'})">👨‍👩‍👧 Share key</button></div><button class="btn" style="margin-top:6px" onclick="toast('Demo, coming soon')">📱 Add to phone wallet</button><button class="btn" style="margin-top:6px" onclick="openSafe()">🛡 Safety</button><div class="muted" id="keylock" style="margin-top:6px"></div></div>
  <div class="card notr" id="rcptc"></div>
@@ -657,7 +690,7 @@ function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.
  <div class="card" id="recap"></div>
 </section>
 <div class="ov" id="welcome"><div class="lgw notr" role="group" aria-label="Language / Idioma" style="align-self:flex-end"><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
- <div style="font-size:3.375rem">⚡</div><h2 style="color:var(--g);font-size:1.875rem">Voltlane</h2><p class="muted" style="font-size:1rem;margin-top:8px">Every charger. One app.</p>
+ <div style="font-size:3.375rem">⚡</div><h2 style="color:var(--g);font-size:1.875rem"><span class="vlw" role="img" aria-label="Voltlane">V<i class="vey sm" aria-hidden="true"><i></i></i>ltlane</span></h2><p class="muted" style="font-size:1rem;margin-top:8px">Every charger. One app.</p>
  <p style="margin-top:24px;font-size:0.875rem">One map, all major networks · Trips planned for your car · Driver check-ins · One wallet (coming soon)</p></div>
  <button class="btn g" onclick="$('welcome').classList.remove('on');$('signup').classList.add('on')">Get started</button>
  <button class="btn" style="background:#fff;color:var(--n);border:1px solid var(--b)" onclick="$('welcome').classList.remove('on')">Explore as guest</button></div>
@@ -2162,14 +2195,22 @@ mc.addEventListener('contextmenu',e=>{if(lp)e.preventDefault()},true);
 </script><script>/* v19r: menu tagline, Sound switch, zap */
 {const sndOn=()=>{try{return localStorage.getItem('c1_snd')!='0'}catch(e){return true}};let AC=null;
  const ac=()=>{try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();console.log('[c1] AudioContext created',AC.state)}if(AC.state=='suspended')AC.resume();return AC}catch(e){return null}};
- window.c1ZapSnd=function(){if(!sndOn())return;try{const c=ac();if(!c)return;const t=c.currentTime,g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.25);g.connect(c.destination);
+ window.c1AC=ac;window.c1ZapSnd=function(){if(!sndOn())return;try{const c=ac();if(!c)return;const t=c.currentTime,g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.25);g.connect(c.destination);
   const o=c.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(220,t);o.frequency.exponentialRampToValueAtTime(1500,t+.2);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;o.connect(lp);lp.connect(g);o.start(t);o.stop(t+.26);
   const n=c.createBufferSource(),b=c.createBuffer(1,Math.floor(c.sampleRate*.25),c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=b;
   const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=3000;bp.Q.value=1.2;const ng=c.createGain();ng.gain.value=.25;n.connect(bp);bp.connect(ng);ng.connect(g);n.start(t);n.stop(t+.25)}catch(e){}};
  document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('button,.btn');if(b&&/openStart\(/.test(b.getAttribute('onclick')||'')&&sndOn())ac()},true);
- if(typeof stLive=='function'){const _sl=stLive;stLive=function(){const r=_sl.apply(this,arguments);c1ZapSnd();return r}}
+ if(typeof stLive=='function'){const _sl=stLive;stLive=function(){const r=_sl.apply(this,arguments);c1Snd(C1INTRO||'zap');return r}}
  window.c1SndTog=function(btn){const on=!sndOn();try{localStorage.setItem('c1_snd',on?'1':'0')}catch(e){}btn.setAttribute('aria-checked',on);btn.classList.toggle('on',on);btn.textContent=on?L2('On','Sí'):L2('Off','No')};
  const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');if(b&&!b.querySelector('.c1snd')){const on=sndOn();const row=b.querySelector('.row');
-  const h=`<div class="c1mt"><b>Voltlane</b> <span class="c1wn">${L2('Working name','Nombre provisional')}</span><div class="muted">${L2('Every charge. ⚡ One lane.','Cada carga. ⚡ Un carril.')}</div></div><div class="c1snd"><span>🔊 ${L2('Sound','Sonido')}</span><button type="button" class="chip${on?' on':''}" role="switch" aria-checked="${on}" aria-label="${L2('Sound','Sonido')}" onclick="c1SndTog(this)">${on?L2('On','Sí'):L2('Off','No')}</button></div>`;
+  const h=`<div class="c1mt"><b><span class="vlw" role="img" aria-label="Voltlane">V<i class="vey sm" aria-hidden="true"><i></i></i>ltlane</span></b> <span class="c1wn">${L2('Working name','Nombre provisional')}</span><div class="muted">${L2('Every charge. ⚡ One lane.','Cada carga. ⚡ Un carril.')}</div></div><div class="c1snd"><span>🔊 ${L2('Sound','Sonido')}</span><button type="button" class="chip${on?' on':''}" role="switch" aria-checked="${on}" aria-label="${L2('Sound','Sonido')}" onclick="c1SndTog(this)">${on?L2('On','Sí'):L2('Off','No')}</button></div>`;
   row?row.insertAdjacentHTML('afterend',h):b.insertAdjacentHTML('afterbegin',h)}return r}}
+</script><script>/* v19t sounds + Try intros */
+window.c1Snd=function(id){try{if(localStorage.getItem('c1_snd')=='0')return}catch(e){}console.log('[c1] sound',id);if(id=='zap')return c1ZapSnd();try{const c=c1AC();if(!c)return;const t=c.currentTime,g=c.createGain();g.connect(c.destination);
+ if(id=='core'){const o=c.createOscillator();o.type='sine';o.frequency.setValueAtTime(90,t);o.frequency.exponentialRampToValueAtTime(420,t+.4);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.1,t+.3);g.gain.linearRampToValueAtTime(0,t+.42);o.connect(g);o.start(t);o.stop(t+.43);
+  const n=c.createBufferSource(),b=c.createBuffer(1,Math.floor(c.sampleRate*.02),c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);n.buffer=b;const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=2000;const ng=c.createGain();ng.gain.value=.12;n.connect(hp);hp.connect(ng);ng.connect(c.destination);n.start(t+.41)}
+ else{[[880,0,.07],[1320,.1,.09]].forEach(([f,s,d])=>{const o=c.createOscillator(),gg=c.createGain();o.type='sine';o.frequency.setValueAtTime(f,t+s);o.frequency.linearRampToValueAtTime(f*1.06,t+s+d);gg.gain.setValueAtTime(0,t+s);gg.gain.linearRampToValueAtTime(.08,t+s+.01);gg.gain.exponentialRampToValueAtTime(.001,t+s+d);o.connect(gg);gg.connect(c.destination);o.start(t+s);o.stop(t+s+d+.02)})}}catch(e){}};
+window.c1Try=function(id){$('menum').classList.remove('on');try{c1AC()}catch(e){}c1IntroRun(id,matchMedia('(prefers-reduced-motion: reduce)').matches);c1Snd(id)};
+{const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');const s=b&&b.querySelector('.c1snd');if(s&&!b.querySelector('.c1ti')){
+ s.insertAdjacentHTML('afterend',`<div class="c1ti"><span>${L2('Try intros','Probar intros')}</span><button type="button" class="chip" onclick="c1Try('zap')">Zap</button><button type="button" class="chip" onclick="c1Try('core')">${L2('Power core','Núcleo')}</button><button type="button" class="chip" onclick="c1Try('eye')">${L2('Eye scan','Escaneo')}</button></div>`)}return r}}
 </script></body></html>
