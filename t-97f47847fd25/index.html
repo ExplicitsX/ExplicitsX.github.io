@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Voltlane mock v19v</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Voltlane mock v19w</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -596,6 +596,13 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 .c1net{display:inline-flex;align-items:center;gap:0;font-size:.8125rem;color:var(--m);margin:2px 0 4px}
 .c1net .c1netn{font-weight:600;color:var(--t)}
 .c1pillnet{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;padding:2px 8px 2px 6px;border-radius:999px;border:1px solid var(--b);background:rgba(255,255,255,.06);color:var(--t);vertical-align:middle;margin-left:6px}
+/* v19w: listed prices on pins + larger listed price */
+.ppx,.leaflet-tooltip.ppx{background:#f8fafccc!important;color:#0b1220!important;border:1px solid #0b122055!important;border-radius:999px!important;padding:1px 6px!important;font:700 .6875rem/1.2 system-ui,-apple-system,sans-serif!important;box-shadow:0 1px 2px #0006!important;white-space:nowrap!important;pointer-events:none!important;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.leaflet-tooltip.ppx::before{display:none!important}
+#map:not(.ppx-on) .ppx,#map:not(.ppx-on) .leaflet-tooltip.ppx{display:none!important}
+.clm .clp.lpd{font-size:1rem;font-weight:800;color:var(--t);letter-spacing:-.01em}
+.c1x .c1lp{font-size:1.25rem;font-weight:800;color:var(--t);line-height:1.25;margin-top:2px;letter-spacing:-.015em}
+.c1x .c1lp.muted{font-size:.9375rem;font-weight:500;letter-spacing:0}
 
 </style></head><body><script>/* v19t openings: A Zap, B Power core, C Eye scan. Once per visit, tap skips, always removed */
 var C1INTRO='zap';
@@ -1816,7 +1823,7 @@ function fNearest(p){let best=null,bd=1e18;for(const s of FPTS){if(CAR&&fit(s)!=
 function hrsT(h){if(LANG!='es'||!h)return h;return h.replace(/^24 hours daily/i,'24 horas, todos los días').replace(/Open to Teslas only\./,'Solo para Tesla.').replace(/NACS partner enabled\./,'Acceso para socios NACS.').replace(/Open to all vehicles\./,'Abierto a todos los vehículos.').replace(/^Dealership business hours/,'Horario del concesionario')}
 function lpNum(t){if(!t)return null;if(/^free\b/i.test(t))return 0;const m=t.match(/\$\s*([\d.]+)\s*(?:per|\/)\s*kwh/i);return m?+m[1]:null}
 function lpShort(t){if(!t)return '';const n=lpNum(t);if(n===0)return 'Free';if(n!=null)return '$'+n.toFixed(2)+'/kWh';return t.length>22?t.slice(0,21).trim()+'…':t}
-{const _it=infoTxt;infoTxt=function(s){const r=_it(s);if(!s||!s.lp)return r;return r.replace(/ · (\$[\d.]+\/kWh( \(sample\))?|Price not listed)$/,' · '+lpShort(s.lp)+' (listed price)')}}
+{const _it=infoTxt;infoTxt=function(s){const r=_it(s);if(!s)return r;if(s.lp)return r.replace(/ · (\$[\d.]+\/kWh( \(sample\))?|Price not listed)$/,' · '+lpShort(s.lp)+' (listed price)');return r.replace(/ · \$[\d.]+\/kWh( \(sample\))?$/,' · Price not listed')}}
 ESR.unshift([/^(.+) \(listed price\)$/,(m,a)=>(a=='Free'?'Gratis':a)+' (precio publicado)']);
 Object.assign(ES,{"Listed price":"Precio publicado","Hours":"Horario","Idle fee $0.40/min starting 10 min after charging ends":"Tarifa por inactividad de $0.40/min a partir de 10 min después de terminar la carga","Idle fee after 5 min when the site is busy":"Tarifa por inactividad después de 5 min cuando el sitio está lleno","Idle fee set by station, check before charging":"Tarifa por inactividad fijada por la estación, revísala antes de cargar"});
 function idleL(s){const e=idleLine(s);return LANG=="es"?(ES[e]||e):e}
@@ -1826,7 +1833,7 @@ function idleL(s){const e=idleLine(s);return LANG=="es"?(ES[e]||e):e}
 {const _ci=cardInto;cardInto=function(root,where,keep){_ci.apply(this,arguments);if(!root||!cur)return;const s=cur,h=root.querySelector(':scope>.c1h'),m=root.querySelector(':scope>.c1more');if(!h||!m)return;
  if(where=='station'&&!h.querySelector('.c1il'))h.querySelector('.c1f')?.insertAdjacentHTML('afterend',`<div class="c1f c1il">${esc(idleL(s))}</div>`);if(s.hrs&&s.hrs.length<=40&&!h.querySelector('.c1hr')){h.querySelector('.c1f')?.insertAdjacentHTML('beforebegin',`<div class="c1f c1hr">${L2('Hours','Horario')}: ${esc(hrsT(s.hrs))}</div>`)}
  let x=m.querySelector(':scope>.c1x');if(!x){x=document.createElement('div');x.className='c1x card notr';m.prepend(x)}
- x.innerHTML=`<div><b>${L2('Listed price','Precio publicado')}</b><div class="muted">${s.lp?esc(s.lp):L2('Price not listed','Precio no publicado')}</div></div><div style="margin-top:8px"><b>${L2('Idle fee','Tarifa por inactividad')}</b><div class="muted">${esc(idleL(s))}</div></div><div style="margin-top:8px"><b>${L2('Hours','Horario')}</b><div class="muted">${s.hrs?esc(hrsT(s.hrs)):L2('Hours not listed','Horario no publicado')}</div></div><div class="muted" style="font-size:.75rem;margin-top:8px">${L2('Source: DOE AFDC, Nov 2026','Fuente: DOE AFDC, nov. 2026')}</div>`;x.hidden=!s.full&&!s.lp&&!s.hrs}}
+ x.innerHTML=`<div><b>${L2('Listed price','Precio publicado')}</b><div class="c1lp${s.lp?'':' muted'}">${s.lp?esc(s.lp):L2('Price not listed','Precio no publicado')}</div></div><div style="margin-top:8px"><b>${L2('Idle fee','Tarifa por inactividad')}</b><div class="muted">${esc(idleL(s))}</div></div><div style="margin-top:8px"><b>${L2('Hours','Horario')}</b><div class="muted">${s.hrs?esc(hrsT(s.hrs)):L2('Hours not listed','Horario no publicado')}</div></div><div class="muted" style="font-size:.75rem;margin-top:8px">${L2('Source: DOE AFDC, Nov 2026','Fuente: DOE AFDC, nov. 2026')}</div>`;x.hidden=!s.full&&!s.lp&&!s.hrs}}
 // receipt: listed vs sample price
 {const _rh=rcHTML;rcHTML=function(r){let h=_rh(r);if(r.pl=='listed')h=h.replace(`/kWh <span class="muted">(${L2('sample','muestra')})</span>`,`/kWh <span class="muted">(${L2('listed price','precio publicado')})</span>`).replace(`</dd></dl>`,`</dd></dl>`);return h}}
 {const _ss=stStop;stStop=function(){const s=SK&&SK.s,ln=s&&lpNum(s.lp)!=null;const r=_ss.apply(this,arguments);if(ln){const a=rcpts();if(a[0]){a[0].pl='listed';localStorage.setItem('c1_rcpt',JSON.stringify(a));const b=$('stbox');if(b)b.innerHTML=b.innerHTML.replace(/\/kWh <span class="muted">\((sample|muestra)\)<\/span>/,`/kWh <span class="muted">(${L2('listed price','precio publicado')})</span>`)}}return r}}
@@ -1840,7 +1847,7 @@ function cloList(){const p=cloPos(),fitOn=CLO.fit==null?!!CAR:CLO.fit,all=[...S.
  if(CLO.sort!='near'){c=c.slice(0,300);const k=CLO.sort=='cheap'?(x=>{const n=lpNum(x[1].lp);return n!=null?n:x[1].lp?1e3:1e6}):(x=>x[1].kw>=50?0:1);c.sort((a,b)=>k(a)-k(b)||a[0]-b[0])}
  return c.slice(0,10)}
 function cloRow(x,i){const [mi,s]=x,dm=Math.max(1,Math.round(mi*1.3/25*60)),pr=s.lp?lpShort(s.lp):L2('Price not listed','Sin precio');
- const nn=s.nf&&s.nf!='Other'?s.nf:s.net;return `<div class="clr"><button type="button" class="clm" onclick="cloPick(${i})" aria-label="${mi.toFixed(1)} mi, ~${dm} min, ${esc(s.net)}, ${esc(s.name)}"><b>${mi<10?mi.toFixed(1):Math.round(mi)} mi</b><i>·</i><span class="cln">${esc(nn)}</span><i>·</i><span>${L2(s.kw>=50?'Fast':'Level 2',s.kw>=50?'Rápida':'Nivel 2')}</span><i>·</i><span class="clp${s.lp?'':' muted'}">${esc(pr==='Free'?L2('Free','Gratis'):pr)}</span>${['ea','tesla'].includes(idleKey(s))?`<small class="clt">${L2('⏱ idle fee','⏱ tarifa inactiva')}</small>`:''}</button><button type="button" class="cls" onclick="cloStart(${i})">${L2('Start','Iniciar')}</button><a class="clg" target="_blank" rel="noopener" href="${goURL(s)}" aria-label="${L2('Take me there','Llévame')}: ${esc(s.name)}">›</a></div>`}
+ const nn=s.nf&&s.nf!='Other'?s.nf:s.net;return `<div class="clr"><button type="button" class="clm" onclick="cloPick(${i})" aria-label="${mi.toFixed(1)} mi, ~${dm} min, ${esc(s.net)}, ${esc(s.name)}"><b>${mi<10?mi.toFixed(1):Math.round(mi)} mi</b><i>·</i><span class="cln">${esc(nn)}</span><i>·</i><span>${L2(s.kw>=50?'Fast':'Level 2',s.kw>=50?'Rápida':'Nivel 2')}</span><i>·</i><span class="clp${s.lp?' lpd':' muted'}">${esc(pr==='Free'?L2('Free','Gratis'):pr)}</span>${['ea','tesla'].includes(idleKey(s))?`<small class="clt">${L2('⏱ idle fee','⏱ tarifa inactiva')}</small>`:''}</button><button type="button" class="cls" onclick="cloStart(${i})">${L2('Start','Iniciar')}</button><a class="clg" target="_blank" rel="noopener" href="${goURL(s)}" aria-label="${L2('Take me there','Llévame')}: ${esc(s.name)}">›</a></div>`}
 var CLOL=[];
 function cloUI(){const e=$('clo'),hd=$('cloh');if(!e)return;hd.textContent='▴ '+L2('Closest to you','Más cercanos a ti');hd.hidden=CLO.open;e.hidden=!CLO.open;if(!CLO.open)return;
  CLOL=cloList();const fitOn=CLO.fit==null?!!CAR:CLO.fit,b=(k,l)=>`<button type="button" class="chip${CLO.sort==k?' on':''}" aria-pressed="${CLO.sort==k}" onclick="CLO.sort='${k}';cloUI()">${l}</button>`;
@@ -2248,8 +2255,9 @@ FPTS.forEach(s=>{s.nf=nfOf(s.net)});
 draw=function(){layer.clearLayers();S.filter(s=>s.price<=maxP&&xf(s)&&[...on].every(f=>f=="Reliable only"||f=="Favorites"?true:f=="Fits my car"?fit(s)!="no":f=="Fast (50 kW+)"?s.kw>=50:NETS.includes(f)?nfKey(s)==f:f=="Other"?nfKey(s)=="Other":(s.plugs||[]).includes(f))).forEach(s=>{
  const fill=nfCol(s),st=pinStroke(s),r=s.kw>=50?9:6;
  L.circleMarker([s.lat,s.lng],{radius:r+3,color:'#fff',weight:2,fill:false,interactive:false}).addTo(layer);
- L.circleMarker([s.lat,s.lng],{radius:r,color:RC[rel(s)],fillColor:fill,fillOpacity:.95,weight:3}).addTo(layer).on('click',()=>pick(s));
+ const m=L.circleMarker([s.lat,s.lng],{radius:r,color:RC[rel(s)],fillColor:fill,fillOpacity:.95,weight:3}).addTo(layer).on('click',()=>pick(s));
  if(st!=='#fff')L.circleMarker([s.lat,s.lng],{radius:r,color:st,fill:false,weight:2,interactive:false}).addTo(layer);
+ if(window.bindPpx)bindPpx(m,s);
 })};
 window.fMk=function(s){if(!s.nf)s.nf=nfOf(s.net);const fill=nfCol(s),st=pinStroke(s),m=L.circleMarker([s.lat,s.lng],{renderer:CANV,radius:s.dc?8:6,color:st,weight:2,fillColor:fill,fillOpacity:.95});m.on('click',()=>{pick(s);if(window.cardAll)cardAll()});m._st=s;return m};
 {const _mk=mkSt;mkSt=function(a){const s=_mk(a);s.nf=nfOf(s.net);return s}}
@@ -2267,6 +2275,19 @@ try{chips()}catch(e){}
 try{draw()}catch(e){}
 try{if(typeof fRefilter==='function')fRefilter()}catch(e){}
 try{if(cur){pick(cur);if(window.cardAll)cardAll()}}catch(e){}
+})();
+</script>
+
+<script>/* v19w: listed prices on pins */
+(function(){
+const PPX_Z=15; // pin price chips at z>=15 (LA individual pins; FMC unclusters at 17)
+function ppxLab(s){if(!s||!s.lp)return '';const t=lpShort(s.lp);return t==='Free'?L2('Free','Gratis'):t}
+window.bindPpx=function(m,s){if(!m||!s||!s.lp)return m;try{const lab=ppxLab(s);if(!lab)return m;if(m.getTooltip&&m.getTooltip())try{m.unbindTooltip()}catch(e){}m.bindTooltip(lab,{permanent:true,direction:'bottom',offset:[0,10],className:'ppx',opacity:1,interactive:false});m._st=s}catch(e){}return m};
+function ppxSync(){try{$('map').classList.toggle('ppx-on',map.getZoom()>=PPX_Z)}catch(e){}}
+{const _fm=window.fMk;window.fMk=function(s){return bindPpx(_fm.apply(this,arguments),s)}}
+{const _dr=draw;draw=function(){const r=_dr.apply(this,arguments);ppxSync();return r}}
+{const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);try{draw();if(typeof fRefilter==='function'){fRefilter.s=null;fRefilter()}}catch(e){}return r}}
+if(!window.NOMAP){map.on('zoomend moveend',ppxSync);ppxSync();try{draw()}catch(e){}try{if(typeof fRefilter==='function'){fRefilter.s=null;fRefilter()}}catch(e){}}
 })();
 </script>
 
