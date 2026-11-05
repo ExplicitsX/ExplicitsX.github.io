@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Voltlane mock v19u</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Voltlane mock v19v</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -583,6 +583,20 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 @keyframes crs{from{transform:rotate(0)}to{transform:rotate(540deg)}}@keyframes crp{50%{transform:scale(1.15)}}@keyframes cls{to{transform:none}}
 .c1ti{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}.c1ti span{font-size:.8125rem;color:var(--m);margin-right:2px}.c1ti .chip{min-height:36px}
 @media (prefers-reduced-motion:reduce){.vey>i,.vey::after,#intro .vey.ix{animation:none!important;transform:none!important}}
+
+/* v19v: network colors + legend */
+.c1leg{margin:8px 0 4px;padding:8px 10px;border:1px solid var(--b);border-radius:12px;background:rgba(255,255,255,.03)}
+.c1leg .c1legcap{font-size:.6875rem;color:var(--m);margin:0 0 6px}
+.c1leg .c1legrow{display:flex;flex-wrap:wrap;gap:4px 10px}
+.c1leg .c1legi{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;line-height:1.2;color:var(--t)}
+.c1leg .c1sw{width:11px;height:11px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);flex:0 0 auto}
+.c1leg .c1sw.blink{border-color:#1f2937;box-shadow:0 0 0 1px #1f2937}
+.c1np{display:inline-block;width:10px;height:10px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3);vertical-align:middle;margin-right:5px;flex:0 0 auto}
+.c1np.blink{border-color:#1f2937;box-shadow:0 0 0 1px #1f2937}
+.c1net{display:inline-flex;align-items:center;gap:0;font-size:.8125rem;color:var(--m);margin:2px 0 4px}
+.c1net .c1netn{font-weight:600;color:var(--t)}
+.c1pillnet{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:600;padding:2px 8px 2px 6px;border-radius:999px;border:1px solid var(--b);background:rgba(255,255,255,.06);color:var(--t);vertical-align:middle;margin-left:6px}
+
 </style></head><body><script>/* v19t openings: A Zap, B Power core, C Eye scan. Once per visit, tap skips, always removed */
 var C1INTRO='zap';
 function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),320)}
@@ -1237,7 +1251,7 @@ function renderTrip(){const P=PLAN;if(!P)return;$('torig').textContent=P.olabel;
 function tripMap(){const P=PLAN;if(!P)return;if(!tm){tm=L.map('tmap',{zoomControl:false,attributionControl:false});baseLayer(tm)}if(!tsl)tsl=L.layerGroup().addTo(tm);tsl.clearLayers();tm.invalidateSize();
  const way=[P.o,...P.stops.map(s=>[s.lat,s.lng]),P.d],pts=[];for(let k=0;k<way.length-1;k++)for(let f=0;f<=12;f++)pts.push(slerp(way[k],way[k+1],f/12));
  L.polyline(pts,{color:'#00ff9d',weight:5}).addTo(tsl);[P.o,P.d].forEach(p=>L.circleMarker(p,{radius:7,color:'#fff',fillColor:'#0f1f3d',fillOpacity:1,weight:2}).addTo(tsl));
- P.stops.forEach((s,i)=>{L.circleMarker([s.lat,s.lng],{radius:8,color:'#fff',fillColor:NC[s.net]||'#00c2ff',fillOpacity:1,weight:2}).addTo(tsl).bindTooltip(`${i+1}. ${s.name}`);if(s.bk)L.circleMarker([s.bk.lat,s.bk.lng],{radius:5,color:'#ffb020',fillColor:'#ffb020',fillOpacity:.9,weight:1}).addTo(tsl).bindTooltip('Backup: '+s.bk.name)});
+ P.stops.forEach((s,i)=>{L.circleMarker([s.lat,s.lng],{radius:8,color:'#fff',fillColor:(NC[(s.nf||(typeof nfOf==='function'?nfOf(s.net):s.net))]||NC.Other||'#6B7280'),fillOpacity:1,weight:2}).addTo(tsl).bindTooltip(`${i+1}. ${s.name}`);if(s.bk)L.circleMarker([s.bk.lat,s.bk.lng],{radius:5,color:'#ffb020',fillColor:'#ffb020',fillOpacity:.9,weight:1}).addTo(tsl).bindTooltip('Backup: '+s.bk.name)});
  tm.fitBounds(L.latLngBounds(pts),{padding:[20,20]})}
 // backups, saved route & broken-stop swap (replace the LA→SF versions)
 tripStops=function(){return PLAN?PLAN.stops.map(s=>({nm:s.name,bk:s.bk?s.bk.name:''})):[]};
@@ -2213,4 +2227,47 @@ window.c1Snd=function(id){try{if(localStorage.getItem('c1_snd')=='0')return}catc
 window.c1Try=function(id){$('menum').classList.remove('on');try{c1AC()}catch(e){}c1IntroRun(id,matchMedia('(prefers-reduced-motion: reduce)').matches);c1Snd(id)};
 {const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');const s=b&&b.querySelector('.c1snd');if(s&&!b.querySelector('.c1ti')&&/[?&]intros=1\b/.test(location.search)){
  s.insertAdjacentHTML('afterend',`<div class="c1ti"><span>${L2('Try intros','Probar intros')}</span><button type="button" class="chip" onclick="c1Try('zap')">Zap</button><button type="button" class="chip" onclick="c1Try('core')">${L2('Power core','Núcleo')}</button><button type="button" class="chip" onclick="c1Try('eye')">${L2('Eye scan','Escaneo')}</button></div>`)}return r}}
-</script></body></html>
+</script>
+<script>/* v19v: network colors + legend */
+(function(){
+const TOP8=["Tesla","ChargePoint","EVgo","Electrify America","Shell Recharge","FLO","Blink","Rivian"];
+const PAL={Tesla:"#0072B2",ChargePoint:"#E69F00",EVgo:"#009E73","Electrify America":"#CC79A7","Shell Recharge":"#56B4E9",FLO:"#D55E00",Blink:"#F0E442",Rivian:"#332288",Other:"#6B7280"};
+Object.keys(NC).forEach(k=>{delete NC[k]});
+Object.assign(NC,PAL);
+NETS.length=0;TOP8.forEach(n=>NETS.push(n));
+const plugF=["Fast (50 kW+)","CCS","NACS","J1772","CHAdeMO"];
+F.length=0;[...plugF,...NETS,"Other"].forEach(x=>F.push(x));
+NFM.length=0;
+[[/^Tesla/i,'Tesla'],[/^ChargePoint/i,'ChargePoint'],[/^eVgo/i,'EVgo'],[/^Electrify America/i,'Electrify America'],[/^Blink/i,'Blink'],[/^FLO/i,'FLO'],[/^Rivian/i,'Rivian'],[/^RIVIAN/,'Rivian'],[/^Shell Recharge/i,'Shell Recharge'],[/^SHELL/i,'Shell Recharge']].forEach(x=>NFM.push(x));
+window.nfOf=function(n){n=String(n||'');for(const [r,v] of NFM)if(r.test(n))return v;return 'Other'};
+function nfKey(s){if(!s)return 'Other';const k=s.nf||nfOf(s.net||'');return PAL[k]?k:'Other'}
+function nfCol(s){return PAL[nfKey(s)]||PAL.Other}
+function pinStroke(s){return nfKey(s)==='Blink'?'#1f2937':'#fff'}
+S.forEach(s=>{s.nf=nfOf(s.net)});
+FPTS.forEach(s=>{s.nf=nfOf(s.net)});
+draw=function(){layer.clearLayers();S.filter(s=>s.price<=maxP&&xf(s)&&[...on].every(f=>f=="Reliable only"||f=="Favorites"?true:f=="Fits my car"?fit(s)!="no":f=="Fast (50 kW+)"?s.kw>=50:NETS.includes(f)?nfKey(s)==f:f=="Other"?nfKey(s)=="Other":(s.plugs||[]).includes(f))).forEach(s=>{
+ const fill=nfCol(s),st=pinStroke(s),r=s.kw>=50?9:6;
+ L.circleMarker([s.lat,s.lng],{radius:r+3,color:'#fff',weight:2,fill:false,interactive:false}).addTo(layer);
+ L.circleMarker([s.lat,s.lng],{radius:r,color:RC[rel(s)],fillColor:fill,fillOpacity:.95,weight:3}).addTo(layer).on('click',()=>pick(s));
+ if(st!=='#fff')L.circleMarker([s.lat,s.lng],{radius:r,color:st,fill:false,weight:2,interactive:false}).addTo(layer);
+})};
+window.fMk=function(s){if(!s.nf)s.nf=nfOf(s.net);const fill=nfCol(s),st=pinStroke(s),m=L.circleMarker([s.lat,s.lng],{renderer:CANV,radius:s.dc?8:6,color:st,weight:2,fillColor:fill,fillOpacity:.95});m.on('click',()=>{pick(s);if(window.cardAll)cardAll()});m._st=s;return m};
+{const _mk=mkSt;mkSt=function(a){const s=_mk(a);s.nf=nfOf(s.net);return s}}
+{const _ch=cardHTML;cardHTML=function(s,where){let h=_ch(s,where);const key=nfKey(s),col=PAL[key],blink=key==='Blink'?' blink':'';
+ const badge=`<div class="c1net"><span class="c1np${blink}" style="background:${col}" aria-hidden="true"></span><span class="c1netn">${esc(s.net||key)}</span></div>`;
+ return h.replace('<div class="c1n">',badge+'<div class="c1n">')}}
+{const _fs=fillStation;fillStation=function(){const r=_fs.apply(this,arguments);try{const s=cur,el=$('st-net');if(s&&el){const key=nfKey(s),col=PAL[key],blink=key==='Blink'?' blink':'';el.innerHTML=`<span class="c1np${blink}" style="background:${col}"></span>${esc(s.net)}`}}catch(e){}return r}}
+function legHTML(){const rows=TOP8.concat(['Other']).map(n=>{const blink=n==='Blink'?' blink':'';const label=n==='Other'?L2('Other','Otra'):n;return `<span class="c1legi"><span class="c1sw${blink}" style="background:${PAL[n]}"></span>${label}</span>`}).join('');
+ return `<div class="c1leg notr" role="group" aria-label="${L2('Pin colors','Colores de pin')}"><div class="c1legcap">${L2('Pin colors (not brand colors)','Colores de pin (no son colores de marca)')}</div><div class="c1legrow">${rows}</div></div>`}
+{const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');if(!b)return r;
+ const html=legHTML();const old=b.querySelector('.c1leg');if(old){old.outerHTML=html;return r}
+ const s=b.querySelector('.c1snd')||b.querySelector('.c1ti')||b.querySelector('.c1mt');
+ if(s)s.insertAdjacentHTML('afterend',html);else b.insertAdjacentHTML('beforeend',html);return r}}
+try{chips()}catch(e){}
+try{draw()}catch(e){}
+try{if(typeof fRefilter==='function')fRefilter()}catch(e){}
+try{if(cur){pick(cur);if(window.cardAll)cardAll()}}catch(e){}
+})();
+</script>
+
+</body></html>
