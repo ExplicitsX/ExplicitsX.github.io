@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Voltlane mock v19w</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Voltlane mock v19x</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -2288,6 +2288,85 @@ function ppxSync(){try{$('map').classList.toggle('ppx-on',map.getZoom()>=PPX_Z)}
 {const _dr=draw;draw=function(){const r=_dr.apply(this,arguments);ppxSync();return r}}
 {const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);try{draw();if(typeof fRefilter==='function'){fRefilter.s=null;fRefilter()}}catch(e){}return r}}
 if(!window.NOMAP){map.on('zoomend moveend',ppxSync);ppxSync();try{draw()}catch(e){}try{if(typeof fRefilter==='function'){fRefilter.s=null;fRefilter()}}catch(e){}}
+})();
+</script>
+<style id="v19x">
+/* v19x: map fills the tab; search, near-me, and Closest live on Station */
+#s-map{min-height:0;overflow:hidden}
+#s-map #map{min-height:160px!important;flex:1 1 auto!important}
+#s-map .nfit{display:none!important}
+#s-map .updl{flex-wrap:wrap;align-items:center;gap:0 8px;padding:2px 12px 0}
+#s-map .updl #updl{flex:1 1 140px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#s-map .updl .lnk{flex:1 0 100%;min-height:36px;white-space:nowrap;text-align:left;padding:0 2px}
+#s-map .mhdr #stybtn{margin:0 0 0 auto;width:auto;min-height:44px;padding:6px 10px;font-size:.75rem;font-weight:800;border-radius:999px;box-shadow:none;flex:0 1 auto}
+#s-map #sheet{position:absolute;left:8px;right:8px;bottom:8px;z-index:640;max-height:42%!important;margin:0;padding:8px 10px 6px;border-radius:16px;overflow:auto;background:#0c1428f2!important;box-shadow:0 8px 28px #000c}
+body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
+#sheet .c1h{gap:3px;padding:0}
+#sheet .c1n{font-size:1rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sheet .c1net{margin:0}
+#sheet .c1i,#sheet .c1f{font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sheet .c1hr{display:none!important}
+#sheet .c1btns{margin-top:4px}
+#sheet .c1btns .btn{min-height:44px;padding:8px 10px;font-size:.9375rem}
+#sheet .c1t{min-height:40px;font-size:.8125rem}
+#map .leaflet-bottom{bottom:var(--v19xpad,0px)!important}
+#map #fullnote,#map .tilebar{bottom:calc(var(--v19xpad, 0px) + 8px)}
+#map #empt{bottom:calc(var(--v19xpad, 0px) + 12px)!important}
+#cloh{display:none!important}
+.stfind{padding:2px 12px 8px;display:flex;flex-direction:column;gap:4px}
+.findtop{display:flex;flex-direction:column;gap:8px;padding-top:4px}
+.stnear #nfbtn{width:100%;margin:0;min-height:44px}
+#s-station #srl{left:0;right:0;top:48px;max-height:min(50vh,360px)}
+#s-station #clo{position:static;left:auto;right:auto;bottom:auto;height:auto!important;max-height:none;overflow:visible;transform:none!important;background:transparent;border:0;border-radius:0;box-shadow:none;padding:4px 0 8px;z-index:auto;touch-action:auto}
+#s-station .clcap{font-weight:800;font-size:1.05rem;padding:10px 0 2px;line-height:1.3}
+#s-station .phc{margin:6px 0 4px}
+#s-station .clr{align-items:center;gap:6px;padding:2px 0}
+#s-station .clm{flex-direction:column;align-items:stretch;white-space:normal;gap:1px;padding:7px 0;min-height:48px}
+#s-station .cltop,#s-station .clbot{display:flex;align-items:center;gap:4px;min-width:0;width:100%}
+#s-station .cltop .clp{margin-left:auto}
+#s-station .clbot .clnm{margin-left:auto;min-width:0;max-width:62%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.75rem;color:var(--m)}
+#s-station .cls{min-height:44px;min-width:64px;padding:0 12px;align-self:center}
+#s-station .clg{align-self:center}
+</style>
+<script>/* v19x: map-first tab. Closest heading, search, and nearest list live on Station.
+   Leaflet 1.9.4 plus these Esri raster tiles cannot pitch, rotate, or extrude buildings, so the map stays flat. */
+(function(){
+ try{
+  const st=$('s-station'); if(!st||!$('clo')||!$('stsearch')||!$('nfbtn'))return;
+  document.body.classList.add('v19x');
+  {const _ci=cardInto;cardInto=function(root,where,keep){if(where=='station')keep='.hdr,#stfind';const r=_ci.apply(this,arguments);if(where=='station'&&root){const hdr=root.querySelector(':scope>.hdr'),find=$('stfind');if(hdr&&find&&find.parentNode===root&&hdr.nextElementSibling!==find)hdr.after(find)}return r}}
+  function v19xDot(s){let key=s&&s.nf;if(!key&&typeof nfOf=='function')key=nfOf(s.net||'');if(!key||typeof NC=='undefined'||!NC[key])key='Other';const col=typeof NC!='undefined'&&NC[key];if(!col)return '';return `<span class="c1np${key==='Blink'?' blink':''}" style="background:${col}" aria-hidden="true"></span>`}
+  cloRow=function(x,i){const [mi,s]=x,dm=Math.max(1,Math.round(mi*1.3/25*60)),pr=s.lp?lpShort(s.lp):L2('Price not listed','Sin precio'),price=pr==='Free'?L2('Free','Gratis'):pr,nn=s.nf&&s.nf!='Other'?s.nf:s.net,dist=mi<10?mi.toFixed(1):String(Math.round(mi));
+   return `<div class="clr"><button type="button" class="clm" onclick="cloPick(${i})" aria-label="${mi.toFixed(1)} mi, ~${dm} min, ${esc(s.net)}, ${esc(s.name)}"><span class="cltop"><b>${dist} mi</b><i>·</i><span>${L2(s.kw>=50?'Fast':'Level 2',s.kw>=50?'Rápida':'Nivel 2')}</span><span class="clp${s.lp?' lpd':' muted'}">${esc(price)}</span></span><span class="clbot">${v19xDot(s)}<span class="cln">${esc(nn)}</span>${['ea','tesla'].includes(idleKey(s))?`<small class="clt">${L2('⏱ idle fee','⏱ tarifa inactiva')}</small>`:''}<span class="clnm">${esc(s.name)}</span></span></button><button type="button" class="cls" onclick="cloStart(${i})">${L2('Start','Iniciar')}</button><a class="clg" target="_blank" rel="noopener" href="${goURL(s)}" aria-label="${L2('Take me there','Llévame')}: ${esc(s.name)}">›</a></div>`};
+  cloUI=function(){const e=$('clo');if(!e)return;const hd=$('cloh');if(hd)hd.hidden=true;e.hidden=false;CLO.open=true;CLOL=cloList();const fitOn=CLO.fit==null?!!CAR:CLO.fit,b=(k,l)=>`<button type="button" class="chip${CLO.sort==k?' on':''}" aria-pressed="${CLO.sort==k}" onclick="CLO.sort='${k}';cloUI()">${l}</button>`;
+   e.classList.remove('full');e.style.height='';e.style.transform='';
+   e.innerHTML=`<div class="clcap">${L2('Closest to you','Más cercanos a ti')}</div><div class="phc" role="group" aria-label="${L2('Closest to you','Más cercanos a ti')}">${b('near',L2('Closest','Más cerca'))}${b('cheap',L2('Cheapest','Más barato'))}${b('fast',L2('Fastest','Más rápido'))}<button type="button" class="chip${fitOn?' on':''}" role="switch" aria-checked="${fitOn}" onclick="CLO.fit=${!fitOn};cloUI()">${L2('Fits my car','Para mi auto')}</button></div>${fitOn&&!CAR?`<div class="muted" style="font-size:.8125rem">${L2('Add your car to filter by plug.','Agrega tu auto para filtrar por conector.')}</div>`:''}${fitOn&&CAR&&carKW()==0?`<div class="muted" style="font-size:.8125rem">${L2('Level 2 only (plug-in hybrid)','Solo Nivel 2 (híbrido enchufable)')}</div>`:''}<div class="cll">${CLOL.length?CLOL.map(cloRow).join(''):`<div class="muted">${L2('Loading stations…','Cargando estaciones…')}</div>`}</div><div class="muted" style="font-size:.8125rem;margin-top:6px">${L2('Prices are listed prices from DOE AFDC','Precios publicados de DOE AFDC')}</div>`};
+  cloPeekH=function(){const e=$('clo');if(!e)return;e.style.height='';e.style.transform=''};
+  cloDot=function(){};
+  cloOpen=function(v){CLO.open=true;if(v)cloEnsure();cloUI()};
+  cloPick=function(i){const x=CLOL[i];if(!x)return;const s=x[1];try{go('map')}catch(e){}pick(s);if(window.cardAll)cardAll();setTimeout(()=>{try{map.invalidateSize();map.setView([s.lat,s.lng],map.getZoom())}catch(e){}},80)};
+  {const _sg=srGo;srGo=function(j){try{FOCUS=null}catch(e){}try{if(!$('s-map').classList.contains('on'))go('map')}catch(e){}const r=_sg.apply(this,arguments);setTimeout(()=>{try{map.invalidateSize();v19xPad()}catch(e){}},90);return r}}
+  function v19xPad(){const sh=$('sheet'),m=$('map');if(!m)return;let h=0;if(sh&&$('s-map').classList.contains('on')){const mb=m.getBoundingClientRect(),sb=sh.getBoundingClientRect();if(sb.top<mb.bottom&&sb.bottom>mb.top)h=Math.max(0,Math.min(mb.bottom,sb.bottom)-Math.max(mb.top,sb.top))}m.style.setProperty('--v19xpad',(h?h+8:0)+'px')}
+  // Nationwide pins use a second canvas stacked above the LA pins, which was swallowing taps. Keep one clickable canvas.
+  function v19xLiftPins(){if(typeof CANV=='undefined'||!CANV||!map.getContainer)return false;const move=[];map.eachLayer(l=>{if(l.getLatLng&&l._renderer&&l._renderer!==CANV&&l.options&&l.options.interactive!==false&&l.listens&&l.listens('click'))move.push(l)});for(const l of move){try{l.remove();l.options.renderer=CANV;l.addTo(layer)}catch(e){}}if(move.length)window.__v19xLifted=1;return true}
+  window.v19xLiftPins=v19xLiftPins;
+  {const _d=draw;draw=function(){const r=_d.apply(this,arguments);try{v19xLiftPins()}catch(e){}return r}}
+  {let n=0;const iv=setInterval(()=>{n++;try{if(v19xLiftPins()||n>25)clearInterval(iv)}catch(e){clearInterval(iv)}},400)}
+  window.v19xPad=v19xPad;
+  {const _g=go;go=function(t){const r=_g.apply(this,arguments);if(t=='map')setTimeout(()=>{try{map.invalidateSize();v19xPad()}catch(e){}},70);if(t=='station'){try{cloEnsure();cloUI()}catch(e){}}return r}}
+  const find=document.createElement('div');find.id='stfind';find.className='stfind';find.setAttribute('role','region');find.setAttribute('aria-label','Closest to you');
+  const top=document.createElement('div');top.className='findtop';
+  const srch=document.querySelector('#s-map .srch');if(srch)top.appendChild(srch);
+  const near=document.createElement('div');near.className='stnear';near.appendChild($('nfbtn'));top.appendChild(near);find.appendChild(top);find.appendChild($('clo'));
+  const hdr=st.querySelector(':scope>.hdr');hdr?hdr.after(find):st.prepend(find);
+  const sty=$('stybtn'),hc=$('hcbtn');if(sty&&hc)hc.before(sty);
+  const cloh=$('cloh');if(cloh){cloh.hidden=true;cloh.textContent='';find.appendChild(cloh)}
+  cloEnsure();cloUI();if(window.cardAll)cardAll();
+  if(window.ResizeObserver){const ro=new ResizeObserver(()=>v19xPad());const sh=$('sheet');if(sh)ro.observe(sh);ro.observe(st);ro.observe($('s-map'))}
+  addEventListener('resize',()=>{try{if($('s-map').classList.contains('on'))map.invalidateSize();v19xPad()}catch(e){}});
+  setTimeout(()=>{try{map.invalidateSize();v19xPad()}catch(e){}},60);
+  setTimeout(()=>{try{map.invalidateSize();v19xPad()}catch(e){}},400);
+ }catch(e){console.error('[v19x]',e)}
 })();
 </script>
 
