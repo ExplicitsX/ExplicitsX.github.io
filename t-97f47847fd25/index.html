@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Voltlane mock v19y</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Voltlane mock v19z</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -1808,7 +1808,7 @@ function NOMAP_(){return !!window.NOMAP||!window.map}
 async function fNets(){if(!DCOK)await new Promise(r=>dcLoad(r));if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}
 function fYield(){return new Promise(r=>window.requestIdleCallback?requestIdleCallback(()=>r(),{timeout:120}):setTimeout(r,0))}
 function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json?v=3');if(!r.ok)throw 0;const a=await r.json();
-  let att=0,i=0;const N=700;while(i<a.length){const pts=[],end=Math.min(a.length,i+N);for(;i<end;i++){const row=a[i];const bs=SKEY.get(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10));if(bs){if(row[10])bs.hrs=row[10];if(row[11])bs.lp=row[11];att=1;continue}const s=mkSt(row);s.ck=k;pts.push(s)}
+  let att=0,i=0;const N=700;while(i<a.length){const pts=[],end=Math.min(a.length,i+N);for(;i<end;i++){const row=a[i];const bs=SKEY.get(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10));if(bs){if(row[10])bs.hrs=row[10];if(row[11])bs.lp=row[11];if(row.length>12&&window.v19zCode){const c=v19zCode(row[12]);if(c)bs.ft=c}att=1;continue}const s=mkSt(row);s.ck=k;pts.push(s)}
    FPTS.push(...pts);if(FMC)FMC.addLayers(pts.filter(fPass).map(fMk));if(i<a.length)await fYield()}
   FN+=a.length;FLOAD[k]=2;fNote('');fCount();if(att&&cur&&window.cardAll)cardAll();if(window.cloUI)cloUI()}catch(e){FLOAD[k]=0;FERR=1;fNote()}})()}
 function fCount(){const e=document.querySelector('.usbox');if(e&&!e.querySelector('.fl')){e.insertAdjacentHTML('beforeend','<div class="fl notr" style="font-size:.75rem;opacity:.8"></div>')}const f=e&&e.querySelector('.fl');if(f)f.textContent=L2(`${FN.toLocaleString()} stations loaded so far`,`${FN.toLocaleString()} estaciones cargadas hasta ahora`)}
@@ -2369,6 +2369,7 @@ body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
  }catch(e){console.error('[v19x]',e)}
 })();
 </script>
+
 <style id="v19y">
 #s-map #sheet[hidden]{display:none!important}
 #s-map #sheet .c1h{position:relative;padding-right:36px}
@@ -2416,6 +2417,45 @@ body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
   v19yCard(0);v19yStampAll();
   let n=0;const iv=setInterval(()=>{n++;try{v19yStampAll()}catch(e){}if(n>20)clearInterval(iv)},500);
  }catch(e){console.error('[v19y]',e)}
+})();
+</script>
+<script>/* v19z: teardrop pins. Network color on the body. Venue glyph only from an explicit DOE facility_type code.
+   Saved st/*.json rows have no facility_type (lengths 10–12). Missing or unrecognized codes use the generic charger. */
+(function(){
+ const DOC=["AIRPORT","ARENA","AUTO_REPAIR","BANK","B_AND_B","BREWERY_DISTILLERY_WINERY","CAMPGROUND","CAR_DEALER","CARWASH","COLLEGE_CAMPUS","CONVENIENCE_STORE","CONVENTION_CENTER","COOP","FACTORY","FED_GOV","FIRE_STATION","FLEET_GARAGE","FUEL_RESELLER","GROCERY","HARDWARE_STORE","HOSPITAL","HOTEL","INN","LIBRARY","MIL_BASE","MOTOR_POOL","MULTI_UNIT_DWELLING","MUNI_GOV","MUSEUM","NATL_PARK","OFFICE_BLDG","OTHER","OTHER_ENTERTAINMENT","PARK","PARKING_GARAGE","PARKING_LOT","PAY_GARAGE","PAY_LOT","PHARMACY","PLACE_OF_WORSHIP","PRISON","PRIVATE","PUBLIC","REC_SPORTS_FACILITY","REFINERY","RENTAL_CAR_RETURN","RESEARCH_FACILITY","RESTAURANT","REST_STOP","RETAIL","RV_PARK","SCHOOL","GAS_STATION","SHOPPING_CENTER","SHOPPING_MALL","STADIUM","STANDALONE_STATION","STATE_GOV","STORAGE","STREET_PARKING","TNC","TRAVEL_CENTER","TRUCK_STOP","UTILITY","WORKPLACE"];
+ const DOCSET=new Set(DOC);
+ const GMAP={PARKING_GARAGE:"parking",PARKING_LOT:"parking",PAY_GARAGE:"parking",PAY_LOT:"parking",STREET_PARKING:"parking",HOTEL:"hotel",INN:"hotel",B_AND_B:"hotel",SHOPPING_MALL:"mall",SHOPPING_CENTER:"mall",GROCERY:"grocery",RESTAURANT:"restaurant",WORKPLACE:"workplace",OFFICE_BLDG:"workplace",SCHOOL:"school",COLLEGE_CAMPUS:"school"};
+ function v19zCode(v){if(v==null)return "";const c=String(v).trim().toUpperCase();return DOCSET.has(c)?c:""}
+ function v19zGlyph(code){return GMAP[code]||"charger"}
+ window.v19zCode=v19zCode;window.v19zGlyph=v19zGlyph;window.v19zDoc=[...DOCSET];
+ if(typeof mkSt==="function"){const _m=mkSt;mkSt=function(a){const s=_m.apply(this,arguments);s.ft=v19zCode(a&&a.length>12?a[12]:"");return s}}
+ function bolt(ctx,x,y,s){ctx.beginPath();ctx.moveTo(x+s*.06,y-s*.52);ctx.lineTo(x-s*.36,y+.04);ctx.lineTo(x-s*.04,y+.04);ctx.lineTo(x-s*.14,y+.52);ctx.lineTo(x+s*.4,y-.06);ctx.lineTo(x+.02,y-.06);ctx.closePath();ctx.fill()}
+ function glyph(ctx,name,x,y,s){
+  ctx.save();ctx.lineWidth=Math.max(1.25,s*.16);ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#142033";ctx.fillStyle="#142033";
+  if(name==="parking"){ctx.beginPath();ctx.moveTo(x-s*.28,y+s*.34);ctx.lineTo(x-s*.28,y-s*.38);ctx.lineTo(x+s*.02,y-s*.38);ctx.arc(x+s*.02,y-s*.12,s*.26,-Math.PI/2,Math.PI/2);ctx.lineTo(x-s*.28,y+s*.14);ctx.stroke()}
+  else if(name==="hotel"){ctx.beginPath();ctx.moveTo(x,y-s*.46);ctx.lineTo(x+s*.42,y-s*.08);ctx.lineTo(x+s*.28,y-s*.08);ctx.lineTo(x+s*.28,y+s*.4);ctx.lineTo(x-s*.28,y+s*.4);ctx.lineTo(x-s*.28,y-s*.08);ctx.lineTo(x-s*.42,y-s*.08);ctx.closePath();ctx.stroke();ctx.strokeRect(x-s*.08,y+s*.08,s*.16,s*.32)}
+  else if(name==="mall"){ctx.beginPath();ctx.moveTo(x-s*.42,y-s*.02);ctx.lineTo(x-s*.28,y-s*.32);ctx.lineTo(x+s*.28,y-s*.32);ctx.lineTo(x+s*.42,y-s*.02);ctx.stroke();ctx.strokeRect(x-s*.32,y-s*.02,s*.64,s*.42)}
+  else if(name==="grocery"){ctx.beginPath();ctx.moveTo(x-s*.3,y-s*.05);ctx.lineTo(x-s*.18,y+s*.4);ctx.lineTo(x+s*.18,y+s*.4);ctx.lineTo(x+s*.3,y-s*.05);ctx.closePath();ctx.stroke();ctx.beginPath();ctx.arc(x-s*.1,y-s*.2,s*.12,Math.PI,0);ctx.arc(x+s*.1,y-s*.2,s*.12,Math.PI,0);ctx.stroke()}
+  else if(name==="restaurant"){ctx.beginPath();ctx.moveTo(x,y+s*.4);ctx.lineTo(x,y-s*.02);ctx.moveTo(x-s*.18,y-s*.4);ctx.lineTo(x-s*.18,y-s*.1);ctx.moveTo(x,y-s*.4);ctx.lineTo(x,y-s*.1);ctx.moveTo(x+s*.18,y-s*.4);ctx.lineTo(x+s*.18,y-s*.1);ctx.moveTo(x-s*.18,y-s*.1);ctx.quadraticCurveTo(x,y+s*.08,x+s*.18,y-s*.1);ctx.stroke()}
+  else if(name==="workplace"){ctx.strokeRect(x-s*.34,y-s*.12,s*.68,s*.5);ctx.beginPath();ctx.moveTo(x-s*.16,y-s*.12);ctx.lineTo(x-s*.16,y-s*.36);ctx.lineTo(x+s*.16,y-s*.36);ctx.lineTo(x+s*.16,y-s*.12);ctx.stroke()}
+  else if(name==="school"){ctx.beginPath();ctx.moveTo(x,y+s*.02);ctx.quadraticCurveTo(x-s*.24,y-s*.28,x-s*.42,y-s*.02);ctx.quadraticCurveTo(x-s*.2,y+s*.16,x,y+s*.36);ctx.quadraticCurveTo(x+s*.2,y+s*.16,x+s*.42,y-s*.02);ctx.quadraticCurveTo(x+s*.24,y-s*.28,x,y+s*.02);ctx.stroke()}
+  else bolt(ctx,x,y,s*.95);
+  if(name!=="charger")bolt(ctx,x,y+s*.72,s*.42);
+  ctx.restore();
+ }
+ function v19zBounds(){const r=this._radius||15,p=this._point;if(!p)return;const top=r*2.7,pad=(this.options.weight||2)+2;this._pxBounds=L.bounds(L.point(p.x-r-pad,p.y-top-pad),L.point(p.x+r+pad,p.y+pad))}
+ function v19zHit(p){if(!this._point)return false;const base=this._radius||15,tol=this._clickTolerance?this._clickTolerance():6;const c=L.point(this._point.x,this._point.y-base*1.45);if(p.distanceTo(c)<=base+tol)return true;const tip=this._point;if(p.y>tip.y+tol||p.y<c.y-tol)return false;const span=Math.max(1,tip.y-(c.y+base*.2)),t=Math.max(0,Math.min(1,(tip.y-p.y)/span));return Math.abs(p.x-tip.x)<=base*.95*t+tol}
+ if(L.Canvas&&L.Canvas.prototype)L.Canvas.prototype._updateTeardrop=function(layer){if(!this._drawing||!layer._point||!this._ctx)return;const ctx=this._ctx,x=layer._point.x,y=layer._point.y,r=Math.max(layer._radius||15,10),cy=y-r*1.45;ctx.beginPath();ctx.arc(x,cy,r,.78*Math.PI,.22*Math.PI,false);ctx.lineTo(x,y);ctx.closePath();ctx.fillStyle=layer.options.fillColor||"#6B7280";ctx.strokeStyle=layer.options.color||"#fff";ctx.lineWidth=layer.options.weight||2;ctx.lineJoin="round";ctx.fill();ctx.stroke();ctx.beginPath();ctx.fillStyle="#fff";ctx.arc(x,cy,r*.56,0,Math.PI*2);ctx.fill();glyph(ctx,layer.options.glyph||"charger",x,cy,r*.62)};
+ let IDX=null;
+ function v19zIdx(){if(IDX)return IDX;IDX=new Map();for(const s of S)IDX.set(s.lat.toFixed(5)+","+s.lng.toFixed(5),s);return IDX}
+ function v19zOf(l){if(l&&l._st)return l._st;if(!l||!l.getLatLng)return null;const ll=l.getLatLng();return v19zIdx().get(ll.lat.toFixed(5)+","+ll.lng.toFixed(5))||null}
+ function v19zAsPin(l,s){if(!l||!l.options||l.options.interactive===false||l.options.fill===false)return;s=s||v19zOf(l);const code=v19zCode(s&&s.ft);l.options.ft=code;l.options.glyph=v19zGlyph(code);l.options.pin="teardrop";const r=Math.max(l._radius||l.options.radius||12,17);l._radius=l._radiusY=l.options.radius=r;l._updateBounds=v19zBounds;l._containsPoint=v19zHit;l._updatePath=function(){if(this._renderer&&this._renderer._updateTeardrop)this._renderer._updateTeardrop(this)};if(l._map&&l.redraw)l.redraw()}
+ function v19zRetear(g,halos){if(!g||!g.eachLayer)return;const drop=[];g.eachLayer(l=>{if(!l||!l.getLatLng||!l.options)return;if(halos&&(l.options.interactive===false||l.options.fill===false)){drop.push(l);return}v19zAsPin(l)});drop.forEach(l=>{try{g.removeLayer(l)}catch(e){}})}
+ if(typeof fMk==="function"){const _f=fMk;fMk=function(s){const m=_f.apply(this,arguments);if(s){const c=v19zCode(s.ft);if(m&&m.options)m.options.ft=c}v19zAsPin(m,s);return m};window.fMk=fMk}
+ if(typeof draw==="function"){const _d=draw;draw=function(){const r=_d.apply(this,arguments);try{v19zRetear(layer,1)}catch(e){}return r}}
+ try{v19zRetear(layer,1)}catch(e){}
+ try{if(typeof FMC!=="undefined"&&FMC)v19zRetear(FMC,0)}catch(e){}
+ let n=0;const iv=setInterval(()=>{n++;try{if(typeof FMC!=="undefined"&&FMC)v19zRetear(FMC,0)}catch(e){}if(n>12)clearInterval(iv)},700);
 })();
 </script>
 
