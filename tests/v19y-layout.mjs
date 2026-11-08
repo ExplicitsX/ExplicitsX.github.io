@@ -13,7 +13,7 @@ const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
 const fails = [];
 const check = (cond, msg) => { if (!cond) fails.push(msg); };
 const v19y = html.slice(html.indexOf('id="v19y"'));
-check(html.includes('<title>Voltlane mock v19y</title>'), 'title v19y');
+check(html.includes('<title>Voltlane mock v19z</title>'), 'title v19z');
 check(html.includes('content="noindex,nofollow"'), 'noindex');
 check(html.includes('id="sheet" hidden'), 'sheet starts hidden');
 check(v19y.includes("v19yEmoji") && v19y.includes("'⚡'") && v19y.includes("'🔌'"), 'charger emoji helper');
@@ -55,10 +55,10 @@ try {
     const sheet = document.getElementById('sheet');
     const screen = document.getElementById('s-map');
     const station = document.getElementById('s-station');
-    let emoji = 0, fast = 0, slow = 0, domPins = document.querySelectorAll('#map .leaflet-marker-icon').length;
+    let pins = 0, domPins = document.querySelectorAll('#map .leaflet-marker-icon').length;
     const colors = new Set();
     map.eachLayer(l => {
-      if (l.options && l.options.emoji) { emoji++; if (l.options.emoji === '⚡') fast++; else if (l.options.emoji === '🔌') slow++; if (l.options.fillColor) colors.add(l.options.fillColor); }
+      if (l.options && l.options.pin === 'teardrop') { pins++; if (l.options.fillColor) colors.add(l.options.fillColor); }
     });
     const mb = document.getElementById('map').getBoundingClientRect();
     return {
@@ -67,7 +67,7 @@ try {
       closestOnStation: !!station.querySelector('#clo .clcap') && station.querySelector('#clo .clcap').textContent.includes('Closest'),
       searchOnStation: !!station.querySelector('#stsearch'),
       rows: station.querySelectorAll('#clo .clr').length,
-      emoji, fast, slow, colors: colors.size, domPins,
+      pins, colors: colors.size, domPins,
       mapH: Math.round(mb.height),
       title: document.title
     };
@@ -75,11 +75,11 @@ try {
   check(opened.sheetHidden, 'default map hides the station card');
   check(!opened.closestOnMap, 'Closest/search are not on the map');
   check(opened.closestOnStation && opened.searchOnStation && opened.rows >= 5, 'Station still has Closest (' + opened.rows + ')');
-  check(opened.emoji > 20 && opened.fast > 0 && opened.slow > 0, 'emoji pins ' + opened.emoji + ' fast ' + opened.fast + ' level2 ' + opened.slow);
+  check(opened.pins > 20, 'teardrop pins ' + opened.pins);
   check(opened.colors >= 3, 'distinct pin colors ' + opened.colors);
   check(opened.domPins < 250, 'no huge DOM pin set (' + opened.domPins + ')');
   check(opened.mapH > 400, 'map has the screen (' + opened.mapH + ')');
-  check(opened.title === 'Voltlane mock v19y', 'title');
+  check(opened.title === 'Voltlane mock v19z', 'title');
   await page.screenshot({path: join(shots, 'v19y_map_mobile.png')});
   const pin = await page.evaluate(() => {
     const s = S.find(x => x.kw >= 50 && x.name !== cur.name);
@@ -90,10 +90,12 @@ try {
     const pt2 = map.latLngToContainerPoint([s.lat, s.lng]);
     const mr = el.getBoundingClientRect();
     let marker = null;
-    map.eachLayer(l => { if (!marker && l.options && l.options.emoji && l.getLatLng && Math.abs(l.getLatLng().lat - s.lat) < 1e-4 && Math.abs(l.getLatLng().lng - s.lng) < 1e-4) marker = l; });
-    return {name: s.name, x: mr.left + pt2.x, y: mr.top + pt2.y, emoji: marker && marker.options.emoji, radius: marker && marker._radius};
+    map.eachLayer(l => { if (!marker && l.options && l.options.pin === 'teardrop' && l.getLatLng && Math.abs(l.getLatLng().lat - s.lat) < 1e-4 && Math.abs(l.getLatLng().lng - s.lng) < 1e-4) marker = l; });
+    const tip = marker && marker._containsPoint(marker._point);
+    const head = marker && marker._containsPoint(L.point(marker._point.x, marker._point.y - marker._radius * 1.5));
+    return {name: s.name, x: mr.left + pt2.x, y: mr.top + pt2.y, pin: marker && marker.options.pin, glyph: marker && marker.options.glyph, tip, head};
   });
-  check(pin.emoji === '⚡' && pin.radius >= 12, 'fast pin is a tappable emoji circle (' + pin.emoji + ' r ' + pin.radius + ')');
+  check(pin.pin === 'teardrop' && pin.glyph === 'charger' && pin.tip && pin.head, 'pin tip and head are clickable (' + pin.glyph + ')');
   await page.mouse.click(pin.x, pin.y);
   await page.waitForFunction(name => !document.getElementById('sheet').hidden && document.querySelector('#sheet .c1n')?.textContent === name, {timeout: 5000}, pin.name);
   const shown = await page.evaluate(() => {

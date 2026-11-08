@@ -15,7 +15,7 @@ const fails = [];
 function check(cond, msg) { if (!cond) fails.push(msg); }
 
 const v19x = html.slice(html.indexOf('id="v19x"'));
-check(html.includes('<title>Voltlane mock v19y</title>'), 'title is v19y');
+check(html.includes('<title>Voltlane mock v19z</title>'), 'title is v19z');
 check(html.includes('content="noindex,nofollow"'), 'noindex stays');
 check(html.includes('Voltlane'), 'working name Voltlane stays');
 check(html.includes('Every charger. One app.'), 'h1 tagline stays');
@@ -90,7 +90,7 @@ function assertLayout(label, info) {
   check(info.visibleMap >= 260, label + ': visible map is ' + Math.round(info.visibleMap) + 'px');
   check(info.mapH >= 320, label + ': map box is ' + Math.round(info.mapH) + 'px');
   check(info.noHScroll, label + ': no horizontal overflow');
-  check(info.title === 'Voltlane mock v19y', label + ': title');
+  check(info.title === 'Voltlane mock v19z', label + ': title');
   check(info.robots.includes('noindex'), label + ': noindex');
   check(info.tagline.includes('Every charger. One app.'), label + ': tagline');
   check(info.colors.Tesla === '#0072B2' && info.colors.EVgo === '#009E73', label + ': live pin colors');
