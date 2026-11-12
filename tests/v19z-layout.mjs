@@ -12,7 +12,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
 const fails = [];
 const check = (c, m) => { if (!c) fails.push(m); };
-check(html.includes('<title>AimzLane mock v19z1</title>'), 'title v19z1');
+check(html.includes('<title>Kilolane mock v19z2</title>'), 'title v19z2');
 check(html.includes('id="sheet" hidden'), 'card hidden until tap');
 check(html.includes('v19zCode') && html.includes('PARKING_GARAGE') && html.includes('HOTEL'), 'documented facility codes');
 const real = readFileSync(join(root, 't-97f47847fd25/st/DC.json'), 'utf8');
