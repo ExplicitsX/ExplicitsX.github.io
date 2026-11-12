@@ -13,7 +13,7 @@ const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
 const fails = [];
 const check = (cond, msg) => { if (!cond) fails.push(msg); };
 const v19y = html.slice(html.indexOf('id="v19y"'));
-check(html.includes('<title>Voltlane mock v19z</title>'), 'title v19z');
+check(html.includes('<title>Voltlane mock v20a</title>'), 'title v20a');
 check(html.includes('content="noindex,nofollow"'), 'noindex');
 check(html.includes('id="sheet" hidden'), 'sheet starts hidden');
 check(v19y.includes("v19yEmoji") && v19y.includes("'⚡'") && v19y.includes("'🔌'"), 'charger emoji helper');
@@ -42,7 +42,7 @@ try {
   await page.setViewport({width: 390, height: 844, isMobile: true, hasTouch: true});
   await page.emulateMediaFeatures([{name: 'prefers-reduced-motion', value: 'reduce'}]);
   await page.evaluateOnNewDocument(() => {
-    try { sessionStorage.setItem('c1_intro', '1'); localStorage.setItem('c1_lang', 'en'); } catch (e) {}
+    try { sessionStorage.setItem('c1_intro', '1'); localStorage.setItem('c1_lang', 'en'); localStorage.setItem('c1_onboard', '1'); localStorage.setItem('c1_nmap', '0'); localStorage.removeItem('c1_myplug'); } catch (e) {}
     const deny = {code: 1, message: 'denied'};
     const geo = {getCurrentPosition: (_o, f) => f && f(deny), watchPosition: (_o, f) => { f && f(deny); return 0; }, clearWatch() {}};
     try { Object.defineProperty(navigator, 'geolocation', {configurable: true, get: () => geo}); } catch (e) {}
@@ -79,7 +79,7 @@ try {
   check(opened.colors >= 3, 'distinct pin colors ' + opened.colors);
   check(opened.domPins < 250, 'no huge DOM pin set (' + opened.domPins + ')');
   check(opened.mapH > 400, 'map has the screen (' + opened.mapH + ')');
-  check(opened.title === 'Voltlane mock v19z', 'title');
+  check(opened.title === 'Voltlane mock v20a', 'title');
   await page.screenshot({path: join(shots, 'v19y_map_mobile.png')});
   const pin = await page.evaluate(() => {
     const s = S.find(x => x.kw >= 50 && x.name !== cur.name);

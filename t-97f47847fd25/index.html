@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Voltlane mock v19z</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Voltlane mock v20a</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -742,7 +742,7 @@ window.NDISP=window.NDISP||function(n){return n};var DCOK=0,DCQ=[];
 function dcLoad(cb){if(DCOK){cb&&cb();return}cb&&DCQ.push(cb);if(dcLoad.l)return;dcLoad.l=1;const j=document.createElement('script');j.src='dc.js?v=2';
  j.onload=()=>{try{dcBuild()}catch(e){}DCOK=1;const q=DCQ;DCQ=[];q.forEach(f=>{try{f()}catch(e){}})};j.onerror=()=>{dcLoad.l=0;const q=DCQ;DCQ=[];DCOK=0;q.forEach(f=>{try{f()}catch(e){}})};document.head.appendChild(j)}
 function c1Idle(f,ms){setTimeout(()=>(window.requestIdleCallback?requestIdleCallback(f,{timeout:2000}):f()),ms||0)}
-addEventListener('load',()=>c1Idle(()=>dcLoad(),300));</script><script>
+/* v20a: dc.js (trip planner) loads when Trip opens, not at startup */</script><script>
 const S=[
  ["Riverside Station","Tesla",34.0522,-118.2437,"123 Main St, Los Angeles",["CCS","NACS"],350,4,6,0.42,4.7,128],
  ["Oakwood Plaza","ChargePoint",34.0736,-118.4004,"9 Oak Ave, Beverly Hills",["J1772","CCS"],62,3,4,0.35,4.4,61],
@@ -1785,7 +1785,7 @@ const SKEY=new Map(S.map(s=>[s.lat.toFixed(3)+','+s.lng.toFixed(3)+'|'+(s.name||
 const NFM=[[/^Tesla/,'Tesla'],[/^ChargePoint/,'ChargePoint'],[/^eVgo/i,'EVgo'],[/^Electrify America/,'Electrify America'],[/^Blink/,'Blink'],[/^FLO$/,'FLO'],[/^EV Connect/,'EV Connect'],[/^RIVIAN/,'Rivian'],[/^IONNA/,'Ionna'],[/^BP_PULSE/,'bp pulse'],[/^MERCEDES/,'Mercedes-Benz'],[/^SHELL/,'Shell Recharge']];
 function nfOf(n){for(const [r,v] of NFM)if(r.test(n))return v;return 'Other'}
 function hsh(str){let h=0;for(let i=0;i<str.length;i++)h=(h*31+str.charCodeAt(i))|0;return Math.abs(h)}
-function mkSt(a){const [name,ni,lat,lng,street,city,l2,dc,m,d,hrs,lp]=a,net0=FNETS[ni]||'Other',net=NDISP(net0),h=hsh(name+lat),tot=Math.max(1,l2+dc),plugs=[];
+function mkSt(a){const [name,ni,lat,lng,street,city,l2,dc,m,d,hrs,lp]=a,net0=(FNETS&&FNETS[ni])||'Other',net=NDISP(net0),h=hsh(name+lat),tot=Math.max(1,l2+dc),plugs=[];
  if(m&1)plugs.push('J1772');if(m&2)plugs.push('CCS');if(m&4)plugs.push('CHADEMO');if(m&8)plugs.push('NACS');if(m&16)plugs.push('NEMA');
  const cd=d?new Date(Date.UTC(2020,0,1)+d*864e5).toISOString().slice(0,10):'';
  return {name,net,nf:nfOf(net0),lat,lng,addr:[street,city].filter(Boolean).join(', '),addr0:[street,city].filter(Boolean).join(', '),plugs,kw:dc?150:7,l2,dc,avail:Math.max(0,tot-(h%3==0?Math.min(tot,1+h%2):0)),total:tot,price:dc?0.45:0.32,rate:+(3.8+(h%12)/10).toFixed(1),n:5+h%90,conf:cd,ix:h%1000,full:1,hrs:hrs||'',lp:lp||''}}
@@ -1800,12 +1800,12 @@ function fInit(){if(FMC||!L.markerClusterGroup)return;CANV=L.canvas({padding:.3}
 function fNote(msg){let e=$('fload');if(!e){$('map').insertAdjacentHTML('beforeend','<div id="fload" role="status" class="notr"></div>');e=$('fload')}
  if(FERR){e.textContent=L2('Couldn’t load all stations. Showing counts.','No se pudieron cargar todas las estaciones. Mostrando conteos.');e.hidden=false;return}e.hidden=!msg;if(msg)e.textContent=msg}
 function fVisible(){return map.getZoom()>=FZ}
-function fSync(){if(NOMAP_())return;const z=map.getZoom();if(z<FZ){if(FMC&&map.hasLayer(FMC))map.removeLayer(FMC);fNote('');return}
+function fSync(){if(window.__v20hold)return;if(NOMAP_())return;const z=map.getZoom();if(z<FZ){if(FMC&&map.hasLayer(FMC))map.removeLayer(FMC);fNote('');return}
  fLoadLib(()=>{fInit();if(!FMC)return;if(!map.hasLayer(FMC))map.addLayer(FMC);clu.clearLayers();drawClusters.z=null;try{clusterVis(z,map.getBounds())}catch(e){}
   const b=map.getBounds().pad(0.25),need=Object.keys(FIDX).filter(k=>!FLOAD[k]&&L.latLngBounds([FIDX[k][1],FIDX[k][2]],[FIDX[k][3],FIDX[k][4]]).intersects(b));need.forEach(fChunk);
   const fn=$('fullnote');if(fn)fn.hidden=true})}
 function NOMAP_(){return !!window.NOMAP||!window.map}
-async function fNets(){if(!DCOK)await new Promise(r=>dcLoad(r));if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}
+async function fNets(){if(FNETS)return;const r=await fetch('st/nets.json');FNETS=await r.json()}/* v20a: station names do not wait on the trip script */
 function fYield(){return new Promise(r=>window.requestIdleCallback?requestIdleCallback(()=>r(),{timeout:120}):setTimeout(r,0))}
 function fChunk(k){FLOAD[k]=1;fNote(T('Loading stations…'));(async()=>{try{await fNets();const r=await fetch('st/'+k+'.json?v=3');if(!r.ok)throw 0;const a=await r.json();
   let att=0,i=0;const N=700;while(i<a.length){const pts=[],end=Math.min(a.length,i+N);for(;i<end;i++){const row=a[i];const bs=SKEY.get(row[2].toFixed(3)+','+row[3].toFixed(3)+'|'+row[0].slice(0,10));if(bs){if(row[10])bs.hrs=row[10];if(row[11])bs.lp=row[11];if(row.length>12&&window.v19zCode){const c=v19zCode(row[12]);if(c)bs.ft=c}att=1;continue}const s=mkSt(row);s.ck=k;pts.push(s)}
@@ -1816,7 +1816,7 @@ function fRefilter(){if(!FMC)return;const sig=[...on].sort().join('|')+'|'+(type
  (async()=>{const all=FPTS.slice();for(let i=0;i<all.length;i+=2000){if(tk!=fRefilter.k)return;FMC.addLayers(all.slice(i,i+2000).filter(fPass).map(fMk));if(i+2000<all.length)await fYield()}})()}
 {const _d=draw;draw=function(){const r=_d.apply(this,arguments);try{fRefilter()}catch(e){}return r}}
 {const _dc=drawClusters;drawClusters=function(){if(FMC&&map.getZoom()>=FZ&&!FERR){clu.clearLayers();drawClusters.z=null;try{clusterVis(map.getZoom(),map.getBounds())}catch(e){}const fn=$('fullnote');if(fn)fn.hidden=true;return}return _dc.apply(this,arguments)}}
-if(!window.NOMAP){map.on('moveend zoomend',()=>{clearTimeout(fSync.t);fSync.t=setTimeout(fSync,150)});c1Idle(fSync,600)}
+if(!window.NOMAP){map.on('moveend zoomend',()=>{clearTimeout(fSync.t);fSync.t=setTimeout(fSync,150)})}/* v20a: first state-chunk sync waits until after load */
 // nearest station from the full set, for "Fits your car" users outside LA
 function fNearest(p){let best=null,bd=1e18;for(const s of FPTS){if(CAR&&fit(s)!='yes')continue;const d=(s.lat-p[0])**2+((s.lng-p[1])*Math.cos(p[0]*Math.PI/180))**2;if(d<bd){bd=d;best=s}}return best}
 </script><script>/* v19f2: listed prices + real hours (DOE AFDC) · Closest to you */
@@ -1841,8 +1841,8 @@ function idleL(s){const e=idleLine(s);return LANG=="es"?(ES[e]||e):e}
 var CLO={open:!new URLSearchParams(location.search).get('scene'),full:false,sort:'near',fit:null};
 $('s-map').insertAdjacentHTML('beforeend',`<div id="clo" class="notr" role="region" aria-label="Closest to you"></div>`);$('map').insertAdjacentHTML('beforeend',`<button type="button" id="cloh" class="notr" onclick="cloOpen(1)"></button>`);try{L.DomEvent.disableClickPropagation($('cloh'))}catch(e){}
 function cloPos(){return ((typeof ME_OK!='undefined'&&ME_OK)||(typeof youMk!='undefined'&&youMk))?me:[34.0522,-118.2437]}
-function cloEnsure(){const p=cloPos();Object.keys(FIDX).forEach(k=>{const b=FIDX[k];if(!FLOAD[k]&&p[0]>=b[1]&&p[0]<=b[3]&&p[1]>=b[2]&&p[1]<=b[4])fChunk(k)})}
-function cloList(){const p=cloPos(),fitOn=CLO.fit==null?!!CAR:CLO.fit,all=[...S.filter(s=>s.conf),...FPTS].filter(s=>s.lat&&(!fitOn||!CAR||fit(s)!='no'));
+function cloEnsure(){if(window.__v20hold)return;const p=cloPos();Object.keys(FIDX).forEach(k=>{const b=FIDX[k];if(!FLOAD[k]&&p[0]>=b[1]&&p[0]<=b[3]&&p[1]>=b[2]&&p[1]<=b[4])fChunk(k)})}
+function cloList(){const p=cloPos(),fitOn=CLO.fit==null?!!CAR:CLO.fit,all=[...S.filter(s=>s.conf),...FPTS].filter(s=>s.lat&&(!fitOn||!CAR||fit(s)!='no')&&(!window.v20Has||window.v20Has(s)));
  const d=s=>dist(p[0],p[1],s.lat,s.lng)/1609;let c=all.map(s=>[d(s),s]).sort((a,b)=>a[0]-b[0]);
  if(CLO.sort!='near'){c=c.slice(0,300);const k=CLO.sort=='cheap'?(x=>{const n=lpNum(x[1].lp);return n!=null?n:x[1].lp?1e3:1e6}):(x=>x[1].kw>=50?0:1);c.sort((a,b)=>k(a)-k(b)||a[0]-b[0])}
  return c.slice(0,10)}
@@ -1872,7 +1872,7 @@ function cloStart(i){const x=CLOL[i];if(!x)return;pick(x[1]);if(window.cardAll)c
 {const _uc=useCar;useCar=function(){const r=_uc.apply(this,arguments);cloUI();return r}}
 {let lp='';setInterval(()=>{const p=cloPos().join();if(p!=lp){lp=p;cloEnsure();if(CLO.open)cloUI()}},2000)}
 addEventListener('keydown',e=>{if(e.key=='Escape'&&CLO.open&&!document.querySelector('.modal.on'))cloOpen(0)});
-cloEnsure();cloUI();
+cloUI();/* v20a: nearby state chunks start after first paint */
 {let n=0;const iv=setInterval(()=>{n++;if((typeof FLEW!='undefined'&&FLEW)||n>12){clearInterval(iv);setTimeout(cloDot,1400)}},500)}
 map.on('locationfound',()=>setTimeout(cloDot,300));
 </script><script>/* v19g: 3-tap Key path · one live screen · wallet layout */
@@ -2361,7 +2361,7 @@ body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
   const hdr=st.querySelector(':scope>.hdr');hdr?hdr.after(find):st.prepend(find);
   const sty=$('stybtn'),hc=$('hcbtn');if(sty&&hc)hc.before(sty);
   const cloh=$('cloh');if(cloh){cloh.hidden=true;cloh.textContent='';find.appendChild(cloh)}
-  cloEnsure();cloUI();if(window.cardAll)cardAll();
+  cloUI();if(window.cardAll)cardAll();/* v20a: state chunks wait */
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>v19xPad());const sh=$('sheet');if(sh)ro.observe(sh);ro.observe(st);ro.observe($('s-map'))}
   addEventListener('resize',()=>{try{if($('s-map').classList.contains('on'))map.invalidateSize();v19xPad()}catch(e){}});
   setTimeout(()=>{try{map.invalidateSize();v19xPad()}catch(e){}},60);
@@ -2462,5 +2462,253 @@ body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
  let n=0;const iv=setInterval(()=>{n++;try{if(typeof FMC!=="undefined"&&FMC)v19zRetear(FMC,0)}catch(e){}if(n>12)clearInterval(iv)},700);
 })();
 </script>
-
+<style id="v20a">
+/* #v20a night map, plug row, generic car, onboarding. Tile host is preconnected in the head. */
+.v20plugs{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:0 12px 4px;min-height:40px;max-height:44px;flex:0 0 auto;min-width:0;max-width:100%;box-sizing:border-box}
+.v20plugs .v20plab{flex:0 0 auto;font-size:.75rem;font-weight:800;color:#c9d4e8}
+.v20plugs .chip{flex:0 0 auto;min-height:36px}
+.v20night{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0;font-weight:700}
+.v20night .chip{min-height:44px;min-width:72px}
+.v20you{background:transparent!important;border:0!important}
+.v20you svg{display:block;width:48px;height:22px;overflow:visible;filter:drop-shadow(0 0 1px #fff) drop-shadow(0 1px 1px #0008)}
+body.v20night .v20you svg{filter:drop-shadow(0 0 1px #0b1220) drop-shadow(0 0 2px #fff)}
+.v20chg{display:flex;align-items:center;gap:10px;padding:6px 2px 0}
+.v20chg svg{width:140px;height:62px}
+.v20chg span{font-weight:700}
+.v20look{margin:8px 0 4px}
+.v20cap{font-size:.8125rem;font-weight:800;margin:4px 0}
+.v20bodies,.v20paints{display:flex;gap:6px;overflow-x:auto;padding:2px 0 6px}
+.v20bodies button{min-width:64px;min-height:64px;border-radius:12px;border:2px solid transparent;background:#0c1424;color:#eef3ff;padding:4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.6875rem}
+.v20bodies button svg{width:64px;height:28px}
+.v20bodies button.on,.v20sw.on{border-color:#e6f1ff}
+.v20sw{width:44px;height:44px;min-width:44px;border-radius:12px;border:2px solid transparent;padding:0}
+.v20ob{position:fixed;inset:0;z-index:9800;background:rgba(6,10,22,.72);display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(16px + env(safe-area-inset-bottom))}
+.v20ob[hidden]{display:none!important}
+.v20card{width:min(440px,100%);background:#10182c;color:#eef3ff;border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:16px 16px 14px}
+.v20card h2{margin:4px 0 8px;font-size:1.25rem}
+.v20card p{margin:0;line-height:1.45}
+.v20kicker{font-size:.75rem;color:#b7c3d9;margin:0}
+.v20ob-row{display:flex;gap:8px;margin-top:14px}
+.v20ob-row button{min-height:44px;flex:1}
+@media (prefers-reduced-motion: no-preference){
+  .v20card{animation:v20in .22s ease}
+}
+@media (prefers-reduced-motion: reduce){
+  .v20card,.v20you,.v20chg,.v20ob{animation:none!important;transition:none!important}
+}
+@keyframes v20in{from{opacity:.7}to{opacity:1}}
+</style>
+<script id="v20ajs">
+/* #v20a */
+(function(){
+try{
+document.body.classList.add('v20a');
+window.__v20hold=1;
+Object.assign(ES,{
+ "Night map":"Mapa de noche","On":"Sí","Off":"No","My car's plug":"El conector de mi auto",
+ "Body":"Carrocería","Paint":"Color","Your car":"Tu auto","Sedan":"Sedán","Hatchback":"Hatchback","Pickup":"Pickup","Van":"Van",
+ "Find chargers":"Encuentra cargadores","Filter by your plug":"Filtra por tu conector","Plan a trip":"Planea un viaje",
+ "The map shows public stations near you. Tap a pin for the details.":"El mapa muestra estaciones públicas cerca de ti. Toca un pin para ver los detalles.",
+ "Choose CCS, NACS, J1772, or CHAdeMO. The map and the station list keep the ones that match.":"Elige CCS, NACS, J1772 o CHAdeMO. El mapa y la lista de estaciones dejan las que coinciden.",
+ "Open Trip, enter a place, and see charging stops along the way.":"Abre Viaje, escribe un lugar y mira las paradas de carga en el camino.",
+ "Next":"Siguiente","No stations with that plug in this list.":"No hay estaciones con ese conector en esta lista."
+});
+const V20BODIES=['sedan','hatchback','suv','pickup','van'];
+const V20PAINTS=['#5c6b7a','#c4b5a0','#3d6b58','#8c4a3a','#2c333c','#d5dbe3'];
+const V20SHAPE={
+ sedan:'M6 23 H14 L18 17 H24 L28 12 H42 L48 17 H64 V23 H6 Z',
+ hatchback:'M8 23 H16 L20 16 H26 L32 11 H46 L60 21 V23 H8 Z',
+ suv:'M6 23 H14 L16 14 H22 L26 8 H50 L56 14 H64 V23 H6 Z',
+ pickup:'M6 23 H12 L15 17 H17 L20 12 H32 L36 17 H64 V23 H6 Z',
+ van:'M8 23 H14 L16 10 H52 L62 17 V23 H8 Z'
+};
+const V20WIN={
+ sedan:'M29 13 H40 L46 16 H34 Z',
+ hatchback:'M33 12 H44 L54 19 H38 Z',
+ suv:'M27 9 H48 L53 13 H32 Z',
+ pickup:'M21 13 H30 L33 16 H24 Z',
+ van:'M18 12 H36 V18 H18 Z'
+};
+function v20CarSVG(body,paint){
+ const b=V20BODIES.indexOf(body)>=0?body:'sedan';
+ const fill=V20PAINTS.indexOf(paint)>=0?paint:'#5c6b7a';
+ const wx=b==='pickup'?16:b==='van'?20:18, wy=b==='pickup'?54:54;
+ return '<svg viewBox="0 0 72 32" aria-hidden="true" focusable="false"><path d="'+V20SHAPE[b]+'" fill="'+fill+'" stroke="#142033" stroke-width="1.4" stroke-linejoin="round"/><path d="'+V20WIN[b]+'" fill="#d5deea" stroke="#142033" stroke-width="1"/><circle cx="'+wx+'" cy="24" r="4.4" fill="#142033"/><circle cx="'+wy+'" cy="24" r="4.4" fill="#142033"/><circle cx="'+wx+'" cy="24" r="1.7" fill="#d5deea"/><circle cx="'+wy+'" cy="24" r="1.7" fill="#d5deea"/></svg>';
+}
+window.v20CarSVG=v20CarSVG;
+function v20Plug(){try{return localStorage.getItem('c1_myplug')||''}catch(e){return ''}}
+function v20Has(s,p){p=p==null?v20Plug():p;if(!p)return true;const plugs=(s&&s.plugs)||[];if(p==='CHAdeMO')return plugs.indexOf('CHAdeMO')!==-1||plugs.indexOf('CHADEMO')!==-1;return plugs.indexOf(p)!==-1}
+window.v20Has=v20Has;
+function v20Look(){
+ try{const o=JSON.parse(localStorage.getItem('c1_carlook')||'{}');
+  return {body:V20BODIES.indexOf(o.body)>=0?o.body:'',paint:V20PAINTS.indexOf(o.paint)>=0?o.paint:'#5c6b7a'}}catch(e){return {body:'',paint:'#5c6b7a'}}
+}
+window.v20Look=v20Look;
+function v20ShownLook(){
+ const look=v20Look();
+ try{if(typeof EDIT==='number'&&EDIT>=0){const c=myCars()[EDIT];if(c&&V20BODIES.indexOf(c.body)>=0)return {body:c.body,paint:V20PAINTS.indexOf(c.paint)>=0?c.paint:look.paint}}}catch(e){}
+ return look;
+}
+function v20Store(body,paint){
+ const cur=v20Look();
+ const next={body:V20BODIES.indexOf(body)>=0?body:cur.body,paint:V20PAINTS.indexOf(paint)>=0?paint:cur.paint};
+ if(V20BODIES.indexOf(next.body)<0)next.body='';
+ if(V20PAINTS.indexOf(next.paint)<0)next.paint='#5c6b7a';
+ try{localStorage.setItem('c1_carlook',JSON.stringify(next))}catch(e){}
+ return next;
+}
+function v20PlugHTML(){
+ const p=v20Plug(), label=L2("My car's plug",'El conector de mi auto');
+ const btns=['CCS','NACS','J1772','CHAdeMO'].map(n=>'<button type="button" class="chip'+(p===n?' on':'')+'" aria-pressed="'+(p===n)+'" onclick="v20PlugSet(\''+n+'\')">'+n+'</button>').join('');
+ return '<div class="v20plugs" role="group" aria-label="'+label+'"><span class="v20plab">'+label+'</span>'+btns+'</div>';
+}
+function v20PlugUI(){
+ const html=v20PlugHTML();
+ const rows=document.querySelectorAll('.v20plugs');
+ if(!rows.length){
+  const chips=document.getElementById('chips'); if(chips)chips.insertAdjacentHTML('afterend',html);
+  const find=document.getElementById('stfind'); if(find)find.insertAdjacentHTML('afterbegin',html);
+  return;
+ }
+ rows.forEach(n=>{n.outerHTML=html});
+}
+window.v20PlugSet=function(name){
+ const next=v20Plug()===name?'':name;
+ try{if(next)localStorage.setItem('c1_myplug',next);else localStorage.removeItem('c1_myplug')}catch(e){}
+ try{draw()}catch(e){}
+ try{if(typeof fRefilter==='function'){fRefilter.s=null;fRefilter()}}catch(e){}
+ try{if(window.cloUI)cloUI()}catch(e){}
+ v20PlugUI();
+};
+let v20At=null,v20N=-1;
+function v20Station(l){
+ if(l&&l._st)return l._st;
+ if(!l||!l.getLatLng)return null;
+ if(!v20At||v20N!==S.length){v20At=new Map();for(const s of S)v20At.set(s.lat.toFixed(5)+','+s.lng.toFixed(5),s);v20N=S.length}
+ const ll=l.getLatLng();
+ return v20At.get(ll.lat.toFixed(5)+','+ll.lng.toFixed(5))||null;
+}
+function v20Cull(){
+ const p=v20Plug(); if(!p||!layer||!layer.eachLayer)return;
+ const drop=[];
+ layer.eachLayer(l=>{if(!l||!l.options||l.options.interactive===false||l.options.fill===false)return;const s=v20Station(l);if(s&&!v20Has(s,p))drop.push(l)});
+ drop.forEach(l=>{try{layer.removeLayer(l)}catch(e){}});
+ const sh=document.getElementById('sheet');
+ if(sh&&!sh.hidden&&typeof cur!=='undefined'&&cur&&!v20Has(cur,p)&&window.v19yCard)v19yCard(0);
+}
+if(typeof fPass==='function'){const _fp=fPass;fPass=function(s){if(!v20Has(s,v20Plug()))return false;return _fp.apply(this,arguments)}}
+if(typeof fRefilter==='function'){const _fr=fRefilter;fRefilter=function(){const p=v20Plug();if(fRefilter._v20!==p){fRefilter._v20=p;fRefilter.s=null}return _fr.apply(this,arguments)}}
+if(typeof cloList==='function'){const _cl=cloList;cloList=function(){const rows=_cl.apply(this,arguments)||[];const p=v20Plug();if(!p)return rows;return rows.filter(x=>v20Has(x[1],p))}}
+if(typeof cloUI==='function'){const _ui=cloUI;cloUI=function(){const r=_ui.apply(this,arguments);if(v20Plug()&&!document.querySelector('#clo .clr')){const m=document.querySelector('#clo .cll .muted');if(m)m.textContent=L2('No stations with that plug in this list.','No hay estaciones con ese conector en esta lista.')}return r}}
+function v20Strokes(){
+ const night=document.body.classList.contains('v20night');
+ const walk=g=>{if(!g||!g.eachLayer)return;g.eachLayer(l=>{if(!l.options||l.options.pin!=='teardrop')return;if(night){if(!l.options._v20s){l.options._v20s=l.options.color;l.options._v20w=l.options.weight}if(l.options.color==='#f8fafc'&&l.options.weight>=2.5)return;l.options.color='#f8fafc';l.options.weight=2.5;if(l.redraw)l.redraw()}else if(l.options._v20s){l.options.color=l.options._v20s;l.options.weight=l.options._v20w||2;delete l.options._v20s;if(l.redraw)l.redraw()}})};
+ try{walk(layer)}catch(e){}
+ try{if(typeof FMC!=='undefined')walk(FMC)}catch(e){}
+}
+if(typeof draw==='function'){const _d=draw;draw=function(){const r=_d.apply(this,arguments);try{v20Cull()}catch(e){}try{v20Strokes()}catch(e){}return r}}
+if(typeof setStyle==='function'){const _ss=setStyle;setStyle=function(st,save){const r=_ss.apply(this,arguments);document.body.classList.toggle('v20night',st==='dark');if(save){try{localStorage.setItem('c1_nmap',st==='dark'?'1':'0')}catch(e){}}try{v20Strokes()}catch(e){}const b=document.querySelector('#menubox .v20night button');if(b){const on=st==='dark';b.classList.toggle('on',on);b.setAttribute('aria-checked',String(on));b.textContent=on?L2('On','Sí'):L2('Off','No')}return r}}
+if(typeof focusLot==='function'){const _fl=focusLot;focusLot=function(s){if(document.body.classList.contains('v20night')){FOCUS=s;try{map.invalidateSize();map.setView([s.lat,s.lng],18)}catch(e){}return}return _fl.apply(this,arguments)}}
+window.v20Night=function(){const next=!document.body.classList.contains('v20night');setStyle(next?'dark':'sat',1)};
+if(typeof openMenu==='function'){const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=document.getElementById('menubox');if(!b||b.querySelector('.v20night'))return r;const on=document.body.classList.contains('v20night');const h='<div class="v20night"><span>'+L2('Night map','Mapa de noche')+'</span><button type="button" class="chip'+(on?' on':'')+'" role="switch" aria-checked="'+on+'" aria-label="'+L2('Night map','Mapa de noche')+'" onclick="v20Night()">'+ (on?L2('On','Sí'):L2('Off','No'))+'</button></div>';const s=b.querySelector('.c1snd')||b.querySelector('.c1mt')||b.querySelector('.row');if(s)s.insertAdjacentHTML('afterend',h);else b.insertAdjacentHTML('beforeend',h);return r}}
+(function v20NightApply(){
+ let saved=null;try{saved=localStorage.getItem('c1_nmap')}catch(e){}
+ const q=new URLSearchParams(location.search).get('nmap');
+ const scheme=matchMedia('(prefers-color-scheme: dark)').matches;
+ const want=q==='1'||(q!=='0'&&(saved==='1'||(saved!=='0'&&scheme)));
+ if((typeof MSTYLE!=='undefined'&&MSTYLE==='dark')!==want)setStyle(want?'dark':'sat');
+ else{document.body.classList.toggle('v20night',want);v20Strokes()}
+ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{let s=null;try{s=localStorage.getItem('c1_nmap')}catch(err){}if(s==='1'||s==='0')return;setStyle(e.matches?'dark':'sat')})}catch(e){}
+})();
+function v20You(){
+ if(window.NOMAP||typeof youMk==='undefined'||!youMk||!youMk.getLatLng)return;
+ const look=v20Look();
+ const ll=youMk.getLatLng();
+ if(!look.body){
+  if(youMk._v20car){try{map.removeLayer(youMk)}catch(e){}youMk=L.circleMarker(ll,{radius:8,color:'#fff',weight:3,fillColor:'#00c2ff',fillOpacity:1}).addTo(map).bindTooltip(T('You'),{permanent:true,direction:'top',offset:[0,-8]})}
+  return;
+ }
+ const icon=L.divIcon({className:'v20you',html:v20CarSVG(look.body,look.paint),iconSize:[48,22],iconAnchor:[24,18]});
+ if(youMk._v20car&&youMk.setIcon){youMk.setIcon(icon);return}
+ try{map.removeLayer(youMk)}catch(e){}
+ youMk=L.marker(ll,{icon:icon,interactive:false,keyboard:false,zIndexOffset:800}).addTo(map);
+ youMk._v20car=1;
+ youMk.bindTooltip(T('You'),{permanent:true,direction:'top',offset:[0,-16]});
+}
+function v20ChargeCar(){
+ const host=document.getElementById('chx'); if(!host)return;
+ const look=v20Look();
+ let el=document.getElementById('v20chg');
+ if(!look.body){if(el)el.remove();return}
+ if(!el){el=document.createElement('div');el.id='v20chg';const car=document.getElementById('chcar');if(car)car.before(el);else host.prepend(el)}
+ el.className=matchMedia('(prefers-reduced-motion: reduce)').matches?'v20chg v20still':'v20chg';
+ el.innerHTML=v20CarSVG(look.body,look.paint)+'<span>'+L2('Your car','Tu auto')+'</span>';
+}
+function v20InjectLook(){
+ const b=document.getElementById('carbox'); if(!b)return;
+ const form=b.querySelector('.carf'); if(!form||form.querySelector('.v20look'))return;
+ const look=v20ShownLook();
+ const names={sedan:['Sedan','Sedán'],hatchback:['Hatchback','Hatchback'],suv:['SUV','SUV'],pickup:['Pickup','Pickup'],van:['Van','Van']};
+ const bs=V20BODIES.map(id=>'<button type="button" class="'+(look.body===id?'on':'')+'" aria-pressed="'+(look.body===id)+'" onclick="v20Body(\''+id+'\')">'+v20CarSVG(id,look.paint)+'<span>'+L2(names[id][0],names[id][1])+'</span></button>').join('');
+ const paints=V20PAINTS.map((c,i)=>'<button type="button" class="v20sw'+(look.paint===c?' on':'')+'" style="background:'+c+'" aria-label="'+L2('Paint','Color')+' '+(i+1)+'" aria-pressed="'+(look.paint===c)+'" onclick="v20Paint(\''+c+'\')"></button>').join('');
+ const html='<div class="v20look"><div class="v20cap">'+L2('Body','Carrocería')+'</div><div class="v20bodies" role="radiogroup" aria-label="'+L2('Body','Carrocería')+'">'+bs+'</div><div class="v20cap">'+L2('Paint','Color')+'</div><div class="v20paints" role="radiogroup" aria-label="'+L2('Paint','Color')+'">'+paints+'</div></div>';
+ const head=form.querySelector('b'); if(head)head.insertAdjacentHTML('afterend',html);else form.insertAdjacentHTML('afterbegin',html);
+}
+function v20RefreshLook(){document.querySelectorAll('#carbox .v20look').forEach(n=>n.remove());v20InjectLook();v20You();v20ChargeCar()}
+window.v20Body=function(body){v20Store(body,v20Look().paint);v20RefreshLook()};
+window.v20Paint=function(paint){const cur=v20Look();v20Store(cur.body||v20ShownLook().body,paint);v20RefreshLook()};
+if(typeof carsUI==='function'){const _cu=carsUI;carsUI=function(){const r=_cu.apply(this,arguments);try{v20InjectLook()}catch(e){}return r}}
+if(typeof saveCar==='function'){const _sv=saveCar;saveCar=function(){const look=v20ShownLook();const r=_sv.apply(this,arguments);try{const a=myCars();const i=a.findIndex(x=>x.nick===CAR);if(i>=0&&look.body){a[i].body=look.body;a[i].paint=look.paint;saveCars(a);localStorage.setItem('c1_carlook',JSON.stringify({body:look.body,paint:look.paint}));v20You();v20ChargeCar()}}catch(e){}return r}}
+if(typeof useCar==='function'){const _uc=useCar;useCar=function(i,quiet){const r=_uc.apply(this,arguments);try{const c=myCars()[i];if(c&&c.body){localStorage.setItem('c1_carlook',JSON.stringify({body:c.body,paint:c.paint||'#5c6b7a'}));v20You();v20ChargeCar()}}catch(e){}return r}}
+if(typeof startLoc==='function'){const _sl=startLoc;startLoc=function(toLA){const r=_sl.apply(this,arguments);let k=0;const iv=setInterval(()=>{if(++k>24)return clearInterval(iv);if(typeof youMk!=='undefined'&&youMk&&youMk.getLatLng){v20You();if(v20Look().body&&youMk._v20car)clearInterval(iv)}},250);return r}}
+if(typeof setLang==='function'){const _lg=setLang;setLang=function(){const r=_lg.apply(this,arguments);try{v20PlugUI();v20ChargeCar()}catch(e){}return r}}
+let v20dc=false;
+if(typeof dcLoad==='function'){const _dc=dcLoad;dcLoad=function(cb){if(!v20dc){if(cb){v20dc=true;return _dc(cb)}return}return _dc.apply(this,arguments)};window.v20ArmTrip=function(){if(v20dc)return;v20dc=true;try{_dc()}catch(e){}}}
+if(typeof tripMap==='function'){const _tm=tripMap;tripMap=function(){const s=document.getElementById('s-trip');if(!s||!s.classList.contains('on')){tripMap.hold=1;return}tripMap.hold=0;return _tm.apply(this,arguments)}}
+if(typeof go==='function'){const _go=go;go=function(t){const r=_go.apply(this,arguments);if(t==='trip'){try{v20ArmTrip()}catch(e){}try{if(tripMap.hold)tripMap()}catch(e){}}if(t==='charge'){try{v20ChargeCar()}catch(e){}}return r}}
+let v20on=false;
+if(typeof cloEnsure==='function'&&typeof fSync==='function'){
+ const _ce=cloEnsure,_fs=fSync;
+ cloEnsure=function(){if(!v20on){cloEnsure.need=1;return}return _ce.apply(this,arguments)};
+ fSync=function(){if(!v20on)return;return _fs.apply(this,arguments)};
+ function v20ArmChunks(){if(v20on||window.NOMAP)return;v20on=true;window.__v20hold=0;try{_ce()}catch(e){}try{_fs()}catch(e){}}
+ addEventListener('load',()=>c1Idle(v20ArmChunks,450));
+}
+v20PlugUI();
+try{if(v20Plug())draw()}catch(e){}
+const V20CARDS=[
+ ['Find chargers','Encuentra cargadores','The map shows public stations near you. Tap a pin for the details.','El mapa muestra estaciones públicas cerca de ti. Toca un pin para ver los detalles.'],
+ ['Filter by your plug','Filtra por tu conector','Choose CCS, NACS, J1772, or CHAdeMO. The map and the station list keep the ones that match.','Elige CCS, NACS, J1772 o CHAdeMO. El mapa y la lista de estaciones dejan las que coinciden.'],
+ ['Plan a trip','Planea un viaje','Open Trip, enter a place, and see charging stops along the way.','Abre Viaje, escribe un lugar y mira las paradas de carga en el camino.']
+];
+let v20step=0;
+function v20OnDone(){try{localStorage.setItem('c1_onboard','1')}catch(e){}const el=document.getElementById('v20ob');if(el)el.hidden=true}
+function v20RenderCard(){
+ const el=document.getElementById('v20ob'); if(!el)return;
+ const c=V20CARDS[v20step];
+ el.querySelector('.v20kicker').textContent=(v20step+1)+' / 3';
+ el.querySelector('h2').textContent=L2(c[0],c[1]);
+ el.querySelector('.v20body').textContent=L2(c[2],c[3]);
+ const next=el.querySelector('.v20next');
+ next.textContent=v20step===2?L2('Done','Listo'):L2('Next','Siguiente');
+}
+function v20ShowOnboard(){
+ if(document.getElementById('v20ob')){document.getElementById('v20ob').hidden=false;v20RenderCard();return}
+ const el=document.createElement('div');
+ el.id='v20ob'; el.className='v20ob'; el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-labelledby','v20ob-t');
+ el.innerHTML='<div class="v20card"><p class="v20kicker"></p><h2 id="v20ob-t"></h2><p class="v20body"></p><div class="v20ob-row"><button type="button" class="btn" id="v20skip"></button><button type="button" class="btn g v20next"></button></div></div>';
+ document.body.appendChild(el);
+ el.querySelector('#v20skip').textContent=L2('Skip','Saltar');
+ el.querySelector('#v20skip').addEventListener('click',v20OnDone);
+ el.querySelector('.v20next').addEventListener('click',()=>{if(v20step>=2){v20OnDone();return}v20step++;v20RenderCard()});
+ v20RenderCard();
+}
+function v20WantOnboard(){const q=new URLSearchParams(location.search).get('onboard');if(q==='1')return true;try{return localStorage.getItem('c1_onboard')!=='1'}catch(e){return false}}
+if(v20WantOnboard()){const tick=()=>{const i=document.getElementById('intro');if(i&&!i.classList.contains('out')){setTimeout(tick,250);return}v20ShowOnboard()};setTimeout(tick,400)}
+document.addEventListener('keydown',e=>{const el=document.getElementById('v20ob');if(e.key==='Escape'&&el&&!el.hidden){e.stopPropagation();v20OnDone()}},true);
+let n=0;const iv=setInterval(()=>{n++;try{v20Strokes()}catch(e){}if(n>8)clearInterval(iv)},500);
+try{performance.mark('v20a-ready')}catch(e){}
+}catch(e){console.error('[v20a]',e)}
+})();
+</script>
 </body></html>
