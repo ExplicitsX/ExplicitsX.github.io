@@ -13,7 +13,7 @@ const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
 const fails = [];
 const check = (cond, msg) => { if (!cond) fails.push(msg); };
 const v19y = html.slice(html.indexOf('id="v19y"'));
-check(html.includes('<title>AimzLane mock v19z1</title>'), 'title v19z1');
+check(html.includes('<title>Kilolane mock v19z2</title>'), 'title v19z2');
 check(html.includes('content="noindex,nofollow"'), 'noindex');
 check(html.includes('id="sheet" hidden'), 'sheet starts hidden');
 check(v19y.includes("v19yEmoji") && v19y.includes("'⚡'") && v19y.includes("'🔌'"), 'charger emoji helper');
@@ -79,7 +79,7 @@ try {
   check(opened.colors >= 3, 'distinct pin colors ' + opened.colors);
   check(opened.domPins < 250, 'no huge DOM pin set (' + opened.domPins + ')');
   check(opened.mapH > 400, 'map has the screen (' + opened.mapH + ')');
-  check(opened.title === 'AimzLane mock v19z1', 'title');
+  check(opened.title === 'Kilolane mock v19z2', 'title');
   await page.screenshot({path: join(shots, 'v19y_map_mobile.png')});
   const pin = await page.evaluate(() => {
     const s = S.find(x => x.kw >= 50 && x.name !== cur.name);

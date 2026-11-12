@@ -15,9 +15,9 @@ const fails = [];
 function check(cond, msg) { if (!cond) fails.push(msg); }
 
 const v19x = html.slice(html.indexOf('id="v19x"'));
-check(html.includes('<title>AimzLane mock v19z1</title>'), 'title is v19z1');
+check(html.includes('<title>Kilolane mock v19z2</title>'), 'title is v19z2');
 check(html.includes('content="noindex,nofollow"'), 'noindex stays');
-check(html.includes('AimzLane') && !html.includes('Voltlane'), 'visible name is AimzLane');
+check(html.includes('Kilolane') && !html.includes('AimzLane') && !html.includes('Voltlane'), 'visible name is Kilolane');
 check(html.includes('Every charger. One app.'), 'h1 tagline stays');
 check(html.includes('Every charge. ⚡ One lane.'), 'menu tagline stays');
 check(html.includes('const PPX_Z=15'), 'price pins still start at zoom 15');
@@ -90,7 +90,7 @@ function assertLayout(label, info) {
   check(info.visibleMap >= 260, label + ': visible map is ' + Math.round(info.visibleMap) + 'px');
   check(info.mapH >= 320, label + ': map box is ' + Math.round(info.mapH) + 'px');
   check(info.noHScroll, label + ': no horizontal overflow');
-  check(info.title === 'AimzLane mock v19z1', label + ': title');
+  check(info.title === 'Kilolane mock v19z2', label + ': title');
   check(info.robots.includes('noindex'), label + ': noindex');
   check(info.tagline.includes('Every charger. One app.'), label + ': tagline');
   check(info.colors.Tesla === '#0072B2' && info.colors.EVgo === '#009E73', label + ': live pin colors');
