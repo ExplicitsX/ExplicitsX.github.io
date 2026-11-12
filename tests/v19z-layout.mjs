@@ -12,7 +12,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
 const fails = [];
 const check = (c, m) => { if (!c) fails.push(m); };
-check(html.includes('<title>Voltlane mock v19z</title>'), 'title v19z');
+check(html.includes('<title>Voltlane mock v20a</title>'), 'title v20a');
 check(html.includes('id="sheet" hidden'), 'card hidden until tap');
 check(html.includes('v19zCode') && html.includes('PARKING_GARAGE') && html.includes('HOTEL'), 'documented facility codes');
 const real = readFileSync(join(root, 't-97f47847fd25/st/DC.json'), 'utf8');
@@ -37,7 +37,7 @@ try {
   await page.setViewport({width: 390, height: 844, isMobile: true, hasTouch: true});
   await page.emulateMediaFeatures([{name: 'prefers-reduced-motion', value: 'reduce'}]);
   await page.evaluateOnNewDocument(() => {
-    try { sessionStorage.setItem('c1_intro', '1'); localStorage.setItem('c1_lang', 'en'); } catch (e) {}
+    try { sessionStorage.setItem('c1_intro', '1'); localStorage.setItem('c1_lang', 'en'); localStorage.setItem('c1_onboard', '1'); localStorage.setItem('c1_nmap', '0'); localStorage.removeItem('c1_myplug'); } catch (e) {}
     const deny = {code: 1, message: 'denied'};
     const geo = {getCurrentPosition: (_o, f) => f && f(deny), watchPosition: (_o, f) => { f && f(deny); return 0; }, clearWatch() {}};
     try { Object.defineProperty(navigator, 'geolocation', {configurable: true, get: () => geo}); } catch (e) {}

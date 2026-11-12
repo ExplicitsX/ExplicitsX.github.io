@@ -15,7 +15,7 @@ const fails = [];
 function check(cond, msg) { if (!cond) fails.push(msg); }
 
 const v19x = html.slice(html.indexOf('id="v19x"'));
-check(html.includes('<title>Voltlane mock v19z</title>'), 'title is v19z');
+check(html.includes('<title>Voltlane mock v20a</title>'), 'title is v20a');
 check(html.includes('content="noindex,nofollow"'), 'noindex stays');
 check(html.includes('Voltlane'), 'working name Voltlane stays');
 check(html.includes('Every charger. One app.'), 'h1 tagline stays');
@@ -65,7 +65,7 @@ async function boot(page, width, height) {
   await page.setViewport({width, height, deviceScaleFactor: 1, isMobile: width < 500, hasTouch: width < 500});
   await page.emulateMediaFeatures([{name: 'prefers-reduced-motion', value: 'reduce'}]);
   await page.evaluateOnNewDocument(() => {
-    try { sessionStorage.setItem('c1_intro', '1'); localStorage.setItem('c1_lang', 'en'); } catch (e) {}
+    try { sessionStorage.setItem('c1_intro', '1'); localStorage.setItem('c1_lang', 'en'); localStorage.setItem('c1_onboard', '1'); localStorage.setItem('c1_nmap', '0'); localStorage.removeItem('c1_myplug'); } catch (e) {}
     const deny = {code: 1, message: 'denied'};
     const geo = {getCurrentPosition: (_ok, fail) => fail && fail(deny), watchPosition: (_ok, fail) => { fail && fail(deny); return 0; }, clearWatch() {}};
     try { Object.defineProperty(navigator, 'geolocation', {configurable: true, get: () => geo}); } catch (e) {}
@@ -90,7 +90,7 @@ function assertLayout(label, info) {
   check(info.visibleMap >= 260, label + ': visible map is ' + Math.round(info.visibleMap) + 'px');
   check(info.mapH >= 320, label + ': map box is ' + Math.round(info.mapH) + 'px');
   check(info.noHScroll, label + ': no horizontal overflow');
-  check(info.title === 'Voltlane mock v19z', label + ': title');
+  check(info.title === 'Voltlane mock v20a', label + ': title');
   check(info.robots.includes('noindex'), label + ': noindex');
   check(info.tagline.includes('Every charger. One app.'), label + ': tagline');
   check(info.colors.Tesla === '#0072B2' && info.colors.EVgo === '#009E73', label + ': live pin colors');
