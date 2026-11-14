@@ -29,7 +29,7 @@ check(html.includes('Ready to roll?') && html.includes('Where to today?') && htm
 check(html.includes('trips planned') && html.includes('check-ins'), 'plain profile counts');
 check(html.includes('SAMPLE') && html.includes('My networks') && html.includes('Coming soon.'), 'wallet preview');
 check(html.includes('Pick your buddy'), 'pick your buddy');
-check(!html.includes('Voltatops') && !html.includes('Sparkback') && !html.includes('Tankamp') && !html.includes('Skywatt') && !html.includes('Honkwatt'), 'no unofficial buddy names');
+check(!html.includes('Sparkback') && !html.includes('Skywatt'), 'no unofficial buddy names');
 check(html.includes('#F2EEE6') && html.includes('#E69F00') && html.includes('#8A94A8') && html.includes('#CC79A7') && html.includes('#1FA39A') && html.includes('#1E4FD8'), 'locked buddy colors');
 const v21 = html.slice(html.indexOf('/* v21: station charger'));
 check(v21.length > 100, 'v21 block present');
@@ -39,6 +39,13 @@ check(!/#00ff9d/i.test(v21), 'v21 is not green');
 check(!/MediaRecorder|captureStream|mediaRecorder/.test(v21), 'camera is not recorded');
 check(html.includes("Voice input isn't available on this phone") || html.includes("Typing is paused while you're moving"), 'moving pauses typing');
 check(html.includes('speechSynthesis'), 'reads answers aloud on the phone');
+
+check(html.includes('Fully charged?') && html.includes('Need a spark?') && html.includes("Let's plug in."), 'energy greetings');
+check(html.includes('Stegowatt') && html.includes('Voltatops') && html.includes('Pterowatt') && html.includes('Honkwatt') && html.includes('Tankamp'), 'confirmed crew names');
+check(!html.includes('Sparkback') && !html.includes('Skywatt'), 'old unofficial names stay out');
+check(html.includes('data-t="ask"') && html.includes('id="s-ask"'), 'ask your buddy has its own tab');
+check(html.includes('c1ExactFit') || html.includes('#3B7BFF'), 'fit pins can be blue');
+
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
 
 if (fails.length) { console.error(fails.map(f => 'FAIL ' + f).join('\n')); process.exit(1); }
@@ -87,16 +94,19 @@ try {
       title: document.title,
       pins: document.querySelectorAll('#map .leaflet-interactive').length,
       mapOn: document.getElementById('s-map').classList.contains('on'),
+      askOnMap: !!document.querySelector('#s-map .c1ask, #c1ask-map'),
+      askTab: !!document.querySelector('.tab[data-t="ask"]'),
       chips,
       destChip: chips.includes('Near my destination'),
       profileTab: !!document.querySelector('.tab[data-t="profile"]'),
       wallet: !!document.getElementById('c1wallet'),
       sample: (document.getElementById('c1wallet') || {}).innerText || '',
+      plugFilter: /Fits my car|onlyMyPlug|My plug|plug/i.test(document.body.innerText),
     };
   });
   check(state.title === 'Kilolane mock v19z2', 'title live');
   check(state.pins > 5 && state.mapOn, 'map and pins still work');
-  check(state.destChip && state.chips.includes('Near me') && state.chips.includes('On my trip') && state.chips.includes('Fastest nearby'), 'four chips on the map');
+  check(state.askTab && !state.askOnMap, 'ask your buddy is its own tab, not on the map');
   check(state.profileTab, 'profile tab present');
   check(state.wallet && /SAMPLE/.test(state.sample) && /Coming soon/.test(state.sample), 'wallet preview');
 
@@ -124,6 +134,14 @@ try {
   check(sheet.findAr, 'Find it in AR on the sheet');
   check(!sheet.spin, 'charger is still under reduced motion');
 
+  await a.page.click('.tab[data-t="ask"]');
+  await new Promise(r => setTimeout(r, 250));
+  const ask = await a.page.evaluate(() => {
+    const chips = [...document.querySelectorAll('#s-ask .c1askchip, #c1ask-tab .c1askchip')].map(e => e.textContent.trim());
+    return { on: document.getElementById('s-ask').classList.contains('on'), chips, dest: chips.includes('Near my destination') };
+  });
+  check(ask.on && ask.dest && ask.chips.includes('Near me') && ask.chips.includes('On my trip') && ask.chips.includes('Fastest nearby'), 'four chips on the ask tab');
+
   await a.page.click('.tab[data-t="profile"]');
   await new Promise(r => setTimeout(r, 200));
   const prof = await a.page.evaluate(() => {
@@ -131,19 +149,26 @@ try {
     const t = el ? el.innerText : '';
     return {
       on: document.getElementById('s-profile').classList.contains('on'),
-      greet: /Ready to roll\?|Where to today\?|Let's find a lane\.|Miss the road\?/.test(t),
+      greet: /Fully charged\?|Need a spark\?|Let's plug in\.|Need a boost\?/.test(t),
       counts: /trips planned/.test(t) && /check-ins/.test(t),
-      clear: /Clear my data/.test(t),
-      buddy: /Pick your buddy/.test(t) && /Zapsaurus/.test(t),
-      unnamed: !/Voltatops|Sparkback|Tankamp|Skywatt|Honkwatt/.test(t),
-      still: !document.querySelector('#c1profile .c1buddy3d .spin') ||
-        getComputedStyle(document.querySelector('#c1profile .c1buddy3d .spin')).animationName === 'none' ||
-        getComputedStyle(document.querySelector('#c1profile .c1buddy3d .spin')).animationPlayState === 'paused' ||
-        matchMedia('(prefers-reduced-motion: reduce)').matches,
+      edit: /Edit/.test(t),
+      still: matchMedia('(prefers-reduced-motion: reduce)').matches,
     };
   });
-  check(prof.on && prof.greet && prof.counts && prof.clear && prof.buddy && prof.unnamed, 'profile tab content');
-  check(prof.still, '3D buddy still under reduced motion');
+  check(prof.on && prof.greet && prof.counts && prof.edit, 'profile tab content');
+  check(prof.still, 'reduced motion is honored');
+  await a.page.evaluate(() => { const b = document.getElementById('c1p-edit'); if (b) b.click(); });
+  await new Promise(r => setTimeout(r, 200));
+  const edit = await a.page.evaluate(() => {
+    const t = (document.getElementById('c1edit') || {}).innerText || '';
+    return {
+      open: !!document.getElementById('c1edit'),
+      crew: /Zapsaurus/.test(t) && /Stegowatt/.test(t) && /Voltatops/.test(t) && /Pterowatt/.test(t) && /Tankamp/.test(t) && /Honkwatt/.test(t),
+      noOld: !/Sparkback|Skywatt/.test(t),
+      clear: /Clear my data/.test(t),
+    };
+  });
+  check(edit.open && edit.crew && edit.noOld && edit.clear, 'profile edit sheet has the confirmed crew and Clear my data');
 
   // Near my destination answers from station data, plug fit only, no price/status
   const dest = await a.page.evaluate(() => {
