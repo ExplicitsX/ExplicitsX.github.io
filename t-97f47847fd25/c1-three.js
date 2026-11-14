@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q1';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q2';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q1';
+const C1_ASSET_V = '20261113q2';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -154,6 +154,22 @@ function injectCss() {
     }
     .c1-3d-play{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:2px 0 6px}
     .c1-3d-play .chip{min-height:36px;font-weight:700}
+    .c1-3d-card,.c1-3d-dock.c1-3d-card{
+      background:#0B1530!important;
+      border:1px solid #9FB3D1;
+      border-radius:16px;
+      padding:8px 8px 6px;
+      margin:8px 0;
+    }
+    #s-station .c1-3d-dock, #s-charge .c1-3d-dock, #chx .c1-3d-dock{
+      background:#0B1530!important;
+      border:1px solid #9FB3D1;
+      border-radius:16px;
+      padding:8px 8px 6px;
+    }
+    #s-station .c1gl-host, #s-charge .c1gl-host, .c1-3d-card .c1gl-host{background:#0B1530;border-radius:12px}
+    #s-charge:has(#c1-3d-dock-charge .c1gl-on) #chcar .evh{display:none}
+    #s-map .c1-3d-dock, #sheet .c1-3d-dock{display:none!important}
     @media (prefers-reduced-motion:reduce){
       .c1gl-host .c1gl{/* still 3D, held still in JS */}
     }
@@ -208,54 +224,69 @@ function buildCar(body, paint) {
   const color = new THREE.Color(paint || '#E8453C');
   const isSuv = body === 'suv';
   const isTruck = body === 'truck';
-  const bodyH = isSuv ? 0.5 : 0.42;
-  const bodyL = isTruck ? 2.25 : 1.95;
-  const bodyW = isSuv ? 1.02 : 0.95;
-  const cabinH = isSuv ? 0.42 : 0.32;
-  const cabinL = isTruck ? 0.85 : 1.05;
-  const cabinX = isTruck ? -0.35 : 0.05;
-  const hull = mesh(GEO.box, color, bodyL, bodyH, bodyW);
-  add(g, hull, 0, 0.46, 0);
-  const cabin = mesh(GEO.box, color, cabinL, cabinH, bodyW * 0.92);
-  add(g, cabin, cabinX, 0.46 + bodyH * 0.5 + cabinH * 0.5 - 0.02, 0);
-  const win = mesh(GEO.box, GLASS, cabinL * 0.72, cabinH * 0.62, bodyW * 0.94);
-  add(g, win, cabinX + 0.02, cabin.position.y + 0.02, 0);
-  // wheels
-  const wheelMat = hexMat(0x22304f);
-  const hubMat = hexMat(0xc9d1de);
-  const wdx = isTruck ? 0.72 : 0.62;
+  const bodyL = isTruck ? 2.2 : 1.95;
+  const bodyW = isSuv ? 1.02 : 0.92;
+  const bodyH = isSuv ? 0.38 : 0.32;
+  const cabinH = isSuv ? 0.36 : (isTruck ? 0.32 : 0.28);
+  const cabinL = isTruck ? 0.72 : 0.95;
+  const cabinX = isTruck ? -0.28 : 0.08;
+  // Curved lower body (not a box): a long ellipsoid plus rounded nose and tail
+  const hull = soft(GEO.sphere, color.getHex(), bodyL * 0.5, bodyH, bodyW * 0.5);
+  add(g, hull, 0, 0.48, 0);
+  add(g, soft(GEO.sphere, color.getHex(), 0.42, bodyH * 0.85, bodyW * 0.46), bodyL * 0.28, 0.46, 0);
+  add(g, soft(GEO.sphere, color.getHex(), 0.4, bodyH * 0.82, bodyW * 0.46), -bodyL * 0.3, 0.46, 0);
+  if (isTruck) {
+    add(g, soft(GEO.sphere, color.getHex(), 0.55, bodyH * 0.7, bodyW * 0.46), -0.15, 0.5, 0);
+  }
+  // Glass canopy
+  const glassMat = { transparent: true, opacity: 0.78, emissive: GLASS, emissiveIntensity: 0.18 };
+  const canopy = mesh(GEO.sphere, GLASS, cabinL * 0.5, cabinH, bodyW * 0.42, glassMat);
+  add(g, canopy, cabinX, 0.48 + bodyH + cabinH * 0.15, 0);
+  const windshield = mesh(GEO.sphere, GLASS, cabinL * 0.28, cabinH * 0.7, bodyW * 0.4, glassMat);
+  add(g, windshield, cabinX + cabinL * 0.28, 0.62, 0);
+  // Wheel arches (fenders) so the wheels stay visible
+  const wdx = isTruck ? 0.7 : 0.6;
+  const wdz = bodyW * 0.5;
+  const archCol = color.getHex();
+  [[-wdx, -wdz], [wdx, -wdz], [-wdx, wdz], [wdx, wdz]].forEach(([x, z]) => {
+    add(g, soft(GEO.sphere, archCol, 0.26, 0.16, 0.2), x, 0.36, z);
+  });
+  // Visible wheels: dark tire, light rim, spokes
+  const wheelMat = hexMat(0x1a2438);
+  const hubMat = hexMat(0xe6f1ff);
   const wheels = [];
-  [[-wdx, -bodyW * 0.52], [wdx, -bodyW * 0.52], [-wdx, bodyW * 0.52], [wdx, bodyW * 0.52]].forEach(([x, z]) => {
+  [[-wdx, -wdz], [wdx, -wdz], [-wdx, wdz], [wdx, wdz]].forEach(([x, z]) => {
     const wg = new THREE.Group();
-    const w = new THREE.Mesh(GEO.cyl, wheelMat);
-    w.scale.set(0.2, 0.14, 0.2);
-    w.rotation.set(Math.PI / 2, 0, 0);
-    const hub = new THREE.Mesh(GEO.cyl, hubMat);
-    hub.scale.set(0.08, 0.16, 0.08);
-    hub.rotation.set(Math.PI / 2, 0, 0);
-    const spoke = mesh(GEO.box, 0xc9d1de, 0.04, 0.18, 0.04);
+    const tire = new THREE.Mesh(GEO.cyl, wheelMat);
+    tire.scale.set(0.22, 0.12, 0.22);
+    tire.rotation.set(Math.PI / 2, 0, 0);
+    const rim = new THREE.Mesh(GEO.cyl, hubMat);
+    rim.scale.set(0.12, 0.13, 0.12);
+    rim.rotation.set(Math.PI / 2, 0, 0);
+    const spoke = mesh(GEO.box, 0xc9d1de, 0.04, 0.2, 0.03);
     spoke.rotation.x = Math.PI / 2;
-    wg.add(w, hub, spoke);
-    add(g, wg, x, 0.2, z);
+    const spoke2 = mesh(GEO.box, 0xc9d1de, 0.2, 0.04, 0.03);
+    spoke2.rotation.x = Math.PI / 2;
+    wg.add(tire, rim, spoke, spoke2);
+    add(g, wg, x, 0.22, z);
     wheels.push(wg);
   });
   g.userData.wheels = wheels;
-  // headlights / tails
-  const hl = mesh(GEO.box, LAMP, 0.08, 0.1, 0.16);
-  add(g, hl, bodyL * 0.48, 0.5, bodyW * 0.28);
-  const hl2 = mesh(GEO.box, LAMP, 0.08, 0.1, 0.16);
-  add(g, hl2, bodyL * 0.48, 0.5, -bodyW * 0.28);
-  const tl = mesh(GEO.box, 0xe8453c, 0.08, 0.1, 0.16);
-  add(g, tl, -bodyL * 0.48, 0.5, 0);
+  // headlights / tails — rounded
+  const hl = mesh(GEO.sphere, LAMP, 0.08, 0.07, 0.1, { emissive: LAMP, emissiveIntensity: 0.35 });
+  add(g, hl, bodyL * 0.46, 0.5, bodyW * 0.22);
+  const hl2 = mesh(GEO.sphere, LAMP, 0.08, 0.07, 0.1, { emissive: LAMP, emissiveIntensity: 0.35 });
+  add(g, hl2, bodyL * 0.46, 0.5, -bodyW * 0.22);
+  const tl = mesh(GEO.sphere, 0xe8453c, 0.07, 0.06, 0.1);
+  add(g, tl, -bodyL * 0.46, 0.5, 0);
   // lit charge port — pulse is emissive only, never a fill / progress bar
-  const port = mesh(GEO.box, BLUE, 0.06, 0.14, 0.1, { emissive: BLUE, emissiveIntensity: 0.7 });
-  add(g, port, 0.15, 0.52, bodyW * 0.5 + 0.02);
+  const port = mesh(GEO.sphere, BLUE, 0.07, 0.07, 0.06, { emissive: BLUE, emissiveIntensity: 0.7 });
+  add(g, port, 0.12, 0.52, bodyW * 0.5 + 0.04);
   port.userData.port = true;
   g.userData.port = port;
   g.userData.headlights = [hl, hl2];
   g.userData.bodyKind = body;
-  // shadow disc
-  const sh = mesh(GEO.cyl, 0x0b1530, 0.9, 0.02, 0.55, { transparent: true, opacity: 0.18 });
+  const sh = mesh(GEO.cyl, 0x0b1530, 1.0, 0.02, 0.55, { transparent: true, opacity: 0.22 });
   add(g, sh, 0, 0.01, 0);
   return g;
 }
@@ -635,17 +666,23 @@ function buildStall(stall) {
   add(g, post, 0, 0.38, -0.35);
   const label = textTexture((ctx, w, h) => {
     ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#E6F1FF';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(16, 8, w - 32, 44, 12);
+    else ctx.rect(16, 8, w - 32, 44);
+    ctx.fill();
     ctx.fillStyle = '#0B1530';
-    ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+    ctx.font = 'bold 42px Inter, system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(stall.plugLabel || '', w / 2, 36);
-    ctx.font = '16px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#5A6680';
-    ctx.fillText('Live status coming soon', w / 2, 58);
-  }, 256, 80);
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.28), new THREE.MeshBasicMaterial({ map: label, transparent: true }));
-  add(g, plane, 0, 0.18, 0.55);
-  plane.rotation.x = -0.45;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(stall.plugLabel || '', w / 2, 30);
+    ctx.font = 'bold 22px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#F4F7FB';
+    ctx.fillText('Live status coming soon', w / 2, 70);
+  }, 320, 96);
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(1.05, 0.36), new THREE.MeshBasicMaterial({ map: label, transparent: true }));
+  add(g, plane, 0, 0.28, 0.62);
+  plane.rotation.x = -0.28;
   return g;
 }
 
@@ -1339,10 +1376,11 @@ function mountChargeScene(el, opts) {
     const root = new THREE.Group();
     m.scene.add(root);
     const chg = buildCharger(opts.plugs || []);
-    chg.scale.set(0.72, 0.72, 0.72);
-    chg.position.set(-1.35, 0, 0);
+    chg.scale.set(0.62, 0.62, 0.62);
+    chg.position.set(-1.2, 0, 0);
     root.add(chg);
     const car = buildCar(opts.body, opts.paint);
+    car.scale.set(0.86, 0.86, 0.86);
     car.position.set(1.15, 0, 0.05);
     car.rotation.y = -Math.PI / 2;
     root.add(car);
@@ -1365,11 +1403,13 @@ function mountChargeScene(el, opts) {
     m.state.plug = { ...hang };
     setChargerLights(chg, true);
     const baseCam = m.camera.position.clone();
-    const pad = mesh(GEO.cyl, 0x12203c, 2.6, 0.04, 1.5, { transparent: true, opacity: 0.7 });
+    const pad = mesh(GEO.cyl, 0x152445, 2.8, 0.04, 1.6);
     add(root, pad, 0, 0.02, 0);
-    m.camera.position.set(0.55, 1.25, 5.8);
-    m.camera.lookAt(-0.05, 0.7, 0);
-    m.camera.fov = 30;
+    try { m.renderer.setClearColor(0x0b1530, 1); } catch (e) {}
+    // Pull back and drop the camera so the whole car and charger fit with padding
+    m.camera.position.set(0.35, 1.35, 7.2);
+    m.camera.lookAt(0, 0.55, 0);
+    m.camera.fov = 26;
     m.camera.updateProjectionMatrix();
     baseCam.copy(m.camera.position);
 
@@ -1503,28 +1543,40 @@ function mountChargeScene(el, opts) {
   });
 }
 
+function placeStationDock(root, dock) {
+  if (!root || !dock) return;
+  const hdr = root.querySelector(':scope > .hdr');
+  const find = document.getElementById('stfind');
+  // Sit under the header (and search, if present). Do not fight #stfind for
+  // the slot immediately after .hdr — that retriggered cardAll in a loop.
+  const anchor = (find && find.parentNode === root) ? find : hdr;
+  if (anchor) {
+    if (dock.previousElementSibling !== anchor) anchor.after(dock);
+  } else if (dock.parentNode !== root) {
+    root.insertBefore(dock, root.firstChild);
+  }
+}
+
 function ensureSheetDock(root) {
-  // cardInto() moves any #sheet sibling that is not .c1h / .c1more
-  // into hidden .c1more. Keep the dock inside the visible header.
-  const head = root.querySelector(':scope > .c1h');
-  if (!head) return null;
-  const dockId = root.id === 's-station' ? 'c1-3d-dock-station' : 'c1-3d-dock';
-  let dock = root.querySelector('#' + dockId);
-  if (dock && (dock.closest('.c1more') || !head.contains(dock))) {
+  // The 3D charging scene stays off the Map tab and out of #sheet.
+  if (!root || root.id === 'sheet' || (root.closest && root.closest('#s-map'))) return null;
+  const dockId = 'c1-3d-dock-station';
+  let dock = document.getElementById(dockId);
+  if (dock && (dock.closest('#s-map, #sheet, .c1more') || (dock.parentNode !== root))) {
     dock.remove();
     dock = null;
   }
-  if (dock && dock.isConnected) return dock;
-  dock = document.createElement('div');
-  dock.id = dockId;
-  dock.className = 'c1-3d-dock notr';
-  dock.innerHTML = '<div class="c1-3d-charge" style="height:168px;min-height:168px;max-height:168px;margin:6px 0 4px"></div>'
-    + '<div class="c1-3d-play"><button type="button" class="chip c1-lights-btn" aria-pressed="true">Charger lights on</button></div>'
-    + '<div class="c1-3d-lot" style="min-height:100px;margin:4px 0 0"></div>'
-    + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:0 0 4px">Live status coming soon</div>';
-  const btns = head.querySelector('.c1btns');
-  if (btns) head.insertBefore(dock, btns);
-  else head.appendChild(dock);
+  if (!dock) {
+    dock = document.createElement('div');
+    dock.id = dockId;
+    dock.className = 'c1-3d-dock c1-3d-card notr';
+    dock.innerHTML = '<div class="c1-3d-charge" style="height:200px;min-height:200px;max-height:200px;margin:6px 0 4px"></div>'
+      + '<div class="c1-3d-play"><button type="button" class="chip c1-lights-btn" aria-pressed="true">Charger lights on</button></div>'
+      + '<div class="c1-3d-lot" style="min-height:100px;margin:4px 0 0"></div>'
+      + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:0 0 4px">Live status coming soon</div>';
+  }
+  // Sit at the top of the Station tab, just under the header, on an opaque card.
+  placeStationDock(root, dock);
   return dock;
 }
 
@@ -1538,7 +1590,7 @@ function fillStationDock(root, set, s) {
     userPlug: userPlug(),
     body: set.body,
     paint: set.paint,
-    height: 168,
+    height: 200,
     lightsBtn: dock.querySelector('.c1-lights-btn'),
   });
   const lotHost = dock.querySelector('.c1-3d-lot');
@@ -1552,6 +1604,43 @@ function fillStationDock(root, set, s) {
       mountLot(lotHost, row);
     }
   }
+}
+
+
+function ensureChargeDock() {
+  const chx = document.getElementById('chx');
+  if (!chx) return null;
+  let dock = document.getElementById('c1-3d-dock-charge');
+  if (dock && !chx.contains(dock)) {
+    dock.remove();
+    dock = null;
+  }
+  if (dock && dock.isConnected) return dock;
+  dock = document.createElement('div');
+  dock.id = 'c1-3d-dock-charge';
+  dock.className = 'c1-3d-dock c1-3d-card notr';
+  dock.innerHTML = '<div class="c1-3d-charge" style="height:200px;min-height:200px;max-height:200px;margin:6px 0 4px"></div>'
+    + '<div class="c1-3d-play"><button type="button" class="chip c1-lights-btn" aria-pressed="true">Charger lights on</button></div>';
+  const chh = chx.querySelector('.chh');
+  const chcar = document.getElementById('chcar');
+  if (chh && chh.nextSibling) chx.insertBefore(dock, chh.nextSibling);
+  else if (chcar) chx.insertBefore(dock, chcar);
+  else chx.insertBefore(dock, chx.firstChild);
+  return dock;
+}
+
+function fillChargeDock(root, set, s) {
+  if (!root) return;
+  const dock = ensureChargeDock();
+  if (!dock) return;
+  mountChargeScene(dock.querySelector('.c1-3d-charge'), {
+    plugs: (s && s.plugs) || [],
+    userPlug: userPlug(),
+    body: set.body,
+    paint: set.paint,
+    height: 200,
+    lightsBtn: dock.querySelector('.c1-lights-btn'),
+  });
 }
 
 export function remountAll() {
@@ -1572,12 +1661,13 @@ export function remountAll() {
     if (set.avatar === 'car') mountCar(prev, { body: set.body, paint: set.paint, height: 130 });
     else mountBuddy(prev, { id: set.buddyId, height: 150 });
   }
-  // Station scene — dock inside the visible .c1h (cardInto swallows other siblings)
+  // Never leave a 3D dock on the Map tab / sheet (it covered the map)
+  document.querySelectorAll('#s-map .c1-3d-dock, #sheet .c1-3d-dock').forEach((d) => d.remove());
   const s = window.c1GuideStation || window.cur;
-  const sheet = document.getElementById('sheet');
-  if (sheet && !sheet.hidden) fillStationDock(sheet, set, s);
   const station = document.getElementById('s-station');
-  if (station && station.offsetParent) fillStationDock(station, set, s);
+  if (station && s) fillStationDock(station, set, s);
+  const charge = document.getElementById('s-charge');
+  if (charge && s) fillChargeDock(charge, set, s);
   // Wallet card
   const wcard = document.querySelector('#c1wallet .c1wcard');
   if (wcard) mountWallet(wcard);
@@ -1623,11 +1713,27 @@ function boot() {
   hook('cardAll', () => setTimeout(go, 40));
   hook('cardInto', (root) => {
     if (!root) return;
-    root.querySelectorAll('.c1more .c1-3d-dock, .c1more #c1-3d-dock, .c1more #c1-3d-dock-station').forEach((d) => {
-      const head = root.querySelector(':scope > .c1h');
-      if (head) head.appendChild(d);
-    });
+    if (root.id === 'sheet' || root.id === 's-map') {
+      root.querySelectorAll('.c1-3d-dock').forEach((d) => d.remove());
+      return;
+    }
+    const dock = root.querySelector('.c1-3d-dock, #c1-3d-dock-station');
+    if (dock && root.id === 's-station') placeStationDock(root, dock);
   });
+  // cardInto() tucks any non-.c1h sibling into hidden .c1more — keep the dock.
+  if (typeof window.cardInto === 'function' && !window.cardInto._c1dockkeep) {
+    const prevCI = window.cardInto;
+    window.cardInto = function (root, where, keep) {
+      const k = [keep, '.c1-3d-dock', '#c1-3d-dock-station'].filter(Boolean).join(',');
+      const r = prevCI.call(this, root, where, k);
+      if (root && root.id === 's-station') {
+        const dock = root.querySelector('#c1-3d-dock-station, :scope > .c1-3d-dock');
+        if (dock) placeStationDock(root, dock);
+      }
+      return r;
+    };
+    window.cardInto._c1dockkeep = 1;
+  }
   hook('mountLot', () => setTimeout(go, 40));
   hook('go', () => setTimeout(go, 0));
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { revealMounts(); kick(); } });

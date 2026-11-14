@@ -61,10 +61,21 @@ check(threeSrc.includes('function buildTri') && threeSrc.includes('function buil
 check(html.includes('c1p-hi') && html.includes('#E6F1FF') && html.includes('c1p-name') && html.includes('#F4F7FB'), 'profile greeting and name meet contrast on the dark card');
 check(threeSrc.includes('mountChargeScene') && threeSrc.includes('buildSagCable') && threeSrc.includes('plugInRange'), 'charging scene has a sagging cable and a snappable plug');
 check(threeSrc.includes('setChargerLights') && threeSrc.includes('pinchScale') && threeSrc.includes('triggerRoar'), 'play widgets: lights, pinch, roar');
+
+check(!threeSrc.includes('fillStationDock(sheet') && threeSrc.includes('fillChargeDock') && threeSrc.includes('#s-map .c1-3d-dock'), '3D charging scene stays off the Map tab');
+check(threeSrc.includes('setClearColor(0x0b1530, 1)') && html.includes('c1-3d-card') || threeSrc.includes('c1-3d-card'), 'charging scene sits on an opaque card');
+check(html.includes('-webkit-text-fill-color:#0B1530') && html.includes('select.chip'), 'Any price dropdown meets contrast');
 check(html.includes('Live status coming soon') && html.includes('Coming soon') && html.includes('SAMPLE'), 'wallet and lot labels stay');
 
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
 
+
+const android = readFileSync(join(root, 't-97f47847fd25', 'android', 'index.html'), 'utf8');
+check(android.includes('<title>Kilolane Android tester (preview)</title>'), 'android tester title');
+check(/noindex/.test(android), 'android tester is noindex');
+check(android.includes('uv2ySIZ3aJ9EhTqiehDyK5ky29GwTNg9MgDONA6I_oI.apk') && android.includes('Install Kilolane'), 'android tester links the current APK');
+check(android.includes('<svg') && !/qrserver|chart\.googleapis|api.qrserver/i.test(android), 'android tester QR is a local inline SVG');
+check(!/<form/i.test(android) && !/sign-?up|mailchimp|analytics|gtag|googletagmanager/i.test(android), 'android tester has no sign-ups, forms, or tracking');
 if (fails.length) { console.error(fails.map(f => 'FAIL ' + f).join('\n')); process.exit(1); }
 console.log('v21 static checks ok');
 
@@ -156,14 +167,30 @@ try {
   check(sheet.lot && sheet.stall && sheet.lotOk, 'station sheet has a generic lot row with live-status-coming-soon');
   await new Promise(r => setTimeout(r, 400));
   const sheet3 = await a.page.evaluate(() => {
-    const canvases = [...document.querySelectorAll('#sheet canvas[data-c1-three]')];
+    const canvases = [...document.querySelectorAll('#sheet canvas[data-c1-three], #s-map canvas[data-c1-three]')];
     const lot = (document.querySelector('#sheet .c1lot, #sheet .c1lot-missing') || {}).innerText || '';
     return {
       n: canvases.length,
       lotClean: !/taken|parked|in use|\bfree\b|occupied/i.test(lot),
     };
   });
-  check(sheet3.n >= 1 && sheet3.lotClean, 'station sheet three.js canvases load without fake stall status');
+  check(sheet3.n === 0 && sheet3.lotClean, 'map sheet has no 3D scene covering the map, and no fake stall status');
+
+  await a.page.click('.tab[data-t="station"]');
+  await new Promise(r => setTimeout(r, 600));
+  const st3 = await a.page.evaluate(() => {
+    try { if (window.c1Three && window.c1Three.remount) window.c1Three.remount(); } catch (e) {}
+    const canvases = [...document.querySelectorAll('#s-station canvas[data-c1-three]')];
+    const lot = (document.querySelector('#s-station .c1lot, #s-station .c1-3d-lot, #c1-3d-dock-station') || {}).innerText || '';
+    const dock = document.querySelector('#s-station .c1-3d-card, #s-station .c1-3d-dock');
+    return {
+      on: document.getElementById('s-station').classList.contains('on'),
+      n: canvases.length,
+      opaque: !!(dock && /0B1530/i.test((dock.getAttribute('style') || '') + getComputedStyle(dock).backgroundColor)),
+      lotClean: !/taken|parked|in use|\bfree\b|occupied/i.test(lot),
+    };
+  });
+  check(st3.on && st3.n >= 1 && st3.lotClean, 'Station tab 3D scene loads on its card without fake stall status');
 
   await a.page.click('.tab[data-t="ask"]');
   await new Promise(r => setTimeout(r, 250));
