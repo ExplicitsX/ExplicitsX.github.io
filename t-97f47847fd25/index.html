@@ -640,6 +640,13 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 @keyframes c1lpulse{0%,100%{opacity:.35}50%{opacity:1}}
 
 .c1you-bounce{animation:c1yb .45s ease-in-out 3}
+
+#c1edit{position:fixed;left:0;right:0;bottom:0;max-height:86%;background:#0B1530;border-radius:20px 20px 0 0;padding:16px;z-index:40;overflow:auto;color:#E6F1FF}
+#c1edit-bg{position:fixed;inset:0;background:rgba(11,21,48,.45);z-index:39}
+.c1bolt{fill:#FFD23F;stroke:#0B1530;stroke-width:1.4}
+@media (prefers-reduced-motion:reduce){
+  .c1spark,.c1bolt-anim{animation:none!important}
+}
 @keyframes c1yb{50%{transform:translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.c1you-bounce{animation:none}}
 .c1buddy3d{width:88px;height:110px;perspective:640px;display:inline-block}
@@ -851,6 +858,10 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  <input class="inp" id="ci-price" type="number" step="0.01" inputmode="decimal" placeholder="What did you pay per kWh? (optional)"><textarea class="inp" id="ci-note" rows="2" placeholder="Add a note (optional), like &quot;stall 3 is down&quot;"></textarea><label class="row" style="min-height:44px;margin-top:6px;gap:8px"><span class="muted">Show my first name on check-ins (off by default)</span><input type="checkbox" id="ci-nm" style="width:24px;height:24px;flex-shrink:0"></label>
  <button class="btn g" onclick="submitCI()">Send</button><div class="muted" id="ci-list" style="margin-top:10px"></div></div></div>
 
+<section class="screen" id="s-ask">
+ <div class="hdr">Ask your buddy</div>
+ <div id="c1ask-tab"></div>
+</section>
 <section class="screen" id="s-profile">
  <div class="hdr">Profile</div>
  <div id="c1profile"></div>
@@ -861,6 +872,7 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  <div class="tab" data-t="charge" onclick="go('charge')"><b>⚡</b>Charging</div>
  <div class="tab" data-t="trip" onclick="go('trip')"><b>🧭</b>Trip</div>
  <div class="tab" data-t="wallet" onclick="go('wallet')"><b>💳</b>Wallet</div>
+ <div class="tab" data-t="ask" onclick="go('ask')"><b>💬</b>Ask</div>
  <div class="tab" data-t="profile" onclick="go('profile')"><b>🦕</b>Profile</div>
 </nav>
 </div>
@@ -3340,12 +3352,8 @@ function renderAsk(into){
 function mountAsk(){
   watchAskSpeed();
   try{
-    const map=document.getElementById('s-map');
-    if(map){ let host=document.getElementById('c1ask-map'); if(!host){ host=document.createElement('div'); host.id='c1ask-map'; host.style.cssText='padding:0 10px'; const chips=document.getElementById('chips'); if(chips) chips.after(host); else map.appendChild(host);} renderAsk(host); }
-  }catch(e){}
-  try{
-    const trip=document.getElementById('s-trip');
-    if(trip){ let host=document.getElementById('c1ask-trip'); if(!host){ host=document.createElement('div'); host.id='c1ask-trip'; host.style.cssText='padding:0 10px'; const hdr=trip.querySelector('.hdr'); if(hdr) hdr.after(host); else trip.insertBefore(host, trip.firstChild);} renderAsk(host); }
+    const host=document.getElementById('c1ask-tab');
+    if(host) renderAsk(host);
   }catch(e){}
 }
 try{mountAsk(); setInterval(()=>{ const boxes=document.querySelectorAll('.c1ask'); const mv=askMoving(); boxes.forEach(a=>{ if(mv && a.dataset.mv!=='1'){ a.dataset.mv='1'; mountAsk(); } else if(!mv && a.dataset.mv){ delete a.dataset.mv; mountAsk(); } }); },1000)}catch(e){}
@@ -3355,6 +3363,184 @@ window.c1AskParse=askParse;
 window.c1AnswerAsk=answerAsk;
 window.c1ExactFit=exactFit;
 window.c1OwnWorkedAt=ownWorkedAt;
+window.renderAsk=renderAsk;
+window.mountAsk=mountAsk;
+})();
+</script>
+
+<script>
+/* v22: energy crew, ask tab only, slimmer map, 3D car eggs */
+(function(){
+const CREW=[
+  {id:'zapsaurus',name:'Zapsaurus',color:'#1E4FD8',kind:'rex'},
+  {id:'voltatops',name:'Voltatops',color:'#F2EEE6',kind:'tri'},
+  {id:'stegowatt',name:'Stegowatt',color:'#E69F00',kind:'stego'},
+  {id:'tankamp',name:'Tankamp',color:'#8A94A8',kind:'ankylo'},
+  {id:'pterowatt',name:'Pterowatt',color:'#CC79A7',kind:'ptero'},
+  {id:'honkwatt',name:'Honkwatt',color:'#1FA39A',kind:'para'}
+];
+const GREET=["Fully charged?","Need a spark?","Let's plug in."];
+const SLEEPY='Need a boost?';
+const rm=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+const L=(en,es)=> (typeof L2==='function'?L2(en,es):en);
+function loadProf(){try{const o=JSON.parse(localStorage.getItem('c1_profile')||'{}');const id=CREW.some(c=>c.id===o.buddyId)?o.buddyId:'zapsaurus';return {nickname:(o.nickname||'Zapsaurus').toString().slice(0,12)||'Zapsaurus',buddyId:id}}catch(e){return {nickname:'Zapsaurus',buddyId:'zapsaurus'}}}
+function saveProf(o){try{localStorage.setItem('c1_profile',JSON.stringify({...loadProf(),...o}))}catch(e){}}
+function sleepy(){try{const s=JSON.parse(localStorage.getItem('c1_trip_stats')||'null'); if(!s||!s.count) return true; if(s.lastAt==null) return false; return (Date.now()-s.lastAt)>=7*864e5;}catch(e){return true}}
+function greeting(){ if(sleepy()&&!rm()) return SLEEPY; return GREET[Math.floor(Date.now()/864e5)%3]; }
+
+function crewSvg(id, face, size){
+  const b=CREW.find(c=>c.id===id)||CREW[0];
+  const c=b.color, O='#0B1530', G='#FFD23F';
+  let head='';
+  if(b.kind==='rex') head=`<path d="M-6 -34 l4 -9 l4 9 l4 -9 l4 9" fill="${G}" stroke="${O}" stroke-width="2.5"/><ellipse cx="0" cy="0" rx="32" ry="30" fill="${c}" stroke="${O}" stroke-width="3.5"/>`;
+  else if(b.kind==='tri') head=`<path d="M-30 -14 Q0 -54 30 -14 Z" fill="#FFF3D6" stroke="${O}" stroke-width="3"/><path d="M-16 -24 l-5 -16 h4 l-3 8 h4 Z" fill="${G}" stroke="${O}" stroke-width="1.8"/><path d="M16 -24 l5 -16 h-4 l3 8 h-4 Z" fill="${G}" stroke="${O}" stroke-width="1.8"/><ellipse cx="0" cy="4" rx="32" ry="27" fill="${c}" stroke="${O}" stroke-width="3.5"/><path d="M-4 16 l4 -12 l4 12 Z" fill="#FFF3D6" stroke="${O}" stroke-width="2"/>`;
+  else if(b.kind==='stego') head=`<path d="M-27 -22 L-20 -36 L-13 -22 Z M-14 -22 L-7 -42 L0 -22 Z M0 -22 L7 -42 L14 -22 Z M13 -22 L20 -36 L27 -22 Z" fill="${G}" stroke="${O}" stroke-width="2.5"/><ellipse cx="0" cy="0" rx="32" ry="28" fill="${c}" stroke="${O}" stroke-width="3.5"/>`;
+  else if(b.kind==='ankylo') head=`<path d="M-44 0 l10 -6 v12 Z M-36 -16 l10 -2 l-4 10 Z M36 -16 l-10 -2 l4 10 Z" fill="#FFF3D6" stroke="${O}" stroke-width="2.5"/><rect x="-38" y="-26" width="76" height="52" rx="22" fill="${c}" stroke="${O}" stroke-width="3.5"/><path d="M44 0 l12 -5 v4 h6 v6 h-6 v4 Z" fill="#C9D1DE" stroke="${O}" stroke-width="2"/><rect x="56" y="-3" width="5" height="8" rx="1" fill="${O}"/>`;
+  else if(b.kind==='ptero') head=`<path d="M-6 -24 L-40 -40 L-20 -12 Z" fill="${c}" stroke="${O}" stroke-width="3"/><path d="M14 6 L48 14 L14 18 Z" fill="#FFD9A0" stroke="${O}" stroke-width="3"/><ellipse cx="0" cy="0" rx="28" ry="27" fill="${c}" stroke="${O}" stroke-width="3.5"/>`;
+  else head=`<path d="M-6 -24 Q-30 -60 -50 -44 Q-36 -38 -18 -14 Z" fill="#FFD9A0" stroke="${O}" stroke-width="3"/><path d="M-28 -50 l-4 8 h3 l-3 7" fill="${G}" stroke="${O}" stroke-width="1.4"/><ellipse cx="0" cy="2" rx="30" ry="29" fill="${c}" stroke="${O}" stroke-width="3.5"/><ellipse cx="18" cy="14" rx="14" ry="9" fill="#BFEDE8" stroke="${O}" stroke-width="2"/>`;
+  const faceG = face==='wink'
+    ? `<circle cx="-10" cy="-6" r="4" fill="${O}"/><path d="M5 -6 q5 -5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-8 8 Q0 16 8 8" stroke="${O}" stroke-width="3" fill="none"/><path d="M40 -40 l-8 12 h7 l-5 12 l12 -16 h-7 l5 -8 Z" fill="${G}" stroke="${O}" stroke-width="2"/>`
+    : face==='sleepy'
+    ? `<path d="M-15 -6 q5 5 10 0 M5 -6 q5 5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="10" rx="3.5" ry="4" fill="${O}"/>`
+    : `<circle cx="-10" cy="-6" r="4" fill="${O}"/><circle cx="-8.5" cy="-7.5" r="1.3" fill="#fff"/><circle cx="10" cy="-6" r="4" fill="${O}"/><circle cx="11.5" cy="-7.5" r="1.3" fill="#fff"/><path d="M-8 8 Q0 16 8 8" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  const w=size||72, h=Math.round(w*1.25);
+  return `<svg width="${w}" height="${h}" viewBox="-60 -70 120 150" aria-hidden="true"><path d="M0 -58 C34 -58 54 -34 54 -6 C54 30 0 66 0 66 C0 66 -54 30 -54 -6 C-54 -34 -34 -58 0 -58 Z" fill="${G}" stroke="${O}" stroke-width="4"/><g transform="translate(0,-4) scale(0.92)">${head}${faceG}</g></svg>`;
+}
+
+function carSvg(paint, opts){
+  const p=paint||'#E8453C', O='#0B1530', port='#3B7BFF';
+  const lamp=(opts&&opts.sparks&&!rm())?'#FFF3B0':'#F4F7FB';
+  const sparks=(opts&&opts.sparks&&!rm())?'<path class="c1spark" d="M8 48 l-8 8 h6 l-6 8 M14 42 l-7 7 h5 l-5 7" fill="#FFD23F" stroke="#0B1530" stroke-width="1.3"/>':'';
+  const pop=(opts&&opts.pop&&!rm())?'<path d="M118 18 C108 10 106 2 112 -4 a10 10 0 0 1 16 8 C128 8 126 14 118 22z" fill="#FFD23F" stroke="#0B1530" stroke-width="2"/><path d="M132 0 l7 10 h-5 l6 10" fill="#FFD23F" stroke="#0B1530" stroke-width="1.5"/>':'';
+  const trail=(opts&&opts.trail&&!rm())?'<g class="c1bolt-anim"><path d="M8 6 l8 10 h-6 l8 10" class="c1bolt"/><path d="M36 4 l8 10 h-6 l8 10" class="c1bolt"/><path d="M64 6 l8 10 h-6 l8 10" class="c1bolt"/><path d="M92 4 l8 10 h-6 l8 10" class="c1bolt"/></g>':'';
+  const spin=rm()?'':'c1chg-spin';
+  return `<div class="c1car">${trail}<svg viewBox="0 0 160 110" width="140" height="96"><g class="${spin}">
+    <path d="M22 70 c0-12 10-18 22-20 l18-16 c6-5 14-6 24-6 h28 c12 0 20 7 24 14 l16 14 c8 2 16 8 16 18 v4 H22z" fill="${p}" stroke="${O}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M64 36 h26 v16 H60z M96 36 h18 l12 16 H96z" fill="#BFE3FF" stroke="${O}" stroke-width="1.8"/>
+    <rect x="18" y="58" width="10" height="8" rx="2" fill="${lamp}" stroke="${O}" stroke-width="1.5"/>
+    <rect x="48" y="62" width="8" height="10" rx="2" fill="${port}" stroke="${O}" stroke-width="1.5"/>
+    <circle cx="48" cy="86" r="11" fill="#22304F" stroke="${O}" stroke-width="2"/><circle cx="118" cy="86" r="11" fill="#22304F" stroke="${O}" stroke-width="2"/>
+    ${sparks}${pop}
+  </g></svg></div>`;
+}
+
+/* Slim map: keep search, plug filter, blue fit pins. Hide the on-map ask hosts. */
+try{
+  const mapHost=document.getElementById('c1ask-map'); if(mapHost) mapHost.remove();
+  const tripHost=document.getElementById('c1ask-trip'); if(tripHost) tripHost.remove();
+}catch(e){}
+try{
+  if(typeof mountAsk==='function'){
+    const _m=mountAsk;
+    mountAsk=function(){
+      const tab=document.getElementById('c1ask-tab');
+      if(tab){ try{ renderAsk(tab); }catch(e){} }
+    };
+    mountAsk();
+  }
+}catch(e){}
+
+/* Blue pins for chargers that fit the user's plug (no adapters). */
+try{
+  const _draw=draw;
+  draw=function(){
+    const r=_draw.apply(this, arguments);
+    try{
+      if(typeof layer==='undefined'||!layer) return r;
+      layer.eachLayer(mk=>{
+        const ll=mk.getLatLng&&mk.getLatLng(); if(!ll) return;
+        const s=(typeof S!=='undefined'?S:[]).find(x=>x.lat===ll.lat&&x.lng===ll.lng);
+        if(s && typeof c1ExactFit==='function' && c1ExactFit(s) && mk.setStyle){
+          mk.setStyle({fillColor:'#3B7BFF'});
+        }
+      });
+    }catch(e){}
+    return r;
+  };
+  if(typeof draw==='function') try{draw()}catch(e){}
+}catch(e){}
+
+/* Station scene: charger + generic car, energy eggs, no charge progress. */
+const egg={carTaps:0,chgTaps:0,pop:0,sparks:0,trail:0,spins:0};
+function eggScene(s){
+  const paint=(function(){try{return (loadProf().paint)||'#E8453C'}catch(e){return '#E8453C'}})();
+  return `<div class="c1scene" style="display:flex;align-items:flex-end;gap:8px;margin:8px 0">
+    <div class="c1chg-col">${typeof chargerSVG==='function'?chargerSVG(s):''}</div>
+    <div class="c1car-col">${carSvg(paint,egg)}</div>
+  </div>`;
+}
+try{
+  const _dec=typeof decorateSheet==='function'?decorateSheet:null;
+  if(_dec){
+    window.decorateSheet=function(s){
+      _dec(s);
+      const sheet=document.getElementById('sheet'); if(!sheet) return;
+      let box=sheet.querySelector('.c1scene');
+      const wrap=sheet.querySelector('.c1stfx')||sheet;
+      if(!box){ wrap.insertAdjacentHTML('afterbegin', eggScene(s)); }
+      else box.outerHTML=eggScene(s);
+      const chg=sheet.querySelector('.c1chg-wrap');
+      const car=sheet.querySelector('.c1car');
+      if(chg && !rm()) chg.onclick=()=>{ egg.chgTaps++; if(egg.chgTaps%5===0){ const id=CREW[Math.floor(Math.random()*CREW.length)].id; let p=sheet.querySelector('.c1peek'); if(p)p.remove(); chg.insertAdjacentHTML('beforebegin','<div class="c1peek">'+crewSvg(id,'happy',36)+'</div>'); setTimeout(()=>{const n=sheet.querySelector('.c1peek'); if(n)n.remove();},1600);} };
+      if(car && !rm()){
+        car.onclick=()=>{ egg.carTaps++; if(egg.carTaps%3===0){ egg.pop=1; decorateSheet(s); setTimeout(()=>{egg.pop=0; decorateSheet(s);},1400);} };
+        car.oncontextmenu=e=>{ e.preventDefault(); egg.sparks=1; decorateSheet(s); setTimeout(()=>{egg.sparks=0; decorateSheet(s);},900); };
+      }
+    };
+  }
+}catch(e){}
+
+/* After 3 full 6s spins, show the lightning trail (still under reduced motion). */
+if(!rm()) setTimeout(()=>{ egg.trail=1; }, 18000);
+
+/* Profile: energy greetings, confirmed crew, edit sheet. */
+function renderProfileV22(){
+  const root=document.getElementById('c1profile'); if(!root) return;
+  const prof=loadProf();
+  const checks=typeof myR==='function'?myR().length:0;
+  let trips=0; try{const s=JSON.parse(localStorage.getItem('c1_trip_stats')||'{}'); trips=s.count||0;}catch(e){}
+  const face=rm()?'happy':(sleepy()?'sleepy':'happy');
+  root.innerHTML=`<div class="card" style="display:flex;gap:12px;align-items:center;background:#DDE5F2">
+    <div class="c1buddy3d">${crewSvg(prof.buddyId,face,88)}</div>
+    <div><div class="card" style="display:inline-block;padding:8px 12px;color:#0B1530;font-weight:700" id="c1p-hi">${greeting()}</div>
+    <div style="margin-top:8px;color:#0B1530;font-weight:800">${prof.nickname}</div>
+    <button type="button" class="lnk" id="c1p-edit" style="color:#3B7BFF;background:none;border:0">${L('Edit','Editar')}</button></div>
+  </div>
+  <div class="card" style="display:flex;gap:12px">
+    <div class="c1count"><b style="font-size:1.25rem">${trips}</b><div class="muted">${L('trips planned','viajes planeados')}</div></div>
+    <div class="c1count"><b style="font-size:1.25rem">${checks}</b><div class="muted">${L('check-ins','registros')}</div></div>
+  </div>
+  <div class="muted" style="text-align:center;margin:8px">${L('No sign-in. Everything stays on this phone.','Sin cuenta. Todo se queda en este teléfono.')}</div>`;
+  const ed=document.getElementById('c1p-edit');
+  if(ed) ed.onclick=openEdit;
+}
+function openEdit(){
+  const prof=loadProf();
+  document.getElementById('c1edit-bg')?.remove();
+  document.getElementById('c1edit')?.remove();
+  const bg=document.createElement('div'); bg.id='c1edit-bg';
+  const sh=document.createElement('div'); sh.id='c1edit'; sh.setAttribute('role','dialog'); sh.setAttribute('aria-label',L('Edit','Editar'));
+  const chips=CREW.map(c=>`<button type="button" class="chip${prof.buddyId===c.id?' on':''}" data-buddy="${c.id}">${c.name}</button>`).join('');
+  sh.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>${L('Edit','Editar')}</b><button type="button" class="lnk" id="c1edit-x" style="background:none;border:0;color:#3B7BFF">${L('Close','Cerrar')}</button></div>
+    <div style="margin-top:12px"><b>${L('Pick your buddy','Elige tu compañero')}</b></div>
+    <div class="muted">${L('Your charging buddy stays on this phone.','Tu compañero de carga se queda en este teléfono.')}</div>
+    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">${chips}</div>
+    <div style="margin-top:12px"><b>${L('Edit nickname','Editar apodo')}</b></div>
+    <input id="c1e-nick" maxlength="12" value="${prof.nickname.replace(/"/g,'')}" style="margin-top:6px">
+    <div style="margin-top:16px"><button type="button" class="btn" id="c1e-clear">${L('Clear my data','Borrar mis datos')}</button></div>`;
+  document.body.appendChild(bg); document.body.appendChild(sh);
+  const close=()=>{ const n=document.getElementById('c1e-nick'); if(n) saveProf({nickname:(n.value||'Zapsaurus').slice(0,12)||'Zapsaurus'}); bg.remove(); sh.remove(); renderProfileV22(); };
+  bg.onclick=close; document.getElementById('c1edit-x').onclick=close;
+  sh.querySelectorAll('[data-buddy]').forEach(b=>b.onclick=()=>{ saveProf({buddyId:b.getAttribute('data-buddy')}); openEdit(); });
+  document.getElementById('c1e-clear').onclick=()=>{
+    if(!confirm(L('Clear check-ins, planned-trip counts, network ticks, and nickname from this phone?','¿Borrar registros, conteo de viajes, redes marcadas y el apodo de este teléfono?'))) return;
+    try{['c1_myrep','c1_profile','c1_trip_stats','c1_wallet_nets'].forEach(k=>localStorage.removeItem(k))}catch(e){}
+    close();
+  };
+}
+try{ renderProfileV22(); }catch(e){}
+window.renderProfileV22=renderProfileV22;
+window.c1Crew=CREW;
 })();
 </script>
 
