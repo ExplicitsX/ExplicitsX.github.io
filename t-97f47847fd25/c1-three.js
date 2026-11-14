@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q10';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q11';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q10';
+const C1_ASSET_V = '20261113q11';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -106,11 +106,19 @@ function isNight() {
   const h = new Date().getHours();
   return h < 6 || h >= 19;
 }
-export function webglAvailable() {
+export let webglCached = null;
+function webglAvailable() {
+  if (webglCached != null) return webglCached;
   try {
     const c = document.createElement('canvas');
-    return !!(c.getContext('webgl') || c.getContext('experimental-webgl'));
-  } catch (e) { return false; }
+    const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+    webglCached = !!gl;
+    if (gl && gl.getExtension) {
+      const lose = gl.getExtension('WEBGL_lose_context');
+      if (lose) lose.loseContext();
+    }
+  } catch (e) { webglCached = false; }
+  return webglCached;
 }
 function hexMat(color, extra) {
   const m = new THREE.MeshLambertMaterial({ color, ...extra });
@@ -215,6 +223,53 @@ function makeRenderer(canvas, w, h) {
   renderer.setSize(w, h, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   return renderer;
+}
+
+/** One shared WebGL context, blit to per-mount 2D canvases. Avoids blank scenes when two mounts would each create a context. */
+let sharedGL = null;
+function getSharedGL() {
+  if (sharedGL) {
+    const gl = sharedGL.getContext();
+    if (gl && typeof gl.isContextLost === 'function' && !gl.isContextLost()) return sharedGL;
+    try { sharedGL.dispose(); } catch (e) {}
+    if (sharedGL.domElement && sharedGL.domElement.parentNode) sharedGL.domElement.parentNode.removeChild(sharedGL.domElement);
+    sharedGL = null;
+  }
+  const canvas = document.createElement('canvas');
+  canvas.setAttribute('aria-hidden', 'true');
+  canvas.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1';
+  document.documentElement.appendChild(canvas);
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: false,
+    powerPreference: 'low-power',
+    failIfMajorPerformanceCaveat: false,
+    preserveDrawingBuffer: true,
+  });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(1);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  canvas.addEventListener('webglcontextlost', function (e) {
+    e.preventDefault();
+    sharedGL = null;
+  });
+  sharedGL = renderer;
+  return sharedGL;
+}
+function blitMount(m) {
+  const r = getSharedGL();
+  if (!r || !m.ctx2d || !m.canvas) return;
+  const w = m.canvas.width, h = m.canvas.height;
+  if (w < 2 || h < 2) return;
+  r.setSize(w, h, false);
+  const color = m.clearColor != null ? m.clearColor : 0x000000;
+  const alpha = m.clearAlpha != null ? m.clearAlpha : 1;
+  r.setClearColor(color, alpha);
+  r.render(m.scene, m.camera);
+  m.ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+  m.ctx2d.clearRect(0, 0, w, h);
+  m.ctx2d.drawImage(r.domElement, 0, 0, w, h);
 }
 
 function litScene() {
@@ -802,7 +857,7 @@ function tick(now) {
     if (!m.canvas.isConnected) { disposeMount(m); mounts.splice(i, 1); continue; }
     if (hidden || !m.visible || !m.active) continue;
     any = true;
-    try { m.update(dt, now); m.renderer.render(m.scene, m.camera); } catch (e) { m.active = false; }
+    try { m.update(dt, now); blitMount(m); } catch (e) { m.active = false; }
   }
   if (!any) {
     cancelAnimationFrame(raf);
@@ -814,7 +869,6 @@ function disposeMount(m) {
   m.active = false;
   m.io?.disconnect();
   m.ro?.disconnect();
-  try { m.renderer.dispose(); } catch (e) {}
   if (m.canvas && m.canvas.parentNode) m.canvas.parentNode.removeChild(m.canvas);
   if (m.host) m.host.classList.remove('c1gl-on');
 }
@@ -839,9 +893,9 @@ function prepareHost(el, height) {
   return { host, canvas };
 }
 
-function ensureRmNote(host) {
-  let n = host.querySelector('.c1gl-rmnote');
-  if (!rm()) { if (n) n.remove(); return; }
+function ensureRmNote(host, kind) {
+  let n = host && host.querySelector('.c1gl-rmnote');
+  if (!host || kind === 'lot' || !rm()) { if (n) n.remove(); return; }
   if (!n) {
     n = document.createElement('div');
     n.className = 'c1gl-rmnote';
@@ -854,20 +908,24 @@ function resizeMount(m) {
   const w = m.host.clientWidth || 0;
   const h = m.host.clientHeight || 0;
   if (w < 2 || h < 2) return false;
-  m.renderer.setSize(w, h, false);
+  const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
+  m.canvas.width = Math.max(1, Math.round(w * dpr));
+  m.canvas.height = Math.max(1, Math.round(h * dpr));
+  m.canvas.style.width = w + 'px';
+  m.canvas.style.height = h + 'px';
   if (m.camera.isPerspectiveCamera) {
     m.camera.aspect = w / h;
     m.camera.updateProjectionMatrix();
   }
   m.visible = true;
-  try { m.update(0, performance.now()); m.renderer.render(m.scene, m.camera); } catch (e) {}
+  try { m.update(0, performance.now()); blitMount(m); } catch (e) {}
   return true;
 }
 
 function revealMounts() {
   mounts.forEach((m) => {
     if (!m.canvas.isConnected) return;
-    ensureRmNote(m.host);
+    ensureRmNote(m.host, m.kind);
     resizeMount(m);
   });
   kick();
@@ -896,7 +954,7 @@ function observe(m) {
     if (resizeMount(m)) kick();
   });
   m.ro.observe(m.host);
-  ensureRmNote(m.host);
+  ensureRmNote(m.host, m.kind);
 }
 
 function startMount(kind, el, height, setup) {
@@ -904,10 +962,12 @@ function startMount(kind, el, height, setup) {
   const prev = mounts.find((x) => x.el === el);
   if (prev) { disposeMount(prev); const i = mounts.indexOf(prev); if (i >= 0) mounts.splice(i, 1); }
   const { host, canvas } = prepareHost(el, height);
+  const ctx2d = canvas.getContext('2d');
+  if (!ctx2d) { canvas.remove(); return null; }
   const w = host.clientWidth || 280;
   const h = host.clientHeight || height || 140;
-  let renderer;
-  try { renderer = makeRenderer(canvas, w, h); }
+  let shared;
+  try { shared = getSharedGL(); }
   catch (e) { canvas.remove(); return null; }
   const scene = litScene();
   const camera = new THREE.PerspectiveCamera(36, w / Math.max(h, 1), 0.1, 40);
@@ -915,11 +975,23 @@ function startMount(kind, el, height, setup) {
   camera.lookAt(0, 0.6, 0);
   const still = rm();
   const state = { yaw: still ? 0 : 0.45, vel: 0, dragging: false, idleAt: performance.now(), wraps: 0, lastYaw: 0 };
-  const m = { kind, el, host, canvas, renderer, scene, camera, state, still, visible: true, active: true, update: () => {} };
+  const m = { kind, el, host, canvas, ctx2d, scene, camera, state, still, visible: true, active: true, update: () => {}, clearColor: 0x000000, clearAlpha: 1 };
+  m.renderer = {
+    setClearColor: function (c, a) { m.clearColor = c; m.clearAlpha = a == null ? 1 : a; },
+    setSize: function () {},
+    dispose: function () {},
+    render: function (s, cam) { m.scene = s || m.scene; m.camera = cam || m.camera; blitMount(m); },
+  };
   setup(m);
   host.classList.add('c1gl-on');
+  if (kind !== 'lot') ensureRmNote(host, kind);
+  else {
+    const n = host.querySelector('.c1gl-rmnote');
+    if (n) n.remove();
+  }
   observe(m);
   mounts.push(m);
+  resizeMount(m);
   kick();
   return m;
 }
@@ -1259,6 +1331,8 @@ function mountBuddy(el, opts) {
 /* ---------- isometric station lot (DOE stall count, pending live status) ---------- */
 const LOT_SCENE_CAP = 24;
 const STALL_W = 2.5, STALL_L = 5.0, STALL_GAP = 0.28, AISLE = 1.6;
+const PILLAR_W = 0.6, PILLAR_D = 0.4, PILLAR_H = 1.8;
+const CHARGER_FRAME_PAD_M = 15;
 const LOT_BG = 0xeef1f4;
 const STALL_LIGHT = { unknown: 0x9aa3b5, available: 0x22c55e, busy: 0xe11d2e, out_of_order: 0xf5a524 };
 const pendingStallStatusProvider = {
@@ -1426,14 +1500,8 @@ function laidStallAt(stall, x, z, heading) {
 function shiftLayout(source, row, stalls, footprints, aisles) {
   const xs = [], zs = [];
   const add = (x, z) => { xs.push(x); zs.push(z); };
-  if (source === 'approximate') {
-    stalls.forEach(s => add(s.x, s.z));
-  } else {
-    (footprints || []).forEach(f => f.ring.forEach(p => add(p.x, p.z)));
-    (aisles || []).forEach(a => a.points.forEach(p => add(p.x, p.z)));
-    stalls.forEach(s => add(s.x, s.z));
-  }
-  const padAmt = source === 'approximate' ? 8 : 5;
+  stalls.forEach(s => add(s.x, s.z));
+  const padAmt = source === 'osm' ? CHARGER_FRAME_PAD_M : 8;
   const minX = (xs.length ? Math.min.apply(null, xs) : -7) - padAmt;
   const maxX = (xs.length ? Math.max.apply(null, xs) : 7) + padAmt;
   const minZ = (zs.length ? Math.min.apply(null, zs) : -6) - padAmt;
@@ -1564,13 +1632,22 @@ function updateLotBadge(dock, layout, features) {
     badge.className = 'c1-3d-lot-badge';
     badge.style.cssText = 'text-align:center;font-size:12px;font-weight:800;color:#F4F7FB;margin:8px 0 0;line-height:16px';
     const lot = dock.querySelector('.c1-3d-lot');
-    if (lot && lot.parentNode) lot.parentNode.insertBefore(badge, lot.nextSibling);
+    const host = lot && (lot.closest('.c1gl-host') || lot);
+    if (host && host.parentNode) host.parentNode.insertBefore(badge, host.nextSibling);
     else dock.insertBefore(badge, cap);
   }
   badge.textContent = src;
   cap.innerHTML = note + lotLL('Live status coming soon', 'Estado en vivo próximamente') + attrib;
   cap.hidden = false;
   cap.style.overflow = 'visible';
+  const legend = dock.querySelector('.c1-3d-lot-legend');
+  if (legend) {
+    const n = ((layout && layout.dcCount) || 0) + ((layout && layout.l2Count) || 0);
+    const count = n <= 0 ? '' : (n === 1 ? lotLL('1 charger', '1 cargador') : lotLL(n + ' chargers', n + ' cargadores'));
+    const when = lotLL('When live status arrives', 'Cuando llegue el estado en vivo');
+    legend.innerHTML = (count ? count + ' · ' : '') + when + ': <span style="color:#22C55E">● Available</span> · <span style="color:#E11D2E">● Busy</span> · <span style="color:#F5A524">▲ Out of order</span>';
+    legend.hidden = false;
+  }
 }
 function colsForLot(n) {
   if (n <= 0) return 1;
@@ -1684,10 +1761,16 @@ function lotSceneSvg(layout, opts) {
     faces.push(...box(b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, '#1E6C74', '#1E6C74', '#3AA0A8'));
   }
   (layout.footprints || []).forEach(fp => {
+    const hx = pad.w / 2, hz = pad.d / 2;
+    let inside = 0;
+    (fp.ring || []).forEach(pt => { if (Math.abs(pt.x) <= hx && Math.abs(pt.z) <= hz) inside++; });
+    if (!fp.ring || !fp.ring.length || inside === 0) return;
     const xs = fp.ring.map(pt => pt.x), zs = fp.ring.map(pt => pt.z);
     const minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
     const minZ = Math.min.apply(null, zs), maxZ = Math.max.apply(null, zs);
-    faces.push(...box((minX + maxX) / 2, 0, (minZ + maxZ) / 2, Math.max(1, maxX - minX), fp.h || 6, Math.max(1, maxZ - minZ), '#D5D8DD', '#9EA4AC', '#B8BDC4'));
+    const built = box((minX + maxX) / 2, 0, (minZ + maxZ) / 2, Math.max(1, maxX - minX), fp.h || 6, Math.max(1, maxZ - minZ), '#D5D8DD', '#9EA4AC', '#B8BDC4');
+    if (inside < fp.ring.length) built.forEach(f => { if (f.html) f.html = f.html.replace('<path ', '<path opacity="0.38" '); });
+    faces.push(...built);
   });
   (layout.stalls || []).forEach(st => {
     st.lines.forEach(ln => {
@@ -1698,13 +1781,13 @@ function lotSceneSvg(layout, opts) {
       st.bollards.forEach(bol => faces.push(...box(bol.x, 0, bol.z, 0.12, 0.7, 0.12, '#E8A317', '#C4840C', '#E8A317')));
     }
     const p = st.pillar, key = st.stall.key;
-    faces.push(...box(p.x, 0, p.z, 0.46, 1.55, 0.32, '#E8EAED', '#C9CDD4', '#E8EAED', key));
-    faces.push(...box(p.x, 0.55, p.z + 0.15, 0.3, 0.7, 0.06, '#5B6570', '#5B6570', '#5B6570', key));
-    faces.push(...box(p.x, 1.15, p.z + 0.16, 0.2, 0.16, 0.04, '#9EC9DC', '#9EC9DC', '#9EC9DC', key));
-    const lamp = proj(p.x, 1.66, p.z);
+    faces.push(...box(p.x, 0, p.z, PILLAR_W, PILLAR_H, PILLAR_D, '#F4F7FB', '#4B5563', '#E8EAED', key));
+    faces.push(...box(p.x, 0.65, p.z + PILLAR_D / 2 - 0.04, 0.38, 0.85, 0.07, '#5B6570', '#5B6570', '#5B6570', key));
+    faces.push(...box(p.x, 1.35, p.z + PILLAR_D / 2 - 0.03, 0.26, 0.18, 0.05, '#9EC9DC', '#9EC9DC', '#9EC9DC', key));
+    const lamp = proj(p.x, PILLAR_H + 0.06, p.z + PILLAR_D / 2);
     const status = readStallStatus({ stationId: opts.stationId, stallKey: key });
     const col = '#' + stallLightColor(status).toString(16).padStart(6, '0');
-    faces.push({ html: `<circle cx="${lamp.x.toFixed(1)}" cy="${lamp.y.toFixed(1)}" r="4.2" fill="${col}" stroke="#fff" stroke-width="0.8" data-stall="${key}"/>`, d: lamp.d + 0.2 });
+    faces.push({ html: `<circle cx="${lamp.x.toFixed(1)}" cy="${lamp.y.toFixed(1)}" r="5.5" fill="${col}" stroke="#fff" stroke-width="0.8" data-stall="${key}"/>`, d: lamp.d + 0.2 });
   });
   faces.sort((a, b) => a.d - b.d);
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 250" width="100%" height="100%" role="img" aria-label="Station lot layout"><rect width="480" height="250" fill="#EEF1F4"/>' + faces.map(f => f.html).join('') + '</svg>';
@@ -1735,21 +1818,37 @@ function buildLotGroup(layout, opts) {
     const glass = addLotBox(root, b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, 0x2a8a92, { transparent: true, opacity: 0.88, emissive: 0x1e6c74, emissiveIntensity: 0.18 });
     glass.userData.glass = true;
   }
+  function padVis(x, z) {
+    return (Math.abs(x) <= pad.w / 2 && Math.abs(z) <= pad.d / 2) ? 1 : 0;
+  }
+  function ringVis(ring) {
+    if (!ring || !ring.length) return 0;
+    let n = 0;
+    ring.forEach(pt => { n += padVis(pt.x, pt.z); });
+    if (n === 0) return 0;
+    if (n === ring.length) return 1;
+    return 0.38;
+  }
   (layout.footprints || []).forEach(fp => {
+    const vis = ringVis(fp.ring);
+    if (vis <= 0) return;
     const xs = fp.ring.map(pt => pt.x), zs = fp.ring.map(pt => pt.z);
     const minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
     const minZ = Math.min.apply(null, zs), maxZ = Math.max.apply(null, zs);
     const w = Math.max(1, maxX - minX), dpth = Math.max(1, maxZ - minZ), h = fp.h || 6;
-    addLotBox(root, (minX + maxX) / 2, 0, (minZ + maxZ) / 2, w, h, dpth, 0xb8bdc4);
-    const roof = mesh(GEO.box, 0xd5d8dd, w + 0.06, 0.1, dpth + 0.06);
+    const extra = vis < 1 ? { transparent: true, opacity: vis } : undefined;
+    addLotBox(root, (minX + maxX) / 2, 0, (minZ + maxZ) / 2, w, h, dpth, 0xb8bdc4, extra);
+    const roof = mesh(GEO.box, 0xd5d8dd, w + 0.06, 0.1, dpth + 0.06, extra);
     add(root, roof, (minX + maxX) / 2, h + 0.05, (minZ + maxZ) / 2);
   });
   if (!low) {
     (layout.aisles || []).forEach(aisle => {
       for (let i = 1; i < aisle.points.length; i++) {
         const a = aisle.points[i - 1], c = aisle.points[i];
+        const vis = Math.max(padVis(a.x, a.z), padVis(c.x, c.z));
+        if (vis <= 0) continue;
         const dx = c.x - a.x, dz = c.z - a.z, len = Math.hypot(dx, dz) || 1;
-        const line = mesh(GEO.box, 0xd5d8de, 0.35, 0.03, len);
+        const line = mesh(GEO.box, 0xd5d8de, 0.35, 0.03, len, vis < 1 ? { transparent: true, opacity: 0.38 } : undefined);
         line.position.set((a.x + c.x) / 2, 0.03, (a.z + c.z) / 2);
         line.rotation.y = Math.atan2(dx, dz);
         root.add(line);
@@ -1772,15 +1871,18 @@ function buildLotGroup(layout, opts) {
       });
     }
     const p = st.pillar;
-    const body = addLotBox(root, p.x, 0, p.z, 0.46, 1.55, 0.32, st.stall.fits ? 0xe8eaed : 0xe8eaed, st.stall.fits ? { emissive: 0x3b7bff, emissiveIntensity: 0.08 } : undefined);
+    const shell = addLotBox(root, p.x, 0, p.z, PILLAR_W + 0.03, PILLAR_H, PILLAR_D + 0.03, 0x6b7280);
+    shell.userData.stall = st;
+    const body = addLotBox(root, p.x, 0, p.z, PILLAR_W, PILLAR_H, PILLAR_D, 0xf4f7fb, st.stall.fits ? { emissive: 0x3b7bff, emissiveIntensity: 0.08 } : undefined);
     body.userData.stall = st;
-    const screen = addLotBox(root, p.x, 0.55, p.z + 0.15, 0.3, 0.7, 0.06, 0x5b6570);
+    const screen = addLotBox(root, p.x, 0.65, p.z + PILLAR_D / 2 - 0.04, 0.38, 0.85, 0.07, 0x5b6570);
     screen.userData.stall = st;
-    const disp = addLotBox(root, p.x, 1.15, p.z + 0.16, 0.2, 0.16, 0.04, 0x9ec9dc, { emissive: 0x9ec9dc, emissiveIntensity: 0.2 });
+    const disp = addLotBox(root, p.x, 1.35, p.z + PILLAR_D / 2 - 0.03, 0.26, 0.18, 0.05, 0x9ec9dc, { emissive: 0x9ec9dc, emissiveIntensity: 0.2 });
     disp.userData.stall = st;
     const status = readStallStatus({ stationId: opts.stationId, stallKey: st.stall.key });
-    const lamp = mesh(GEO.sphereLo, stallLightColor(status), 0.09, 0.09, 0.09, { emissive: stallLightColor(status), emissiveIntensity: 0.35 });
-    add(root, lamp, p.x, 1.66, p.z);
+    const lampCol = stallLightColor(status);
+    const lamp = mesh(GEO.sphereLo, lampCol, 0.12, 0.12, 0.12, { emissive: lampCol, emissiveIntensity: 0.45 });
+    add(root, lamp, p.x, PILLAR_H + 0.06, p.z + PILLAR_D / 2);
     lamp.userData.stall = st;
     pickables.push(body, screen, disp, lamp);
   });
@@ -1903,7 +2005,7 @@ function mountLot(el, row, opts) {
     try { m.renderer.setClearColor(LOT_BG, 1); } catch (e) {}
     try { m.scene.background = new THREE.Color(LOT_BG); } catch (e) {}
     const span = Math.max(layout.pad.w, layout.pad.d, 8);
-    const baseDist = Math.max(16, span * 1.15);
+    const baseDist = Math.max(16, span * 0.86);
     m.camera.fov = 30;
     m.camera.near = 0.2;
     m.camera.far = Math.max(400, baseDist * 4);
@@ -1927,19 +2029,9 @@ function mountLot(el, row, opts) {
     attachLotControls(m, layout, opts);
     m.update = () => { placeCam(); };
   });
-  if (el.parentNode) {
-    let more = el.parentNode.querySelector('.c1lot-more-gl');
-    if (row.hidden > 0) {
-      if (!more) {
-        more = document.createElement('div');
-        more.className = 'c1lot-more c1lot-more-gl';
-        more.style.cssText = 'color:#3B7BFF;font-weight:800;padding:0 8px';
-        el.parentNode.appendChild(more);
-      }
-      more.textContent = '+' + row.hidden + ' more';
-    } else if (more) {
-      more.remove();
-    }
+  const dock = el.closest && el.closest('.c1-3d-dock, #c1-3d-dock-station');
+  if (dock) {
+    dock.querySelectorAll('.c1lot-more-gl').forEach(function (n) { n.remove(); });
   }
   return mounted;
 }
