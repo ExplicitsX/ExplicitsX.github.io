@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q9';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q10';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q9';
+const C1_ASSET_V = '20261113q10';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -1282,9 +1282,295 @@ function stallPowerKw(kind, maxKw) {
   if (kind !== 'dc' || maxKw == null || !isFinite(maxKw) || maxKw <= 0) return null;
   return Math.round(maxKw);
 }
-function stallInspectLabel(stall, maxKw) {
+
+function lotLL(en, es) {
+  try { if (typeof window.L === 'function') return window.L(en, es); } catch (e) {}
+  return en;
+}
+function stallInspectLabel(stall, maxKw, network) {
+  const parts = [(stall && stall.plugLabel) || ''];
   const kw = stallPowerKw(stall && stall.kind, maxKw);
-  return kw != null ? ((stall.plugLabel || '') + ' · ' + kw + ' kW') : (stall && stall.plugLabel) || '';
+  if (kw != null) parts.push(kw + ' kW');
+  else if (stall && stall.kind === 'l2') parts.push('Level 2');
+  else if (stall && stall.kind === 'dc') parts.push('DC fast');
+  if (network && String(network).trim()) parts.push(String(network).trim());
+  return parts.filter(Boolean).join(' · ');
+}
+const LOT_OSM_RADIUS_M = 80, LOT_OSM_ROAD_RADIUS_M = 120;
+const LOT_OSM_CACHE_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+const LOT_OSM_MIN_INTERVAL_MS = 1600;
+const LOT_OSM_STORE = 'c1.lot.osm.v1';
+const M_PER_DEG = 110574;
+function buildLotOverpassQuery(lat, lon) {
+  const a = Number(lat).toFixed(6), o = Number(lon).toFixed(6);
+  const r = LOT_OSM_RADIUS_M, rr = LOT_OSM_ROAD_RADIUS_M;
+  return '[out:json][timeout:20];('
+    + 'node["man_made"="charge_point"](around:' + r + ',' + a + ',' + o + ');'
+    + 'way["man_made"="charge_point"](around:' + r + ',' + a + ',' + o + ');'
+    + 'node["amenity"="charging_station"](around:' + r + ',' + a + ',' + o + ');'
+    + 'way["amenity"="charging_station"](around:' + r + ',' + a + ',' + o + ');'
+    + 'way["highway"="parking_aisle"](around:' + r + ',' + a + ',' + o + ');'
+    + 'way["highway"="service"](around:' + r + ',' + a + ',' + o + ');'
+    + 'way["highway"~"^(residential|unclassified|tertiary|secondary|primary|living_street)$"](around:' + rr + ',' + a + ',' + o + ');'
+    + 'way["building"](around:' + r + ',' + a + ',' + o + ');'
+    + ');out tags geom;';
+}
+function localMeters(origin, p) {
+  const cos = Math.cos(origin.lat * Math.PI / 180);
+  return { x: (p.lon - origin.lon) * M_PER_DEG * cos, z: (p.lat - origin.lat) * M_PER_DEG };
+}
+function wayRing(el) {
+  const g = el && el.geometry;
+  if (!g || g.length < 2) return [];
+  return g.filter(p => isFinite(p.lat) && isFinite(p.lon)).map(p => ({ lat: p.lat, lon: p.lon }));
+}
+function centroidLL(points) {
+  if (!points.length) return null;
+  const s = points.reduce((a, p) => ({ lat: a.lat + p.lat, lon: a.lon + p.lon }), { lat: 0, lon: 0 });
+  return { lat: s.lat / points.length, lon: s.lon / points.length };
+}
+function bearingLL(a, b) {
+  const R = Math.PI / 180;
+  const y = Math.sin((b.lon - a.lon) * R) * Math.cos(b.lat * R);
+  const x = Math.cos(a.lat * R) * Math.sin(b.lat * R) - Math.sin(a.lat * R) * Math.cos(b.lat * R) * Math.cos((b.lon - a.lon) * R);
+  return Math.atan2(y, x);
+}
+function buildingHeight(t) {
+  const h = parseFloat(t.height);
+  if (isFinite(h) && h > 1) return Math.max(3, Math.min(20, h));
+  const levels = parseFloat(t['building:levels'] || t.levels);
+  if (isFinite(levels) && levels > 0) return Math.max(3, Math.min(20, levels * 3));
+  return 6;
+}
+function nearestBearingPt(p, aisles) {
+  let best = null;
+  (aisles || []).forEach(aisle => {
+    for (let i = 1; i < aisle.points.length; i++) {
+      const a = aisle.points[i - 1], b = aisle.points[i];
+      const dx = b.x - a.x, dz = b.z - a.z, len2 = dx * dx + dz * dz;
+      if (len2 < 0.25) continue;
+      let t = ((p.x - a.x) * dx + (p.z - a.z) * dz) / len2;
+      t = Math.max(0, Math.min(1, t));
+      const d = (p.x - (a.x + t * dx)) ** 2 + (p.z - (a.z + t * dz)) ** 2;
+      const br = Math.atan2(dx, dz);
+      if (!best || d < best.dist) best = { dist: d, bearing: br };
+    }
+  });
+  return best ? best.bearing : null;
+}
+function parseOsmLot(data, origin) {
+  const elements = (data && data.elements) || [];
+  const footprints = [], aisles = [], roads = [], rawPoints = [], rawStations = [];
+  elements.forEach(el => {
+    const t = el.tags || {};
+    if (t.man_made === 'charge_point') rawPoints.push(el);
+    else if (t.amenity === 'charging_station' && el.type === 'node') rawStations.push(el);
+    if (t.building && t.building !== 'no' && el.type === 'way') {
+      const ring = wayRing(el).map(p => localMeters(origin, p));
+      if (ring.length >= 3) footprints.push({ id: 'b-' + el.id, ring, h: buildingHeight(t) });
+    }
+    if (el.type === 'way' && (t.highway === 'parking_aisle' || t.highway === 'service' || /^(residential|unclassified|tertiary|secondary|primary|living_street)$/.test(t.highway || ''))) {
+      const points = wayRing(el).map(p => localMeters(origin, p));
+      if (points.length >= 2) {
+        const row = { points };
+        if (t.highway === 'parking_aisle' || t.highway === 'service') aisles.push(row);
+        if (t.highway !== 'parking_aisle') roads.push(row);
+      }
+    }
+  });
+  const use = rawPoints.length ? rawPoints : (rawStations.length >= 2 ? rawStations : []);
+  const chargers = [];
+  use.forEach(el => {
+    let at = null;
+    if (el.type === 'node' && el.lat != null) at = { lat: el.lat, lon: el.lon };
+    else {
+      const ring = wayRing(el);
+      at = ring.length ? centroidLL(ring) : (el.center && isFinite(el.center.lat) ? { lat: el.center.lat, lon: el.center.lon } : null);
+    }
+    if (!at) return;
+    const loc = localMeters(origin, at);
+    chargers.push({ id: el.type + '-' + el.id, lat: at.lat, lon: at.lon, x: loc.x, z: loc.z, heading: 0 });
+  });
+  const unique = [];
+  chargers.forEach(p => {
+    if (unique.some(q => (p.x - q.x) ** 2 + (p.z - q.z) ** 2 < 1.44)) return;
+    unique.push(p);
+  });
+  const guides = aisles.length ? aisles : roads;
+  unique.forEach(c => {
+    const along = nearestBearingPt(c, guides);
+    if (along != null) c.heading = along + Math.PI / 2;
+  });
+  const nearestRoadBearing = nearestBearingPt({ x: 0, z: 0 }, roads.length ? roads : aisles);
+  return { origin, chargers: unique, footprints, aisles, roads, nearestRoadBearing };
+}
+function laidStallAt(stall, x, z, heading) {
+  const hx = Math.sin(heading), hz = Math.cos(heading);
+  const px = Math.sin(heading + Math.PI / 2), pz = Math.cos(heading + Math.PI / 2);
+  const halfW = STALL_W / 2, halfL = STALL_L / 2;
+  const at = (sx, sz) => ({ x: x + px * sx + hx * sz, z: z + pz * sx + hz * sz });
+  const pillarPos = at(0, -(halfL - 0.22));
+  const c1 = at(-halfW, -halfL), c2 = at(-halfW, halfL), c3 = at(halfW, -halfL), c4 = at(halfW, halfL);
+  const b1 = at(-halfW, halfL), b2 = at(halfW, halfL);
+  return {
+    stall, x, z, w: STALL_W, d: STALL_L, heading,
+    pillar: { x: pillarPos.x, y: 0, z: pillarPos.z },
+    lines: [
+      { x1: c1.x, z1: c1.z, x2: c2.x, z2: c2.z },
+      { x1: c3.x, z1: c3.z, x2: c4.x, z2: c4.z },
+      { x1: c2.x, z1: c2.z, x2: c4.x, z2: c4.z },
+    ],
+    bollards: [{ x: b1.x, y: 0, z: b1.z }, { x: b2.x, y: 0, z: b2.z }],
+  };
+}
+function shiftLayout(source, row, stalls, footprints, aisles) {
+  const xs = [], zs = [];
+  const add = (x, z) => { xs.push(x); zs.push(z); };
+  if (source === 'approximate') {
+    stalls.forEach(s => add(s.x, s.z));
+  } else {
+    (footprints || []).forEach(f => f.ring.forEach(p => add(p.x, p.z)));
+    (aisles || []).forEach(a => a.points.forEach(p => add(p.x, p.z)));
+    stalls.forEach(s => add(s.x, s.z));
+  }
+  const padAmt = source === 'approximate' ? 8 : 5;
+  const minX = (xs.length ? Math.min.apply(null, xs) : -7) - padAmt;
+  const maxX = (xs.length ? Math.max.apply(null, xs) : 7) + padAmt;
+  const minZ = (zs.length ? Math.min.apply(null, zs) : -6) - padAmt;
+  const maxZ = (zs.length ? Math.max.apply(null, zs) : 6) + padAmt;
+  const cx = (minX + maxX) / 2, cz = (minZ + maxZ) / 2;
+  const sh = (x, z) => ({ x: x - cx, z: z - cz });
+  const footprints2 = (footprints || []).map(f => ({ ...f, ring: f.ring.map(p => sh(p.x, p.z)) }));
+  const aisles2 = (aisles || []).map(a => ({ points: a.points.map(p => sh(p.x, p.z)) }));
+  const stalls2 = stalls.map(s => ({
+    ...s,
+    x: s.x - cx, z: s.z - cz,
+    pillar: { ...s.pillar, x: s.pillar.x - cx, z: s.pillar.z - cz },
+    lines: s.lines.map(l => ({ x1: l.x1 - cx, z1: l.z1 - cz, x2: l.x2 - cx, z2: l.z2 - cz })),
+    bollards: s.bollards.map(b => ({ ...b, x: b.x - cx, z: b.z - cz })),
+  }));
+  const base = layoutFromRow({ listed: row.listed, stalls: [], hidden: row.hidden, dcCount: row.dcCount, l2Count: row.l2Count });
+  return {
+    listed: row.listed, hidden: row.hidden, dcCount: row.dcCount, l2Count: row.l2Count,
+    source, footprints: footprints2, aisles: aisles2,
+    building: footprints2.length ? null : base.building,
+    pad: { w: Math.max(12, maxX - minX), d: Math.max(10, maxZ - minZ), h: 0.18 },
+    stalls: stalls2,
+  };
+}
+function layoutLotFromOsm(row, features) {
+  row = row || { listed: false, stalls: [], hidden: 0, dcCount: 0, l2Count: 0 };
+  const footprints = (features && features.footprints) || [];
+  const aisles = (features && features.aisles) || [];
+  if (features && features.chargers && features.chargers.length && row.listed) {
+    const cap = LOT_SCENE_CAP;
+    const n = Math.min(features.chargers.length, cap);
+    const stalls = [];
+    for (let i = 0; i < n; i++) {
+      const ch = features.chargers[i];
+      const stall = row.stalls[i % Math.max(1, row.stalls.length)] || row.stalls[0];
+      if (!stall) break;
+      stalls.push(laidStallAt({ ...stall, key: stall.key + '-osm-' + ch.id }, ch.x, ch.z, ch.heading || 0));
+    }
+    const hidden = Math.max(0, (row.dcCount + row.l2Count) - n);
+    return shiftLayout('osm', { ...row, hidden }, stalls, footprints, aisles);
+  }
+  if (!row.listed || !row.stalls || !row.stalls.length) {
+    const empty = layoutFromRow(row);
+    return { ...empty, source: 'approximate', footprints, aisles, building: footprints.length ? null : empty.building };
+  }
+  const road = (features && features.nearestRoadBearing) || 0;
+  const n = row.stalls.length, span = (n - 1) * (STALL_W + STALL_GAP);
+  const ax = Math.sin(road), az = Math.cos(road), stallHeading = road + Math.PI / 2;
+  const stalls = row.stalls.map((stall, i) => {
+    const t = -span / 2 + i * (STALL_W + STALL_GAP);
+    return laidStallAt(stall, ax * t, az * t, stallHeading);
+  });
+  return shiftLayout('approximate', row, stalls, footprints, aisles);
+}
+
+let lotOsmLastAt = 0;
+const lotOsmInflight = new Map();
+function lotOsmCacheKey(s) {
+  if (s && s.id) return String(s.id);
+  const lat = s.lat, lon = s.lon != null ? s.lon : s.lng;
+  return Number(lat).toFixed(5) + ',' + Number(lon).toFixed(5);
+}
+function readLotOsmCache(s, now) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LOT_OSM_STORE) || '{}');
+    const entry = all[lotOsmCacheKey(s)];
+    if (!entry || !entry.savedAt || now - entry.savedAt > LOT_OSM_CACHE_MAX_AGE_MS) return null;
+    if (!entry.features || !Array.isArray(entry.features.chargers)) return null;
+    return entry.features;
+  } catch (e) { return null; }
+}
+function writeLotOsmCache(s, features, now) {
+  try {
+    const all = JSON.parse(localStorage.getItem(LOT_OSM_STORE) || '{}');
+    all[lotOsmCacheKey(s)] = { savedAt: now, features };
+    localStorage.setItem(LOT_OSM_STORE, JSON.stringify(all));
+  } catch (e) {}
+}
+async function fetchLotOsm(s) {
+  if (!s || s.lat == null) return Promise.resolve(null);
+  const lon = s.lon != null ? s.lon : s.lng;
+  if (lon == null) return Promise.resolve(null);
+  const now = Date.now();
+  const cached = readLotOsmCache(s, now);
+  if (cached) return Promise.resolve(cached);
+  const key = lotOsmCacheKey(s);
+  if (lotOsmInflight.has(key)) return lotOsmInflight.get(key);
+  const run = (async () => {
+    const wait = LOT_OSM_MIN_INTERVAL_MS - (now - lotOsmLastAt);
+    if (lotOsmLastAt && wait > 0 && wait < 8000) await new Promise(r => setTimeout(r, wait));
+    lotOsmLastAt = Date.now();
+    const query = buildLotOverpassQuery(s.lat, lon);
+    try {
+      let data = null;
+      for (const url of ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.openstreetmap.fr/api/interpreter']) {
+        const ac = new AbortController();
+        const t = setTimeout(() => ac.abort(), 8000);
+        try {
+          const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'application/json' }, body: 'data=' + encodeURIComponent(query), signal: ac.signal });
+          if (!r.ok) continue;
+          data = await r.json();
+          break;
+        } catch (e) {}
+        finally { clearTimeout(t); }
+      }
+      if (!data) return null;
+      const features = parseOsmLot(data, { lat: s.lat, lon });
+      writeLotOsmCache(s, features, Date.now());
+      return features;
+    } catch (e) { return null; }
+    finally { lotOsmInflight.delete(key); }
+  })();
+  lotOsmInflight.set(key, run);
+  return run;
+}
+function updateLotBadge(dock, layout, features) {
+  if (!dock) return;
+  const cap = dock.querySelector('.c1-3d-lot-cap');
+  if (!cap) return;
+  const src = layout && layout.source === 'osm'
+    ? lotLL('Layout from OpenStreetMap', 'Disposición de OpenStreetMap')
+    : lotLL('Approximate layout', 'Disposición aproximada');
+  const note = layout && layout.source === 'osm' ? '' : (lotLL('Layout is approximate', 'La disposición es aproximada') + '<br>');
+  const attrib = features ? ('<div style="font-size:10px;margin-top:2px">' + lotLL('Data © OpenStreetMap contributors', 'Datos © colaboradores de OpenStreetMap') + '</div>') : '';
+  let badge = dock.querySelector('.c1-3d-lot-badge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.className = 'c1-3d-lot-badge';
+    badge.style.cssText = 'text-align:center;font-size:12px;font-weight:800;color:#F4F7FB;margin:8px 0 0;line-height:16px';
+    const lot = dock.querySelector('.c1-3d-lot');
+    if (lot && lot.parentNode) lot.parentNode.insertBefore(badge, lot.nextSibling);
+    else dock.insertBefore(badge, cap);
+  }
+  badge.textContent = src;
+  cap.innerHTML = note + lotLL('Live status coming soon', 'Estado en vivo próximamente') + attrib;
+  cap.hidden = false;
+  cap.style.overflow = 'visible';
 }
 function colsForLot(n) {
   if (n <= 0) return 1;
@@ -1312,7 +1598,7 @@ function layoutFromRow(row) {
   row = row || { listed: false, stalls: [], hidden: 0, dcCount: 0, l2Count: 0 };
   if (!row.listed || !row.stalls || !row.stalls.length) {
     const pad = { w: 14, d: 12, h: 0.18 };
-    return { listed: !!row.listed, hidden: 0, dcCount: row.dcCount || 0, l2Count: row.l2Count || 0, pad, building: emptyBuilding(pad.w, pad.d), stalls: [] };
+    return { listed: !!row.listed, hidden: 0, dcCount: row.dcCount || 0, l2Count: row.l2Count || 0, source: "approximate", pad, building: emptyBuilding(pad.w, pad.d), footprints: [], aisles: [], stalls: [] };
   }
   const n = row.stalls.length;
   const cols = colsForLot(n);
@@ -1346,7 +1632,7 @@ function layoutFromRow(row) {
       ],
     };
   });
-  return { listed: true, hidden: row.hidden || 0, dcCount: row.dcCount, l2Count: row.l2Count, pad, building, stalls };
+  return { listed: true, hidden: row.hidden || 0, dcCount: row.dcCount, l2Count: row.l2Count, source: "approximate", pad, building, footprints: [], aisles: [], stalls };
 }
 
 function lotSceneSvg(layout, opts) {
@@ -1388,13 +1674,21 @@ function lotSceneSvg(layout, opts) {
   const faces = [];
   faces.push(...box(0, -pad.h, 0, pad.w, pad.h, pad.d, '#C5CAD1', '#A8AEB6', '#B0B6BE'));
   const b = layout.building;
-  faces.push(...box(b.x, 0, b.z, b.w, b.h, b.d, '#D5D8DD', '#9EA4AC', '#B8BDC4'));
-  if (!opts.lowEnd) {
-    faces.push(...box(b.annex.x, 0, b.annex.z, b.annex.w, b.annex.h, b.annex.d, '#D9D3C8', '#C4BDB0', '#D9D3C8'));
-    faces.push(...box(b.utility.x, 0, b.utility.z, b.utility.w, b.utility.h, b.utility.d, '#A8ADB5', '#9EA4AC', '#A8ADB5'));
-    b.mats.forEach(m => faces.push(...box(m.x, 0.02, m.z, m.w, 0.03, m.d, '#1E3A6E', '#1E3A6E', '#1E3A6E')));
+  if (b) {
+    faces.push(...box(b.x, 0, b.z, b.w, b.h, b.d, '#D5D8DD', '#9EA4AC', '#B8BDC4'));
+    if (!opts.lowEnd) {
+      faces.push(...box(b.annex.x, 0, b.annex.z, b.annex.w, b.annex.h, b.annex.d, '#D9D3C8', '#C4BDB0', '#D9D3C8'));
+      faces.push(...box(b.utility.x, 0, b.utility.z, b.utility.w, b.utility.h, b.utility.d, '#A8ADB5', '#9EA4AC', '#A8ADB5'));
+      b.mats.forEach(m => faces.push(...box(m.x, 0.02, m.z, m.w, 0.03, m.d, '#1E3A6E', '#1E3A6E', '#1E3A6E')));
+    }
+    faces.push(...box(b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, '#1E6C74', '#1E6C74', '#3AA0A8'));
   }
-  faces.push(...box(b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, '#1E6C74', '#1E6C74', '#3AA0A8'));
+  (layout.footprints || []).forEach(fp => {
+    const xs = fp.ring.map(pt => pt.x), zs = fp.ring.map(pt => pt.z);
+    const minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+    const minZ = Math.min.apply(null, zs), maxZ = Math.max.apply(null, zs);
+    faces.push(...box((minX + maxX) / 2, 0, (minZ + maxZ) / 2, Math.max(1, maxX - minX), fp.h || 6, Math.max(1, maxZ - minZ), '#D5D8DD', '#9EA4AC', '#B8BDC4'));
+  });
   (layout.stalls || []).forEach(st => {
     st.lines.forEach(ln => {
       const a = proj(ln.x1, 0.04, ln.z1), c = proj(ln.x2, 0.04, ln.z2);
@@ -1429,16 +1723,39 @@ function buildLotGroup(layout, opts) {
   const pad = layout.pad;
   addLotBox(root, 0, -pad.h, 0, pad.w, pad.h, pad.d, 0xc5cad1);
   const b = layout.building;
-  addLotBox(root, b.x, 0, b.z, b.w, b.h, b.d, 0xb8bdc4);
-  const roof = mesh(GEO.box, 0xd5d8dd, b.w + 0.08, 0.1, b.d + 0.08);
-  add(root, roof, b.x, b.h + 0.05, b.z);
-  if (!low) {
-    addLotBox(root, b.annex.x, 0, b.annex.z, b.annex.w, b.annex.h, b.annex.d, 0xd9d3c8);
-    addLotBox(root, b.utility.x, 0, b.utility.z, b.utility.w, b.utility.h, b.utility.d, 0xa8adb5);
-    b.mats.forEach(m => addLotBox(root, m.x, 0.02, m.z, m.w, 0.03, m.d, 0x1e3a6e));
+  if (b) {
+    addLotBox(root, b.x, 0, b.z, b.w, b.h, b.d, 0xb8bdc4);
+    const roof = mesh(GEO.box, 0xd5d8dd, b.w + 0.08, 0.1, b.d + 0.08);
+    add(root, roof, b.x, b.h + 0.05, b.z);
+    if (!low) {
+      addLotBox(root, b.annex.x, 0, b.annex.z, b.annex.w, b.annex.h, b.annex.d, 0xd9d3c8);
+      addLotBox(root, b.utility.x, 0, b.utility.z, b.utility.w, b.utility.h, b.utility.d, 0xa8adb5);
+      b.mats.forEach(m => addLotBox(root, m.x, 0.02, m.z, m.w, 0.03, m.d, 0x1e3a6e));
+    }
+    const glass = addLotBox(root, b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, 0x2a8a92, { transparent: true, opacity: 0.88, emissive: 0x1e6c74, emissiveIntensity: 0.18 });
+    glass.userData.glass = true;
   }
-  const glass = addLotBox(root, b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, 0x2a8a92, { transparent: true, opacity: 0.88, emissive: 0x1e6c74, emissiveIntensity: 0.18 });
-  glass.userData.glass = true;
+  (layout.footprints || []).forEach(fp => {
+    const xs = fp.ring.map(pt => pt.x), zs = fp.ring.map(pt => pt.z);
+    const minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+    const minZ = Math.min.apply(null, zs), maxZ = Math.max.apply(null, zs);
+    const w = Math.max(1, maxX - minX), dpth = Math.max(1, maxZ - minZ), h = fp.h || 6;
+    addLotBox(root, (minX + maxX) / 2, 0, (minZ + maxZ) / 2, w, h, dpth, 0xb8bdc4);
+    const roof = mesh(GEO.box, 0xd5d8dd, w + 0.06, 0.1, dpth + 0.06);
+    add(root, roof, (minX + maxX) / 2, h + 0.05, (minZ + maxZ) / 2);
+  });
+  if (!low) {
+    (layout.aisles || []).forEach(aisle => {
+      for (let i = 1; i < aisle.points.length; i++) {
+        const a = aisle.points[i - 1], c = aisle.points[i];
+        const dx = c.x - a.x, dz = c.z - a.z, len = Math.hypot(dx, dz) || 1;
+        const line = mesh(GEO.box, 0xd5d8de, 0.35, 0.03, len);
+        line.position.set((a.x + c.x) / 2, 0.03, (a.z + c.z) / 2);
+        line.rotation.y = Math.atan2(dx, dz);
+        root.add(line);
+      }
+    });
+  }
   const pickables = [];
   (layout.stalls || []).forEach(st => {
     st.lines.forEach(ln => {
@@ -1551,7 +1868,7 @@ function attachLotControls(m, layout, opts) {
     const hit = hits.find(h => h.object && h.object.userData && h.object.userData.stall);
     if (hit) {
       const st = hit.object.userData.stall;
-      showLotInspect(m.el, stallInspectLabel(st.stall, opts.maxKw));
+      showLotInspect(m.el, stallInspectLabel(st.stall, opts.maxKw, opts.network));
     } else {
       showLotInspect(m.el, '');
     }
@@ -1577,7 +1894,7 @@ function mountLot(el, row, opts) {
     return null;
   }
   const low = typeof chargeLowEnd === 'function' ? chargeLowEnd() : false;
-  const layout = layoutFromRow(row);
+  const layout = layoutLotFromOsm(row, opts.features);
   el.innerHTML = lotSceneSvg(layout, { lowEnd: low, stationId: opts.stationId });
   const mounted = startMount('lot', el, opts.height || 220, (m) => {
     const root = buildLotGroup(layout, { lowEnd: low, stationId: opts.stationId });
@@ -1585,15 +1902,15 @@ function mountLot(el, row, opts) {
     m.root = root;
     try { m.renderer.setClearColor(LOT_BG, 1); } catch (e) {}
     try { m.scene.background = new THREE.Color(LOT_BG); } catch (e) {}
+    const span = Math.max(layout.pad.w, layout.pad.d, 8);
+    const baseDist = Math.max(16, span * 1.15);
     m.camera.fov = 30;
     m.camera.near = 0.2;
-    m.camera.far = 200;
+    m.camera.far = Math.max(400, baseDist * 4);
     m.camera.updateProjectionMatrix();
     m.state.yaw = 0.58;
     m.state.pitch = 0.66;
     m.state.zoom = 1;
-    const span = Math.max(layout.pad.w, layout.pad.d, 8);
-    const baseDist = Math.max(16, span * 1.15);
     const look = new THREE.Vector3(0.3, 0.4, 0.4);
     const placeCam = () => {
       const yaw = m.still ? 0.58 : m.state.yaw;
@@ -1610,12 +1927,19 @@ function mountLot(el, row, opts) {
     attachLotControls(m, layout, opts);
     m.update = () => { placeCam(); };
   });
-  if (row.hidden > 0 && el.parentNode && !el.parentNode.querySelector('.c1lot-more-gl')) {
-    const more = document.createElement('div');
-    more.className = 'c1lot-more c1lot-more-gl';
-    more.style.cssText = 'color:#3B7BFF;font-weight:800;padding:0 8px';
-    more.textContent = '+' + row.hidden + ' more';
-    el.parentNode.appendChild(more);
+  if (el.parentNode) {
+    let more = el.parentNode.querySelector('.c1lot-more-gl');
+    if (row.hidden > 0) {
+      if (!more) {
+        more = document.createElement('div');
+        more.className = 'c1lot-more c1lot-more-gl';
+        more.style.cssText = 'color:#3B7BFF;font-weight:800;padding:0 8px';
+        el.parentNode.appendChild(more);
+      }
+      more.textContent = '+' + row.hidden + ' more';
+    } else if (more) {
+      more.remove();
+    }
   }
   return mounted;
 }
@@ -1963,12 +2287,27 @@ function ensureSheetDock(root) {
     dock.innerHTML = '<div class="c1-3d-charge" style="height:226px;min-height:226px;margin:6px 0 4px">' + chargeSceneSvg('station') + '</div>'
       + '<div class="c1-3d-lot" style="height:220px;min-height:220px;margin:4px 0 0;background:#EEF1F4;border-radius:12px;overflow:hidden"></div>'
       + '<div class="c1-3d-lot-inspect" style="display:none;font-size:13px;font-weight:800;text-align:center;margin:6px 0 0;color:#F4F7FB"></div>'
-      + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:4px 0 2px;line-height:15px">Layout is illustrative<br>Live status coming soon</div>'
+      + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:4px 0 2px;line-height:15px">Approximate layout<br>Layout is approximate<br>Live status coming soon</div>'
       + '<div class="c1-3d-lot-legend muted" style="font-size:11px;text-align:center;margin:0 0 6px;line-height:15px">When live status arrives: <span style="color:#22C55E">● Available</span> · <span style="color:#E11D2E">● Busy</span> · <span style="color:#F5A524">▲ Out of order</span></div>';
   }
   // Sit at the top of the Station tab, just under the header, on an opaque card.
   placeStationDock(root, dock);
   return dock;
+}
+
+function lotCountsFromStation(s) {
+  s = s || {};
+  let dc = s.dcPorts, l2 = s.l2Ports;
+  const tot = Number(s.total);
+  const dcN = Number(dc), l2N = Number(l2);
+  if (Number.isFinite(tot) && tot > 0 && tot <= 80) {
+    const cur = (Number.isFinite(dcN) ? dcN : 0) + (Number.isFinite(l2N) ? l2N : 0);
+    if (cur >= 0 && tot >= cur) {
+      if ((dcN > 0 && !(l2N > 0)) || (s.kw >= 50 && !(l2N > 0))) dc = tot, l2 = 0;
+      else if ((l2N > 0 && !(dcN > 0)) || (s.kw > 0 && s.kw < 50)) l2 = tot, dc = 0;
+    }
+  }
+  return { dcPorts: dc, l2Ports: l2, portsListed: s.portsListed };
 }
 
 function fillStationDock(root, set, s) {
@@ -1985,7 +2324,7 @@ function fillStationDock(root, set, s) {
   });
   const lotHost = dock.querySelector('.c1-3d-lot');
   if (lotHost && s && typeof window.buildLotRow === 'function') {
-    const row = window.buildLotRow({ dcPorts: s.dcPorts, l2Ports: s.l2Ports, portsListed: s.portsListed, plugs: s.plugs, userPlug: userPlug(), cap: LOT_SCENE_CAP });
+    const row = window.buildLotRow(Object.assign({ plugs: s.plugs, userPlug: userPlug(), cap: LOT_SCENE_CAP }, lotCountsFromStation(s)));
     const legend = dock.querySelector('.c1-3d-lot-legend');
     const inspect = dock.querySelector('.c1-3d-lot-inspect');
     if (!row.listed) {
@@ -1996,7 +2335,24 @@ function fillStationDock(root, set, s) {
     } else {
       if (cap) cap.hidden = false;
       if (legend) legend.hidden = false;
-      mountLot(lotHost, row, { stationId: s.id, maxKw: s.maxKw || s.kw, height: 220 });
+      const opts = { stationId: s.id, maxKw: s.maxKw || s.kw, height: 220, network: s.network || s.net };
+      const cached = readLotOsmCache(s, Date.now());
+      mountLot(lotHost, row, Object.assign({ features: cached }, opts));
+      updateLotBadge(dock, layoutLotFromOsm(row, cached), cached);
+      const token = (s.id || '') + ':' + s.lat + ',' + (s.lon != null ? s.lon : s.lng);
+      dock.setAttribute('data-lot-token', token);
+      dock.setAttribute('data-lot-ready', cached ? (layoutLotFromOsm(row, cached).source || 'approximate') : 'pending');
+      Promise.resolve(fetchLotOsm(s)).then(features => {
+        if (dock.getAttribute('data-lot-token') !== token) return;
+        if (features) {
+          mountLot(lotHost, row, Object.assign({ features: features }, opts));
+          updateLotBadge(dock, layoutLotFromOsm(row, features), features);
+        }
+        const laid = layoutLotFromOsm(row, features || cached);
+        dock.setAttribute('data-lot-ready', (laid && laid.source) || 'approximate');
+      }).catch(function () {
+        if (dock.getAttribute('data-lot-token') === token) dock.setAttribute('data-lot-ready', 'approximate');
+      });
     }
   }
 }
@@ -2139,6 +2495,10 @@ function boot() {
 
 window.mountLotScene = mountLot;
 window.layoutFromRow = layoutFromRow;
+window.layoutLotFromOsm = layoutLotFromOsm;
+window.parseOsmLot = parseOsmLot;
+window.fetchLotOsm = fetchLotOsm;
+window.buildLotOverpassQuery = buildLotOverpassQuery;
 window.lotSceneSvg = lotSceneSvg;
 window.pendingStallStatusProvider = pendingStallStatusProvider;
 window.setStallStatusProvider = setStallStatusProvider;
