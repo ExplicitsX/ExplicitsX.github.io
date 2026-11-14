@@ -1,0 +1,172 @@
+/**
+ * v21 preview: openings rotate, charger, wallet, profile, Ask your buddy.
+ * Does not replace v19x/y/z or v20 tests.
+ *   NODE_PATH=/tmp/v19x-test/node_modules node tests/v21-preview.mjs
+ */
+import {readFileSync} from 'node:fs';
+import {spawn} from 'node:child_process';
+import {dirname, join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
+const fails = [];
+const check = (c, m) => { if (!c) fails.push(m); };
+
+check(html.includes('<title>Kilolane mock v19z2</title>'), 'title stays v19z2');
+check(html.includes('C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1}'), 'v20 openings string kept');
+check(html.includes('laneLights') && html.includes('zapHello'), 'two new openings');
+check(html.includes("return 'rotate'"), 'opening default is rotate');
+check(html.includes('c1_opening_last'), 'last opening is stored');
+check(html.includes('Find it in AR') || html.includes("L('Find it in AR'"), 'Find it in AR');
+check(html.includes('c1chturn') && html.includes('#3B7BFF'), 'charger turn and blue lamps');
+check(html.includes('c1fast-pulse'), 'fast-pin pulse');
+check(html.includes('c1_myrep') && html.includes('ownWorkedAt') || html.includes('c1OwnWorkedAt'), 'wink uses own reports');
+check(html.includes('Ask your buddy'), 'ask your buddy');
+check(html.includes('Near me') && html.includes('On my trip') && html.includes('Fastest nearby') && html.includes('Near my destination'), 'four buddy chips');
+check(html.includes('Clear my data'), 'clear my data');
+check(html.includes('Ready to roll?') && html.includes('Where to today?') && html.includes("Let's find a lane."), 'profile greetings');
+check(html.includes('trips planned') && html.includes('check-ins'), 'plain profile counts');
+check(html.includes('SAMPLE') && html.includes('My networks') && html.includes('Coming soon.'), 'wallet preview');
+check(html.includes('Pick your buddy'), 'pick your buddy');
+check(!html.includes('Voltatops') && !html.includes('Sparkback') && !html.includes('Tankamp') && !html.includes('Skywatt') && !html.includes('Honkwatt'), 'no unofficial buddy names');
+check(html.includes('#F2EEE6') && html.includes('#E69F00') && html.includes('#8A94A8') && html.includes('#CC79A7') && html.includes('#1FA39A') && html.includes('#1E4FD8'), 'locked buddy colors');
+const v21 = html.slice(html.indexOf('/* v21: station charger'));
+check(v21.length > 100, 'v21 block present');
+check(!/type="password"|type="tel"|autocomplete="cc-/.test(v21), 'no payment or PIN fields in v21');
+check(!/every network/i.test(v21) && !/\bbest [a-z]/i.test(v21), 'no best / every network claims in v21');
+check(!/#00ff9d/i.test(v21), 'v21 is not green');
+check(!/MediaRecorder|captureStream|mediaRecorder/.test(v21), 'camera is not recorded');
+check(html.includes("Voice input isn't available on this phone") || html.includes("Typing is paused while you're moving"), 'moving pauses typing');
+check(html.includes('speechSynthesis'), 'reads answers aloud on the phone');
+check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
+
+if (fails.length) { console.error(fails.map(f => 'FAIL ' + f).join('\n')); process.exit(1); }
+console.log('v21 static checks ok');
+
+let puppeteer;
+for (const p of [process.env.PUPPETEER || '', 'puppeteer-core', '/tmp/v19x-test/node_modules/puppeteer-core/lib/puppeteer/puppeteer-core.js', '/tmp/kl-pptr/node_modules/puppeteer-core/lib/puppeteer/puppeteer-core.js']) {
+  if (!p) continue;
+  try { puppeteer = await import(p); break; } catch (e) {}
+}
+if (!puppeteer) { console.error('puppeteer-core missing'); process.exit(1); }
+
+const port = 8777;
+const server = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], {cwd: root, stdio: 'ignore'});
+await new Promise(r => setTimeout(r, 400));
+const browser = await (puppeteer.default || puppeteer).launch({
+  executablePath: process.env.CHROME || '/usr/bin/google-chrome',
+  headless: 'new',
+  args: ['--no-sandbox', '--disable-dev-shm-usage']
+});
+
+async function boot(opts = {}) {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', e => errors.push(String(e)));
+  await page.setViewport({width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 1});
+  await page.emulateMediaFeatures([{name: 'prefers-reduced-motion', value: opts.motion || 'reduce'}]);
+  await page.evaluateOnNewDocument((cfg) => {
+    try {
+      if (cfg.skipIntro) sessionStorage.setItem('c1_intro', '1');
+      localStorage.setItem('c1_lang', 'en');
+      if (cfg.opening) localStorage.setItem('c1_opening', cfg.opening);
+    } catch (e) {}
+  }, { skipIntro: !!opts.skipIntro, opening: opts.opening || '' });
+  await page.goto(`http://127.0.0.1:${port}/t-97f47847fd25/${opts.query || ''}`, {waitUntil: 'domcontentloaded', timeout: 45000});
+  return {page, errors};
+}
+
+try {
+  const a = await boot({skipIntro: true, motion: 'reduce'});
+  await a.page.waitForFunction(() => document.body.classList.contains('v19y') && document.querySelectorAll('#map .leaflet-interactive').length > 5, {timeout: 20000});
+  await new Promise(r => setTimeout(r, 600));
+  const state = await a.page.evaluate(() => {
+    const chips = [...document.querySelectorAll('.c1askchip')].map(e => e.textContent.trim());
+    return {
+      title: document.title,
+      pins: document.querySelectorAll('#map .leaflet-interactive').length,
+      mapOn: document.getElementById('s-map').classList.contains('on'),
+      chips,
+      destChip: chips.includes('Near my destination'),
+      profileTab: !!document.querySelector('.tab[data-t="profile"]'),
+      wallet: !!document.getElementById('c1wallet'),
+      sample: (document.getElementById('c1wallet') || {}).innerText || '',
+    };
+  });
+  check(state.title === 'Kilolane mock v19z2', 'title live');
+  check(state.pins > 5 && state.mapOn, 'map and pins still work');
+  check(state.destChip && state.chips.includes('Near me') && state.chips.includes('On my trip') && state.chips.includes('Fastest nearby'), 'four chips on the map');
+  check(state.profileTab, 'profile tab present');
+  check(state.wallet && /SAMPLE/.test(state.sample) && /Coming soon/.test(state.sample), 'wallet preview');
+
+  // Station sheet still opens and gets the charger + Find it in AR
+  const pin = await a.page.evaluate(() => {
+    const s = S.find(x => x.kw >= 50) || S[0];
+    map.setView([s.lat, s.lng], 17, {animate: false});
+    const el = document.getElementById('map');
+    const pt = map.latLngToContainerPoint([s.lat, s.lng]);
+    map.panBy([0, pt.y - Math.round(el.clientHeight * 0.42)], {animate: false});
+    const pt2 = map.latLngToContainerPoint([s.lat, s.lng]);
+    const mr = el.getBoundingClientRect();
+    return {name: s.name, x: mr.left + pt2.x, y: mr.top + pt2.y};
+  });
+  await a.page.mouse.click(pin.x, pin.y);
+  await new Promise(r => setTimeout(r, 400));
+  const sheet = await a.page.evaluate(() => ({
+    hidden: document.getElementById('sheet').hidden,
+    hasCharger: !!document.querySelector('#sheet .c1chg-wrap, #sheet .c1stfx'),
+    findAr: !!(document.querySelector('#sheet .c1findar') && /Find it in AR/.test(document.querySelector('#sheet .c1findar').textContent || '')),
+    spin: !!document.querySelector('#sheet .c1chg-spin'),
+  }));
+  check(!sheet.hidden, 'station sheet still opens');
+  check(sheet.hasCharger, 'charger on the sheet');
+  check(sheet.findAr, 'Find it in AR on the sheet');
+  check(!sheet.spin, 'charger is still under reduced motion');
+
+  await a.page.click('.tab[data-t="profile"]');
+  await new Promise(r => setTimeout(r, 200));
+  const prof = await a.page.evaluate(() => {
+    const el = document.getElementById('c1profile');
+    const t = el ? el.innerText : '';
+    return {
+      on: document.getElementById('s-profile').classList.contains('on'),
+      greet: /Ready to roll\?|Where to today\?|Let's find a lane\.|Miss the road\?/.test(t),
+      counts: /trips planned/.test(t) && /check-ins/.test(t),
+      clear: /Clear my data/.test(t),
+      buddy: /Pick your buddy/.test(t) && /Zapsaurus/.test(t),
+      unnamed: !/Voltatops|Sparkback|Tankamp|Skywatt|Honkwatt/.test(t),
+      still: !document.querySelector('#c1profile .c1buddy3d .spin') ||
+        getComputedStyle(document.querySelector('#c1profile .c1buddy3d .spin')).animationName === 'none' ||
+        getComputedStyle(document.querySelector('#c1profile .c1buddy3d .spin')).animationPlayState === 'paused' ||
+        matchMedia('(prefers-reduced-motion: reduce)').matches,
+    };
+  });
+  check(prof.on && prof.greet && prof.counts && prof.clear && prof.buddy && prof.unnamed, 'profile tab content');
+  check(prof.still, '3D buddy still under reduced motion');
+
+  // Near my destination answers from station data, plug fit only, no price/status
+  const dest = await a.page.evaluate(() => {
+    try { CAR = 'Hyundai Ioniq 5'; } catch (e) {}
+    const sm = (typeof CITIES !== 'undefined' && CITIES.find(c => /Santa Monica/.test(c.label))) || null;
+    if (sm) { try { DEST = sm; } catch (e) {} }
+    const res = c1AnswerAsk({kind: 'nearDestination'}, 'Santa Monica');
+    return {
+      n: (res.items || []).length,
+      sorted: (res.items || []).every((it, i, a) => i === 0 || a[i - 1].miles <= it.miles),
+      levels: (res.items || []).every(it => /DC fast|Level 2|Level not listed/.test(it.level)),
+      noPrice: !/(\$|price|open|working)/i.test(res.text + JSON.stringify(res.items || [])),
+      text: res.text,
+    };
+  });
+  check(dest.n <= 3 && dest.sorted && dest.levels && dest.noPrice, 'near my destination top 3 by distance, no guesses');
+  check(/Santa Monica|destination|station data|plug-compatible/i.test(dest.text), 'destination answer uses real data');
+
+  check(!a.errors.length, 'no console errors: ' + a.errors.slice(0, 3).join(' | '));
+
+  if (fails.length) { console.error(fails.map(f => 'FAIL ' + f).join('\n')); process.exit(1); }
+  console.log('v21 preview checks ok');
+} finally {
+  await browser.close();
+  server.kill();
+}

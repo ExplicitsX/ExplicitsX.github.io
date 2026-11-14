@@ -598,6 +598,67 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 
 /* v20: Kilolane openings, Zapsaurus faces, Point your phone (preview) */
 #intro.c1op.v-findTheLane,#intro.c1op.v-plugIn,#intro.c1op.v-nightDrive{background:#0a1430}
+
+/* v21: lane lights, zap hello, charger card, wallet, profile */
+#intro.c1op.v-laneLights{background:#0B1530}
+#intro.c1op.v-laneLights .c1d{opacity:0}
+#intro.c1op.v-laneLights.go .c1d{animation:c1dash 1.1s ease-out forwards}
+#intro.c1op.v-laneLights.go .c1d:nth-child(1),#intro.c1op.v-laneLights.go .c1d:nth-child(2){animation-delay:0s}
+#intro.c1op.v-laneLights.go .c1d:nth-child(3),#intro.c1op.v-laneLights.go .c1d:nth-child(4){animation-delay:.15s}
+#intro.c1op.v-laneLights.go .c1d:nth-child(5),#intro.c1op.v-laneLights.go .c1d:nth-child(6){animation-delay:.3s}
+#intro.c1op.v-laneLights.go .c1d:nth-child(7),#intro.c1op.v-laneLights.go .c1d:nth-child(8){animation-delay:.45s}
+#intro.c1op.v-laneLights.go .c1d:nth-child(9),#intro.c1op.v-laneLights.go .c1d:nth-child(10){animation-delay:.6s}
+#intro.c1op.v-laneLights.go .c1mark{opacity:0;animation:c1markglow 1s .7s ease-out forwards}
+#intro.c1op.v-laneLights.go .c1nm{animation:c1nm .3s 1.4s ease-out forwards}
+#intro.c1op.v-zapHello{background:#DDE5F2}
+#intro.c1op.v-zapHello .c1zhpin{transform:translateY(-80px);opacity:0}
+#intro.c1op.v-zapHello.go .c1zhpin{animation:c1zdrop 1.2s ease-out forwards}
+#intro.c1op.v-zapHello.go .c1arm{transform-box:fill-box;transform-origin:0 100%;animation:c1wave .8s .7s ease-in-out}
+#intro.c1op.v-zapHello.go .c1spark{opacity:0;animation:c1spark .5s .8s ease-out}
+#intro.c1op.v-zapHello.go .c1nm{color:#0B1530;animation:c1up .4s 1.35s ease-out forwards}
+#intro.c1op.v-zapHello.go .c1tg{color:#1E4FD8;animation:c1up .4s 1.45s ease-out forwards}
+#intro.c1op.v-laneLights .c1tg,#intro.c1op.v-zapHello .c1tg{color:#E6F1FF}
+#intro.c1op.v-zapHello .c1tg{color:#1E4FD8}
+#intro.c1op.rm .c1d,#intro.c1op.rm .c1mark,#intro.c1op.rm .c1zhpin,#intro.c1op.rm .c1spark{opacity:1;transform:none;animation:none}
+@keyframes c1dash{to{opacity:1}}
+@keyframes c1markglow{0%{opacity:0}40%{opacity:1;filter:drop-shadow(0 0 12px #FFF3B0)}100%{opacity:1;filter:none}}
+@keyframes c1zdrop{0%{opacity:0;transform:translateY(-80px)}45%{opacity:1;transform:translateY(8px)}65%{transform:translateY(-10px)}80%{transform:translateY(4px)}100%{opacity:1;transform:none}}
+@keyframes c1wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
+@keyframes c1spark{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+@keyframes c1up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.c1chg-spin{transform-style:preserve-3d;animation:c1chturn 6s linear infinite;transform-origin:50% 50%}
+.c1chg-wrap{perspective:700px;width:120px;flex:0 0 120px}
+@keyframes c1chturn{to{transform:rotateY(360deg)}}
+.c1plug-lamp{transform-box:fill-box;transform-origin:center}
+.c1plug-lamp.fit{animation:c1ppulse .5s ease-out 1}
+@keyframes c1ppulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@media (prefers-reduced-motion:reduce){
+  .c1chg-spin,.c1plug-lamp.fit{animation:none}
+  #intro.c1op.go .c1d,#intro.c1op.go .c1mark,#intro.c1op.go .c1zhpin,#intro.c1op.go .c1spark,#intro.c1op.go .c1arm{animation:none;opacity:1;transform:none;filter:none}
+}
+.c1fast-pulse{animation:c1lpulse 1.4s ease-in-out infinite}
+@keyframes c1lpulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+.c1you-bounce{animation:c1yb .45s ease-in-out 3}
+@keyframes c1yb{50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.c1you-bounce{animation:none}}
+.c1buddy3d{width:88px;height:110px;perspective:640px;display:inline-block}
+.c1buddy3d .spin{transform-style:preserve-3d;animation:c1chturn 8s linear infinite;transform-origin:50% 50%}
+@media (prefers-reduced-motion:reduce){.c1buddy3d .spin{animation:none}}
+.c1ask .c1askchip, #c1ask .c1askchip{background:#1E4FD8;color:#fff;font-weight:800;border:0;border-radius:12px;padding:10px 12px;min-height:44px;margin:0 6px 6px 0}
+.c1ask input, #c1ask input,#c1profile input{min-height:44px;border-radius:12px;border:1px solid #C9D1DE;padding:10px;width:100%;box-sizing:border-box}
+.c1wcard{background:#1E4FD8;color:#fff;border-radius:18px;padding:18px 16px 22px;position:relative;overflow:hidden;min-height:140px;margin:10px 0}
+.c1wcard .mark{position:absolute;right:16px;top:16px;width:36px;height:36px}
+#c1wallet .c1net{display:flex;align-items:center;gap:8px;min-height:44px}
+#c1wallet .c1net input{accent-color:#1E4FD8;width:20px;height:20px}
+.c1count{flex:1;background:#F4F7FB;border-radius:12px;padding:14px 8px;text-align:center;color:#0B1530}
+.c1dot{width:22px;height:22px;border-radius:6px;border:2px solid #0B1530;display:inline-block;margin-left:8px;opacity:.55;vertical-align:middle}
+
+@media (prefers-reduced-motion:reduce){.c1fast-pulse{animation:none;opacity:.85}}
+.c1wink{width:48px;height:48px}
+.c1findar{background:#1E4FD8!important;color:#fff!important;font-weight:800}
+.c1sample{background:#FFD23F;color:#0B1530;border-radius:11px;padding:2px 8px;font-size:.75rem;font-weight:800}
+
 #intro.c1op.v-findTheLane .c1tg,#intro.c1op.v-plugIn .c1tg,#intro.c1op.v-nightDrive .c1tg{color:#E6F1FF}
 #intro.c1op .c1stage{position:absolute;left:50%;top:46%;width:min(92vw,360px);height:min(58vh,420px);transform:translate(-50%,-54%);overflow:visible}
 #intro.c1op .c1stage svg{width:100%;height:100%;display:block}
@@ -644,14 +705,30 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 
 </style></head><body><script>/* v20 openings: Plug in, Find the lane (default), Night drive. ~2s, skippable, once per load. */
 var C1INTRO='findTheLane';
-var C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1};
+var C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1};Object.assign(C1_OPENINGS,{laneLights:1,zapHello:1});var C1_OPENING_PREFS={rotate:1,plugIn:1,findTheLane:1,nightDrive:1,laneLights:1,zapHello:1};
 function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),320)}
-function c1OpeningKind(){try{const q=new URLSearchParams(location.search).get('intro');if(C1_OPENINGS[q])return q;const s=localStorage.getItem('c1_opening');if(C1_OPENINGS[s])return s}catch(_){}
- return 'findTheLane'}
+function c1OpeningPref(){try{const s=localStorage.getItem('c1_opening');if(C1_OPENING_PREFS[s])return s}catch(_){}
+ return 'rotate'}
+function c1OpeningKind(){try{const q=new URLSearchParams(location.search).get('intro');if(C1_OPENINGS[q])return q}catch(_){}
+ const pref=c1OpeningPref();if(pref!=='rotate'&&C1_OPENINGS[pref])return pref;
+ let last=null;try{last=localStorage.getItem('c1_opening_last')}catch(_){}
+ const pool=Object.keys(C1_OPENINGS).filter(k=>k!==last);
+ const id=pool[Math.floor(Math.random()*Math.max(1,pool.length))]||'findTheLane';
+ return id}
 function c1OpeningArt(id){
  const pin='<g class="c1pin" opacity="1"><path d="M160 124 C138 104 134 92 134 80 a26 26 0 0 1 52 0 C186 92 182 104 160 124z" fill="#FFD23F" stroke="#0B1530" stroke-width="3"/><circle cx="160" cy="80" r="9" fill="#0B1530"/></g>';
  if(id==='plugIn') return '<svg viewBox="0 0 320 300" aria-hidden="true"><rect x="210" y="108" width="70" height="84" rx="12" fill="#13214a" stroke="#9fb3d1" stroke-width="3"/><rect x="200" y="122" width="18" height="56" rx="4" fill="#0B1530" stroke="#9fb3d1" stroke-width="2"/><circle cx="248" cy="138" r="7" fill="#0B1530" stroke="#34D1BF" stroke-width="2"/><circle cx="248" cy="162" r="7" fill="#0B1530" stroke="#34D1BF" stroke-width="2"/><g class="c1plug"><path d="M36 130 h88 a12 12 0 0 1 12 12 v16 h22 v12 h-22 v16 a12 12 0 0 1 -12 12 h-88z" fill="#1E4FD8" stroke="#0B1530" stroke-width="3"/><rect x="52" y="142" width="50" height="16" rx="4" fill="#9CC2FF"/></g><path class="c1bolt" d="M168 70 L148 112 L162 112 L152 158 L184 100 L168 100z" fill="#FFD23F" stroke="#0B1530" stroke-width="2.5"/></svg>';
  if(id==='nightDrive') return '<svg viewBox="0 0 320 300" aria-hidden="true"><rect width="320" height="300" fill="#050814"/><path d="M70 300 L140 70 H180 L250 300z" fill="#12182c"/><path d="M158 80 v200" stroke="#34D1BF" stroke-width="3" stroke-dasharray="14 12" opacity=".6"/><path class="c1beam" d="M110 300 L142 112 L178 112 L210 300z" fill="#FFE9A0" opacity=".45"/>'+pin.replace('opacity="1"','opacity="1"')+'</svg>';
+ if(id==='laneLights') return '<svg class="c1ll" viewBox="0 0 320 300" aria-hidden="true"><rect width="320" height="300" fill="#0B1530"/>'
+  +'<g class="c1dashes" fill="none" stroke="#FFD23F" stroke-width="6" stroke-linecap="round">'
+  +'<path class="c1d" d="M40 280 L80 240"/><path class="c1d" d="M280 280 L240 240"/>'
+  +'<path class="c1d" d="M70 230 L100 200"/><path class="c1d" d="M250 230 L220 200"/>'
+  +'<path class="c1d" d="M95 188 L118 164"/><path class="c1d" d="M225 188 L202 164"/>'
+  +'<path class="c1d" d="M120 152 L140 132"/><path class="c1d" d="M200 152 L180 132"/>'
+  +'<path class="c1d" d="M145 122 L155 110"/><path class="c1d" d="M175 122 L165 110"/></g>'
+  +'<g class="c1mark"><path d="M132 108 L160 48 L188 108" fill="none" stroke="#FFD23F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><line x1="160" y1="96" x2="160" y2="82" stroke="#FFD23F" stroke-width="7" stroke-linecap="round"/></g></svg>';
+ if(id==='zapHello') return '<svg class="c1zh" viewBox="0 0 320 300" aria-hidden="true"><rect width="320" height="300" fill="#DDE5F2"/><path d="M0 150 H320" stroke="#C9D1DE" stroke-width="8"/><path d="M160 0 V300" stroke="#C9D1DE" stroke-width="8"/><path d="M20 60 L300 130" stroke="#FFD23F" stroke-width="10" opacity=".55"/>'
+  +'<g class="c1zhpin"><path d="M160 210 C128 180 122 158 122 140 a38 38 0 0 1 76 0 C198 158 192 180 160 210z" fill="#FFD23F" stroke="#0B1530" stroke-width="4"/><circle cx="160" cy="140" r="28" fill="#1E4FD8" stroke="#0B1530" stroke-width="3"/><circle cx="150" cy="134" r="4.5" fill="#fff"/><circle cx="170" cy="134" r="4.5" fill="#fff"/><circle cx="151" cy="135" r="2.2" fill="#0B1530"/><circle cx="171" cy="135" r="2.2" fill="#0B1530"/><path d="M150 148 Q160 156 170 148" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><path class="c1arm" d="M188 140 Q210 124 222 112" stroke="#1E4FD8" stroke-width="7" fill="none" stroke-linecap="round"/><path class="c1spark" d="M200 88 L192 102 L200 102 L190 118 L212 98 L202 98 Z" fill="#FFD23F" stroke="#0B1530" stroke-width="1.5"/></g></svg>';
  return '<svg viewBox="0 0 320 300" aria-hidden="true"><path class="c1lane" d="M28 260 C 70 252, 88 190, 140 160 C 200 126, 220 90, 268 88" fill="none" stroke="#34D1BF" stroke-width="16" stroke-linecap="round" opacity=".18" stroke-dasharray="420" stroke-dashoffset="420"/><path class="c1lane" d="M28 260 C 70 252, 88 190, 140 160 C 200 126, 220 90, 268 88" fill="none" stroke="#34D1BF" stroke-width="8" stroke-linecap="round" opacity=".7" stroke-dasharray="420" stroke-dashoffset="420"/><path class="c1lane" d="M28 260 C 70 252, 88 190, 140 160 C 200 126, 220 90, 268 88" fill="none" stroke="#E6F1FF" stroke-width="3" stroke-linecap="round" stroke-dasharray="420" stroke-dashoffset="420"/>'+'<g class="c1pin"><path d="M268 124 C246 104 242 92 242 80 a26 26 0 0 1 52 0 C294 92 290 104 268 124z" fill="#FFD23F" stroke="#0B1530" stroke-width="3"/><circle cx="268" cy="80" r="9" fill="#0B1530"/></g></svg>';
 }
 function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.getElementById('intro');if(o)o.remove();C1INTRO=id;
@@ -665,7 +742,7 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  let skip=0;try{skip=sessionStorage.getItem('c1_intro')=='1'}catch(_){}
  if(skip){try{C1INTRO=c1OpeningKind()}catch(_){}return}
  const id=C1_OPENINGS[q]?q:c1OpeningKind();
- try{sessionStorage.setItem('c1_intro_id',id)}catch(_){}
+ try{sessionStorage.setItem('c1_intro_id',id);localStorage.setItem('c1_opening_last',id)}catch(_){}
  c1IntroRun(id,matchMedia('(prefers-reduced-motion: reduce)').matches)})();
 </script>
 <h1><span><span class="vlw">Kilolane</span></span> – Every charger. One app.</h1>
@@ -773,12 +850,18 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  <div class="row" style="gap:8px;margin:14px 0"><div class="opt" data-v="working">✅ Working</div><div class="opt" data-v="busy">⏳ Busy</div><div class="opt" data-v="broken">⚠️ Down</div></div>
  <input class="inp" id="ci-price" type="number" step="0.01" inputmode="decimal" placeholder="What did you pay per kWh? (optional)"><textarea class="inp" id="ci-note" rows="2" placeholder="Add a note (optional), like &quot;stall 3 is down&quot;"></textarea><label class="row" style="min-height:44px;margin-top:6px;gap:8px"><span class="muted">Show my first name on check-ins (off by default)</span><input type="checkbox" id="ci-nm" style="width:24px;height:24px;flex-shrink:0"></label>
  <button class="btn g" onclick="submitCI()">Send</button><div class="muted" id="ci-list" style="margin-top:10px"></div></div></div>
+
+<section class="screen" id="s-profile">
+ <div class="hdr">Profile</div>
+ <div id="c1profile"></div>
+</section>
 <nav class="tabs" aria-label="Main">
  <div class="tab on" data-t="map" onclick="go('map')"><b>🗺</b>Map</div>
  <div class="tab" data-t="station" onclick="go('station')"><b>📍</b>Station</div>
  <div class="tab" data-t="charge" onclick="go('charge')"><b>⚡</b>Charging</div>
  <div class="tab" data-t="trip" onclick="go('trip')"><b>🧭</b>Trip</div>
  <div class="tab" data-t="wallet" onclick="go('wallet')"><b>💳</b>Wallet</div>
+ <div class="tab" data-t="profile" onclick="go('profile')"><b>🦕</b>Profile</div>
 </nav>
 </div>
 <div class="foot" id="datasrc">This is a preview. Stations are real; prices, status and accounts are sample.</div>
@@ -822,7 +905,7 @@ function setStyle(st,save){MSTYLE=st;if(save)localStorage.setItem('c1_mstyle',st
 baseLayer(map);
 let layer=L.layerGroup().addTo(map);
 function draw(){layer.clearLayers();S.filter(s=>s.price<=maxP&&xf(s)&&[...on].every(f=>f=="Reliable only"||f=="Favorites"?true:f=="Fits my car"?fit(s)!="no":f=="Fast (50 kW+)"?s.kw>=50:(NETS.includes(f)||f=="Other")?s.net==f:s.plugs.includes(f))).forEach(s=>{
- L.circleMarker([s.lat,s.lng],{radius:(s.kw>=50?9:6)+3,color:'#fff',weight:2,fill:false,interactive:false}).addTo(layer);L.circleMarker([s.lat,s.lng],{radius:s.kw>=50?9:6,color:RC[rel(s)],fillColor:NC[s.net],fillOpacity:.95,weight:3}).addTo(layer).on('click',()=>pick(s));});}
+ L.circleMarker([s.lat,s.lng],{radius:(s.kw>=50?9:6)+3,color:s.kw>=50?'#FFD23F':'#fff',weight:2,fill:false,interactive:false,className:s.kw>=50?'c1fast-pulse':''}).addTo(layer);L.circleMarker([s.lat,s.lng],{radius:s.kw>=50?9:6,color:RC[rel(s)],fillColor:NC[s.net],fillOpacity:.95,weight:3}).addTo(layer).on('click',()=>pick(s));});}
 const CI=JSON.parse(localStorage.getItem('c1_ci')||'{}');
 
 const DAY=864e5,NOW=Date.now(),CV={working:100,busy:70,broken:0};
@@ -2527,6 +2610,9 @@ const Txt = {
   plugIn: () => L2('Plug in','Enchufar'),
   findTheLane: () => L2('Find the lane','Encuentra el carril'),
   nightDrive: () => L2('Night drive','Viaje nocturno'),
+  rotate: () => L2('Rotate','Rotar'),
+  laneLights: () => L2('Lane lights','Luces del carril'),
+  zapHello: () => L2('Zapsaurus hello','Saludo de Zapsaurus'),
   close: () => L2('Close','Cerrar'),
   fromN: () => L2('N','N')
 };
@@ -2597,7 +2683,7 @@ window.c1PlaceYouMascot=placeYouMascot;
 
 /* Opening scene picker in the menu */
 function setOpeningKind(id){
-  if(!window.C1_OPENINGS||!C1_OPENINGS[id])return;
+  if(!window.C1_OPENING_PREFS||!C1_OPENING_PREFS[id])return;
   try{localStorage.setItem('c1_opening',id)}catch(e){}
   C1INTRO=id;
   try{if(typeof toast==='function')toast(L2('Saved on this phone','Guardado en este teléfono'))}catch(e){}
@@ -2606,10 +2692,10 @@ function setOpeningKind(id){
 window.setOpeningKind=setOpeningKind;
 {const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');if(!b)return r;
   const old=b.querySelector('.c1ti');if(old)old.remove();
-  const cur=(typeof c1OpeningKind==='function'?c1OpeningKind():'findTheLane');
+  const cur=(typeof c1OpeningPref==='function'?c1OpeningPref():'rotate');
   const chip=(id,lab)=>`<button type="button" class="chip${cur===id?' on':''}" aria-pressed="${cur===id}" onclick="setOpeningKind('${id}')">${lab}</button>`;
   let box=b.querySelector('.c1opset');
-  const html=`<div class="c1opset card" style="margin:8px 0"><b>${Txt.opening()}</b><div class="muted" style="font-size:.8125rem;margin:4px 0 8px">${Txt.openingHint()}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${chip('plugIn',Txt.plugIn())}${chip('findTheLane',Txt.findTheLane())}${chip('nightDrive',Txt.nightDrive())}</div></div>`;
+  const html=`<div class="c1opset card" style="margin:8px 0"><b>${Txt.opening()}</b><div class="muted" style="font-size:.8125rem;margin:4px 0 8px">${Txt.openingHint()}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${chip('rotate',Txt.rotate())}${chip('plugIn',Txt.plugIn())}${chip('findTheLane',Txt.findTheLane())}${chip('nightDrive',Txt.nightDrive())}${chip('laneLights',Txt.laneLights())}${chip('zapHello',Txt.zapHello())}</div></div>`;
   if(box) box.outerHTML=html;
   else {
     const after=b.querySelector('.c1snd')||b.querySelector('.row');
@@ -2851,6 +2937,424 @@ window.openAR=openAR;
 const ab=document.getElementById('arbtn');
 if(ab){ab.textContent=Txt.open();ab.addEventListener('click',e=>{/* onclick already */});}
 try{if(typeof setLang==='function'){const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);const b=document.getElementById('arbtn');if(b)b.textContent=Txt.open();return r}}}catch(e){}
+})();
+</script>
+
+<script>
+/* v21: station charger, Find it in AR, wallet, profile, 3D buddy, Ask your buddy */
+(function(){
+const BLUE='#3B7BFF', GRAY='#C9D1DE', CAP='#1E4FD8', GOLD='#FFD23F';
+const NETS_W=['Tesla','ChargePoint','EVgo','Electrify America','Shell Recharge','FLO','Blink','Rivian'];
+const GREET=["Ready to roll?","Where to today?","Let's find a lane."];
+const PALETTE=[['blue','#1E4FD8'],['cream','#F2EEE6'],['orange','#E69F00'],['slate','#8A94A8'],['pink','#CC79A7'],['teal','#1FA39A']];
+const rm=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+const L= (en,es)=> (typeof L2==='function'?L2(en,es):en);
+
+function buddyPlug(){
+  try{ if(typeof carPlug==='function' && carPlug()) return carPlug(); }catch(e){}
+  return '';
+}
+function exactFit(s){
+  const p=buddyPlug(); if(!p||!s||!s.plugs) return false;
+  if(p==='NACS') return s.plugs.includes('NACS');
+  if(p==='CCS'||p==='CCS1') return s.plugs.includes('CCS');
+  if(p==='CHAdeMO') return s.plugs.includes('CHAdeMO');
+  if(p==='J1772') return s.plugs.includes('J1772');
+  return s.plugs.includes(p);
+}
+function levelOf(s){
+  const dc=(s.kw>=50)||((s.dcPorts||0)>0);
+  const l2=(s.kw>0&&s.kw<50)||(s.plugs||[]).includes('J1772')&&s.kw<50;
+  if(dc && (s.plugs||[]).includes('J1772') && s.kw>=50) return L('DC fast · Level 2','Rápido DC · Nivel 2');
+  if(dc) return L('DC fast','Rápido DC');
+  if(l2) return L('Level 2','Nivel 2');
+  return L('Level not listed','Nivel no indicado');
+}
+function ownWorkedAt(name){
+  try{const a=typeof myR==='function'?myR():[];return a.some(r=>r.st===name&&r.ok)}catch(e){return false}
+}
+function ownWorkedBounce(){
+  try{
+    const a=typeof myR==='function'?myR():[];
+    if(!a.length||!a[0].ok) return false;
+    return (Date.now()-(a[0].ts||0))<4000;
+  }catch(e){return false}
+}
+function chargerSVG(s){
+  const plugs=['CCS','NACS','CHAdeMO','J1772'];
+  const have=s.plugs||[];
+  const lamps=plugs.map((p,i)=>{
+    const x=40+(i%2)*50, y=118+Math.floor(i/2)*36;
+    const fit=exactFit(s)&&have.includes(p==='CCS'?'CCS':p);
+    const on=have.includes(p==='CCS'?'CCS':p);
+    const fill=on&&fit?BLUE:GRAY;
+    return `<g class="c1plug-lamp${on&&fit?' fit':''}"><circle cx="${x}" cy="${y}" r="11" fill="${fill}" stroke="#0B1530" stroke-width="2"/><text x="${x}" y="${y+3}" text-anchor="middle" font-size="6" font-weight="700" fill="#0B1530">${p==='CCS'?'CCS1':p}</text></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 140 220" width="120" height="188" aria-hidden="true"><g class="${rm()?'':'c1chg-spin'}">
+    <rect x="20" y="200" width="70" height="14" rx="4" fill="#5A6680"/>
+    <rect x="20" y="16" width="100" height="186" rx="22" fill="#fff" stroke="#0B1530" stroke-width="4"/>
+    <rect x="20" y="16" width="100" height="36" rx="22" fill="${CAP}" stroke="#0B1530" stroke-width="4"/>
+    <rect x="20" y="36" width="100" height="14" fill="${CAP}"/>
+    <path d="M58 44 L70 22 L82 44" fill="none" stroke="${GOLD}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="24" y="54" width="92" height="6" fill="${BLUE}"/>
+    ${lamps}
+  </g></svg>`;
+}
+function winkBadge(s){
+  if(!ownWorkedAt(s.name)) return '';
+  try{return '<span class="c1wink">'+zapSvg('charging')+'</span>'}catch(e){return '⚡'}
+}
+function findArBtn(s){
+  return `<button type="button" class="btn c1findar" onclick="openAR(window.c1GuideStation||cur)">${L('Find it in AR','Encuéntralo en RA')}</button>`;
+}
+
+function decorateSheet(s){
+  if(!s) return;
+  window.c1GuideStation=s;
+  const sheet=document.getElementById('sheet'); if(!sheet) return;
+  let box=sheet.querySelector('.c1stfx');
+  if(!box){ box=document.createElement('div'); box.className='c1stfx'; sheet.insertBefore(box, sheet.firstChild.nextSibling); }
+  box.innerHTML=`<div style="margin:8px 0">${winkBadge(s)}${findArBtn(s)}</div>
+    <div style="display:flex;gap:10px;align-items:flex-start;margin:8px 0">
+    <div class="c1chg-wrap">${chargerSVG(s)}</div>
+  </div>`;
+  const dir=sheet.querySelector('button.g, .btn.g');
+  if(dir && !sheet.querySelector('.c1findar')) dir.insertAdjacentHTML('beforebegin', findArBtn(s));
+}
+function decorateStation(s){
+  if(!s) return;
+  window.c1GuideStation=s;
+  const plugs=document.getElementById('st-plugs');
+  if(!plugs) return;
+  let box=document.getElementById('c1stfx');
+  if(!box){ box=document.createElement('div'); box.id='c1stfx'; box.className='card'; plugs.parentElement.after(box); }
+  box.innerHTML=`<div>${winkBadge(s)}${findArBtn(s)}</div>
+    <div class="muted" style="margin-top:6px">${L('Plugs that fit your car glow blue.','Los conectores que calzan con tu auto brillan en azul.')}</div>
+    <div class="c1chg-wrap" style="margin-top:8px">${chargerSVG(s)}</div>`;
+}
+
+try{
+  const _pick=pick;
+  pick=function(s){const r=_pick.apply(this,arguments);try{decorateSheet(s)}catch(e){}return r};
+}catch(e){}
+try{
+  const _fs=fillStation;
+  fillStation=function(){const r=_fs.apply(this,arguments);try{decorateStation(cur)}catch(e){}return r};
+}catch(e){}
+
+/* AR guide to one station */
+function guideCopy(s, meters){
+  const mi=(meters/1609.34);
+  const dist=mi>=0.1? (mi.toFixed(1)+' mi') : (Math.round(meters)+' m');
+  return L('This way to '+s.name+' · '+dist, 'Por aquí a '+s.name+' · '+dist);
+}
+try{
+  const _oa=openAR;
+  openAR=function(target){
+    try{arState.target=target&&target.lat!=null?target:null}catch(e){}
+    return _oa.apply(this, []);
+  };
+  window.openAR=openAR;
+  const _ra=renderAR;
+  renderAR=function(force){
+    const r=_ra.apply(this, arguments);
+    try{
+      if(!arState||!arState.open||!arState.target) return r;
+      const ui=document.getElementById('c1ar-ui'); if(!ui) return r;
+      if(ui.querySelector('.c1guide')) return r;
+      const s=arState.target;
+      let here=null; try{here=(typeof me!=='undefined'&&me)?me:null}catch(e){}
+      const meters=here&&typeof dist==='function'?dist(here[0],here[1],s.lat,s.lng):null;
+      const pane=document.createElement('div');
+      pane.className='c1guide';
+      pane.style.cssText='pointer-events:none;text-align:center;margin-top:12px';
+      const rot=0;
+      pane.innerHTML=`<div style="font-size:64px;line-height:1">➤</div>
+        <div class="c1g-zap" style="display:inline-block">${typeof zapSvg==='function'?zapSvg('happy'):''}</div>
+        <div style="color:#fff;font-weight:800;margin-top:8px">${s.name}</div>
+        <div style="color:#E6F1FF">${meters!=null?guideCopy(s,meters):L('A big arrow points toward this charger. Nothing is recorded or uploaded.','Una flecha grande apunta a este cargador. No se graba ni se sube nada.')}</div>`;
+      ui.appendChild(pane);
+    }catch(e){}
+    return r;
+  };
+}catch(e){}
+
+/* bounce mascot after own Worked great */
+try{
+  const _pym=placeYouMascot;
+  placeYouMascot=function(){
+    const r=_pym.apply(this, arguments);
+    try{
+      if(rm()) return r;
+      const el=document.querySelector('.c1you');
+      if(el) el.classList.toggle('c1you-bounce', ownWorkedBounce());
+    }catch(e){}
+    return r;
+  };
+}catch(e){}
+
+/* Wallet preview */
+const WAL_KEY='c1_wallet_nets';
+function loadNets(){try{return JSON.parse(localStorage.getItem(WAL_KEY))||{}}catch(e){return {}}}
+function saveNets(o){try{localStorage.setItem(WAL_KEY,JSON.stringify(o))}catch(e){}}
+function renderWallet(){
+  const root=document.getElementById('s-wallet'); if(!root) return;
+  let box=document.getElementById('c1wallet');
+  if(!box){ box=document.createElement('div'); box.id='c1wallet'; root.insertBefore(box, root.children[1]||null); }
+  const ticked=loadNets();
+  const checks=NETS_W.map(n=>`<label class="c1net"><input type="checkbox" ${ticked[n]?'checked':''} data-net="${n}"/> ${n}</label>`).join('');
+  const fan=NETS_W.filter(n=>ticked[n]).map((n,i)=>`<div style="height:28px;border-radius:8px;background:${['#1E4FD8','#5A6680','#E69F00','#1FA39A','#CC79A7'][i%5]};margin-top:-10px;opacity:.9"></div>`).join('');
+  box.innerHTML=`<div style="padding:0 14px 8px">
+    <span class="c1sample">${L('SAMPLE','MUESTRA')}</span>
+    <div class="c1wcard ${rm()?'rm':''}">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32 L20 6 L32 32" fill="none" stroke="${GOLD}" stroke-width="4" stroke-linecap="round"/></svg>
+      <b style="font-size:1.25rem">Kilolane</b>
+      <div>${L('Every charge. One lane.','Cada carga. Un carril.')}</div>
+      <div style="color:${GOLD};font-weight:800;margin-top:16px">${L('Coming soon.','Próximamente')}</div>
+    </div>
+    ${fan}
+    <div style="margin-top:10px"><b>${L('My networks','Mis redes')}</b></div>
+    ${checks}
+    <button type="button" class="btn c1findar" style="margin-top:10px" id="c1w-ar">${L('Show it in AR','Verlo en RA')}</button>
+  </div>`;
+  box.querySelectorAll('input[data-net]').forEach(inp=>{
+    inp.addEventListener('change',()=>{const o=loadNets();o[inp.getAttribute('data-net')]=inp.checked;saveNets(o);renderWallet();});
+  });
+  const ar=document.getElementById('c1w-ar');
+  if(ar) ar.onclick=()=>{ try{ openAR(); }catch(e){} };
+}
+try{renderWallet()}catch(e){}
+
+/* Profile */
+const PROF_KEY='c1_profile';
+const TRIPST_KEY='c1_trip_stats';
+function loadProf(){try{const o=JSON.parse(localStorage.getItem(PROF_KEY)||'{}');return {nickname:(o.nickname||'Zapsaurus').toString().slice(0,12)||'Zapsaurus'}}catch(e){return {nickname:'Zapsaurus'}}}
+function saveProf(o){try{localStorage.setItem(PROF_KEY,JSON.stringify(o))}catch(e){}}
+function tripStats(){try{const o=JSON.parse(localStorage.getItem(TRIPST_KEY)||'null');if(o&&typeof o.count==='number')return o; const n=+(localStorage.getItem(TRIPST_KEY)||0); return {count:n||0,lastAt:n?null:null}}catch(e){return {count:0,lastAt:null}}}
+function bumpTrips(){const s=tripStats();s.count=(s.count||0)+1;s.lastAt=Date.now();try{localStorage.setItem(TRIPST_KEY,JSON.stringify(s))}catch(e){}}
+function sleepy(){const s=tripStats(); if(!s.count) return true; if(s.lastAt==null) return false; return (Date.now()-s.lastAt)>=7*864e5}
+function greeting(){ if(sleepy()&&!rm()) return 'Miss the road?'; return GREET[Math.floor(Date.now()/864e5)%3]; }
+function buddyFace(){ if(rm()) return 'happy'; if(ownWorkedBounce()) return 'charging'; if(sleepy()) return 'sleepy'; return 'happy'; }
+function buddy3d(face){
+  const svg=(typeof zapSvg==='function'?zapSvg(face):'');
+  return `<div class="c1buddy3d" id="c1p-buddy"><div class="spin">${svg.replace('width="44" height="55"','width="88" height="110"')}</div></div>`;
+}
+function renderProfile(){
+  const root=document.getElementById('c1profile'); if(!root) return;
+  const prof=loadProf();
+  const checks=typeof myR==='function'?myR().length:0;
+  const trips=tripStats().count||0;
+  const dots=PALETTE.filter(([k])=>k!=='blue').map(([,c])=>`<span class="c1dot" style="background:${c}" title="${L('More buddies will show up here later.','Más compañeros aparecerán aquí más adelante.')}"></span>`).join('');
+  root.innerHTML=`<div class="card" style="display:flex;gap:12px;align-items:center;background:#DDE5F2">
+    ${buddy3d(buddyFace())}
+    <div><div class="card" style="display:inline-block;padding:8px 12px;color:#0B1530;font-weight:700" id="c1p-hi">${greeting()}</div>
+    <div style="margin-top:8px"><input id="c1p-nick" maxlength="12" value="${prof.nickname.replace(/"/g,'')}" aria-label="${L('Edit nickname','Editar apodo')}"></div></div>
+  </div>
+  <div class="card"><b>${L('My picture','Mi imagen')}</b>
+    <div style="margin-top:8px">
+      <button type="button" class="chip on" id="c1pic-zap">${L('Zapsaurus','Zapsaurus')}</button>
+      <button type="button" class="chip" id="c1pic-car">${L('My car','Mi auto')}</button>
+    </div>
+  </div>
+  <div class="card"><b>${L('Pick your buddy','Elige tu compañero')}</b>
+    <div class="muted">${L('More buddies will show up here later.','Más compañeros aparecerán aquí más adelante.')}</div>
+    <div style="margin-top:8px"><button type="button" class="chip on">Zapsaurus</button>${dots}</div>
+  </div>
+  <div class="card" style="display:flex;gap:12px">
+    <div class="c1count"><b style="font-size:1.25rem">${trips}</b><div class="muted">${L('trips planned','viajes planeados')}</div></div>
+    <div class="c1count"><b style="font-size:1.25rem">${checks}</b><div class="muted">${L('check-ins','registros')}</div></div>
+  </div>
+  <div style="padding:0 14px 16px"><button type="button" class="btn" id="c1p-clear">${L('Clear my data','Borrar mis datos')}</button>
+    <div class="muted" style="text-align:center">${L('No sign-in. Everything stays on this phone.','Sin cuenta. Todo se queda en este teléfono.')}</div></div>`;
+  const nick=document.getElementById('c1p-nick');
+  if(nick) nick.addEventListener('change',()=>{saveProf({nickname:(nick.value||'Zapsaurus').slice(0,12)||'Zapsaurus'})});
+  const clr=document.getElementById('c1p-clear');
+  if(clr) clr.onclick=()=>{
+    if(!confirm(L('Clear check-ins, planned-trip counts, network ticks, and nickname from this phone?','¿Borrar registros, conteo de viajes, redes marcadas y el apodo de este teléfono?'))) return;
+    try{localStorage.removeItem('c1_myrep');localStorage.removeItem(PROF_KEY);localStorage.removeItem(TRIPST_KEY);localStorage.removeItem(WAL_KEY)}catch(e){}
+    renderProfile(); renderWallet();
+  };
+  const bud=document.getElementById('c1p-buddy');
+  if(bud && !rm()) bud.addEventListener('click',()=>{
+    bud.querySelector('.spin').innerHTML=(typeof zapSvg==='function'?zapSvg('charging'):'').replace('width="44" height="55"','width="88" height="110"');
+    const hi=document.getElementById('c1p-hi'); if(hi) hi.textContent='!';
+    setTimeout(()=>renderProfile(),450);
+  });
+}
+try{renderProfile()}catch(e){}
+try{
+  if(typeof planTrip==='function'){
+    const _pt=planTrip;
+    planTrip=function(){const r=_pt.apply(this,arguments);try{bumpTrips();renderProfile()}catch(e){}return r};
+  }
+}catch(e){}
+
+/* Ask your buddy */
+const ASK_CHIPS=[
+  ['nearMe', L('Near me','Cerca de mí')],
+  ['onMyTrip', L('On my trip','En mi viaje')],
+  ['fastestNearby', L('Fastest nearby','Rápido cerca')],
+  ['nearDestination', L('Near my destination','Cerca de mi destino')]
+];
+function milesTo(a,s){
+  if(typeof gcd==='function') return Math.round(gcd([a.lat,a.lng!=null?a.lng:a.lon],[s.lat,s.lng!=null?s.lng:s.lon])*10)/10;
+  if(typeof dist==='function') return Math.round((dist(a.lat,a.lng!=null?a.lng:a.lon,s.lat,s.lng!=null?s.lng:s.lon)/1609.34)*10)/10;
+  return 0;
+}
+function findCity(q){
+  if(!q||typeof CITIES==='undefined') return null;
+  const n=q.trim().toLowerCase();
+  return CITIES.find(c=>c.label.toLowerCase()===n)||CITIES.find(c=>c.label.toLowerCase().includes(n))||null;
+}
+function askParse(raw){
+  const q=(raw||'').trim(); if(!q) return {kind:'unknown'};
+  const n=q.toLowerCase();
+  if(/\b(cost|price|how much|precio|cuanto cuesta)\b/.test(n)) return {kind:'askCost'};
+  if(/\b(open now|hours|working|broken|status|abierto|horario|funciona)\b/.test(n)) return {kind:'askStatus'};
+  const np=q.match(/^(?:chargers?|stations?|estaciones?)\s+(?:near|cerca de)\s+(.+)$/i);
+  if(np){ const pl=np[1].trim(); if(/^(my\s+destination|mi\s+destino)/i.test(pl)) return {kind:'nearDestination'}; if(/^(me|mi)$/i.test(pl)) return {kind:'nearMe'}; return {kind:'nearPlace',query:pl}; }
+  const tt=q.match(/^(?:charge|chargers?|carga(?:r)?)(?:\s+on\s+the\s+way\s+to|\s+en(?:\s+el)?\s+camino\s+a)\s+(.+)$/i)||q.match(/^(?:on\s+the\s+way\s+to|camino\s+a)\s+(.+)$/i);
+  if(tt) return {kind:'tripTo',query:tt[1].trim()};
+  if(/near my destination|cerca de mi destino/.test(n)) return {kind:'nearDestination'};
+  if(/on my trip|en mi viaje/.test(n)) return {kind:'onMyTrip'};
+  if(/fastest nearby|nearest fast|fast charger|cargador rapido/.test(n)) return {kind:'fastestNearby'};
+  if(/near me|cerca de mi/.test(n)) return {kind:'nearMe'};
+  return {kind:'unknown'};
+}
+function originHere(){
+  try{ if(typeof me!=='undefined'&&me) return {lat:me[0],lng:me[1],label:'Here'}; }catch(e){}
+  return {lat:34.0522,lng:-118.2437,label:'Downtown Los Angeles, CA'};
+}
+function destPlace(){
+  try{ if(typeof DEST!=='undefined'&&DEST&&DEST.lat!=null) return DEST; }catch(e){}
+  return null;
+}
+function answerAsk(intent, typed){
+  const plug=buddyPlug();
+  if(intent.kind==='askCost') return {text:L("I don't guess what a charger costs.","No adivino cuánto cuesta un cargador."),items:[]};
+  if(intent.kind==='askStatus') return {text:L("I don't guess whether a charger is open or working.","No adivino si un cargador está abierto o funcionando."),items:[]};
+  if(!plug) return {text:L('Tell me your plug type first. I only suggest chargers that fit.','Indica tu conector primero. Solo sugiero cargadores compatibles.'),items:[]};
+  if(intent.kind==='unknown') return {text:L("I can look for chargers near you, near a place, on the way, or near your destination. I don't guess prices or whether a charger is open.","Puedo buscar cargadores cerca de ti, cerca de un lugar, en el camino o cerca de tu destino. No adivino precios ni si está abierto."),items:[]};
+  const list=(typeof S!=='undefined'&&S)?S:[];
+  const fit=list.filter(exactFit);
+  const top=(origin, pool, radius)=>{
+    return pool.map(s=>({s,miles:milesTo(origin,s)}))
+      .filter(x=>x.miles<=radius)
+      .sort((a,b)=>a.miles-b.miles)
+      .slice(0,3)
+      .map(x=>({id:x.s.name,name:x.s.name,miles:x.miles,level:levelOf(x.s),ref:x.s}));
+  };
+  if(intent.kind==='nearDestination'){
+    const d=destPlace()||findCity(typed||'');
+    if(!d) return {text:L('Give me a destination — pick it on your trip, or type a city the trip planner already uses.','Dame un destino: elígelo en tu viaje, o escribe una ciudad que el planificador ya use.'),items:[]};
+    const items=top(d,fit,15);
+    if(!items.length) return {text:L("I don't have a plug-compatible charger near "+d.label+" in this station data.","No tengo un cargador compatible cerca de "+d.label+" en estos datos."),items:[]};
+    return {text:L('Here are the closest plug-compatible chargers to '+d.label+', by distance from that destination:','Estos son los cargadores compatibles más cercanos a '+d.label+', por distancia desde ese destino:'),items};
+  }
+  if(intent.kind==='nearPlace'){
+    const d=findCity(intent.query);
+    if(!d) return {text:L('I couldn\'t find "'+intent.query+'" in the places this planner already uses.',"No encontré \""+intent.query+"\" en los lugares que ya usa este planificador."),items:[]};
+    const items=top(d,fit,15);
+    if(!items.length) return {text:L("I don't have a plug-compatible charger near "+d.label+" in this station data.","No tengo un cargador compatible cerca de "+d.label+" en estos datos."),items:[]};
+    return {text:L('Here are plug-compatible chargers near '+d.label+', by distance:','Estos son cargadores compatibles cerca de '+d.label+', por distancia:'),items};
+  }
+  if(intent.kind==='onMyTrip' || intent.kind==='tripTo'){
+    let plan=null; try{plan=typeof PLAN!=='undefined'?PLAN:null}catch(e){}
+    if(intent.kind==='tripTo'){
+      const d=findCity(intent.query); if(!d) return {text:L('I couldn\'t find "'+intent.query+'" in the places this planner already uses.',"No encontré \""+intent.query+"\" en los lugares que ya usa este planificador."),items:[]};
+    }
+    if(!plan||!plan.stops||!plan.stops.length){
+      if(!plan) return {text:L('Plan a trip first, or tell me a destination, and I can look along the way.','Planea un viaje primero, o dime un destino, y puedo buscar en el camino.'),items:[]};
+      return {text:L("This trip plan doesn't have a plug-compatible stop in the station data I have.","Este plan de viaje no tiene una parada compatible en los datos que tengo."),items:[]};
+    }
+    const items=plan.stops.slice(0,3).map(s=>({id:s.name,name:s.name,miles:s.mile||s.mi||0,level:levelOf(s),ref:s}));
+    return {text:L('Here are the planned stops on your trip that fit your plug:','Estas son las paradas planeadas de tu viaje que calzan con tu conector:'),items};
+  }
+  const here=originHere();
+  if(intent.kind==='fastestNearby'){
+    const items=top(here,fit.filter(s=>s.kw>=50),15);
+    if(!items.length) return {text:L("I don't have a plug-compatible DC fast charger near you in this station data.","No tengo un cargador rápido DC compatible cerca de ti en estos datos."),items:[]};
+    return {text:L('Here are plug-compatible DC fast chargers near you, by distance.','Estos son cargadores rápidos DC compatibles cerca de ti, por distancia.'),items};
+  }
+  const items=top(here,fit,15);
+  if(!items.length) return {text:L("I don't have a plug-compatible charger near you in this station data.","No tengo un cargador compatible cerca de ti en estos datos."),items:[]};
+  return {text:L('Here are plug-compatible chargers near you, by distance:','Estos son cargadores compatibles cerca de ti, por distancia:'),items};
+}
+function speakLine(text){
+  try{ if(window.speechSynthesis){ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.rate=0.95; speechSynthesis.speak(u);} }catch(e){}
+}
+
+let askLock={paused:false,overMs:0}, askSpeed=null, askLast=Date.now();
+function askMoving(){
+  try{
+    if(typeof nextSpeedLock==='function'){
+      const now=Date.now(); askLock=nextSpeedLock(askLock, askSpeed, now-askLast); askLast=now; return askLock.paused;
+    }
+  }catch(e){}
+  return false;
+}
+function watchAskSpeed(){
+  if(!navigator.geolocation||watchAskSpeed._w) return;
+  try{watchAskSpeed._w=navigator.geolocation.watchPosition(p=>{
+    const sp=p&&p.coords&&p.coords.speed;
+    askSpeed=(sp!=null&&isFinite(sp)&&sp>=0)?sp:null;
+  },()=>{},{enableHighAccuracy:true,maximumAge:1000,timeout:8000});}catch(e){}
+}
+
+function renderAsk(into){
+  if(!into) return;
+  let box=into.querySelector('.c1ask')||(into.classList&&into.classList.contains('c1ask')?into:null);
+  if(!box){ box=document.createElement('div'); box.className='c1ask card'; into.appendChild(box); }
+  const moving=askMoving();
+  const chips=ASK_CHIPS.map(([id,lab])=>`<button type="button" class="c1askchip" data-chip="${id}">${lab}</button>`).join('');
+  box.innerHTML=`<div style="display:flex;align-items:center;gap:8px">${buddy3d('happy')}<b>${L('Ask your buddy','Pregúntale a tu compañero')}</b></div>
+    ${moving?`<div class="muted" style="margin-top:6px">${L("Typing is paused while you're moving. Voice input isn't available on this phone.","El teclado está en pausa mientras te mueves. La voz no está disponible en este teléfono.")}</div>`:
+      `<div style="margin-top:8px">${chips}</div><input id="c1ask-q" placeholder="${L('Or type a phrase, like chargers near Santa Monica','O escribe una frase, como estaciones cerca de Santa Monica')}">`}
+    <div id="c1ask-out" style="margin-top:8px"></div>
+    <div class="muted" style="margin-top:8px">${L('Answers stay on this phone. No AI.','Las respuestas se quedan en este teléfono. Sin IA.')}</div>`;
+  const run=intent=>{
+    const typed=(document.getElementById('c1ask-q')||{}).value||'';
+    const res=answerAsk(intent, typed);
+    const out=document.getElementById('c1ask-out'); if(!out) return;
+    const rows=(res.items||[]).map(it=>`<div class="c1ask-item" style="margin-top:8px;border-top:1px solid #C9D1DE;padding-top:8px">
+      <button type="button" class="lnk" data-go="${it.id}" style="font-weight:800;background:none;border:0;color:inherit;text-align:left">${it.name}</button>
+      <div class="muted">${it.miles.toFixed(1)} mi · ${it.level}</div>
+      <button type="button" class="btn c1findar" data-ar="${it.id}" style="margin-top:6px">${L('Find it in AR','Encuéntralo en RA')}</button>
+    </div>`).join('');
+    out.innerHTML=`<div>${res.text}</div>${rows}`+(!moving?`<button type="button" class="lnk" id="c1ask-speak" style="margin-top:8px">${L('Read aloud','Leer en voz alta')}</button>`:'');
+    if(moving) speakLine(res.text);
+    const sp=document.getElementById('c1ask-speak'); if(sp) sp.onclick=()=>speakLine(res.text);
+    out.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{
+      const s=(typeof S!=='undefined'?S:[]).find(x=>x.name===b.getAttribute('data-go'));
+      if(s){ try{cur=s;fillStation();go('station')}catch(e){} }
+    });
+    out.querySelectorAll('[data-ar]').forEach(b=>b.onclick=()=>{
+      const s=(typeof S!=='undefined'?S:[]).find(x=>x.name===b.getAttribute('data-ar'));
+      if(s) openAR(s);
+    });
+  };
+  box.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>run({kind:b.getAttribute('data-chip')}));
+  const inp=document.getElementById('c1ask-q');
+  if(inp) inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ const typed=inp.value; let intent=askParse(typed); if(intent.kind==='unknown'&&findCity(typed)) intent={kind:'nearDestination'}; run(intent);} });
+}
+function mountAsk(){
+  watchAskSpeed();
+  try{
+    const map=document.getElementById('s-map');
+    if(map){ let host=document.getElementById('c1ask-map'); if(!host){ host=document.createElement('div'); host.id='c1ask-map'; host.style.cssText='padding:0 10px'; const chips=document.getElementById('chips'); if(chips) chips.after(host); else map.appendChild(host);} renderAsk(host); }
+  }catch(e){}
+  try{
+    const trip=document.getElementById('s-trip');
+    if(trip){ let host=document.getElementById('c1ask-trip'); if(!host){ host=document.createElement('div'); host.id='c1ask-trip'; host.style.cssText='padding:0 10px'; const hdr=trip.querySelector('.hdr'); if(hdr) hdr.after(host); else trip.insertBefore(host, trip.firstChild);} renderAsk(host); }
+  }catch(e){}
+}
+try{mountAsk(); setInterval(()=>{ const boxes=document.querySelectorAll('.c1ask'); const mv=askMoving(); boxes.forEach(a=>{ if(mv && a.dataset.mv!=='1'){ a.dataset.mv='1'; mountAsk(); } else if(!mv && a.dataset.mv){ delete a.dataset.mv; mountAsk(); } }); },1000)}catch(e){}
+
+/* Expose a few helpers for tests */
+window.c1AskParse=askParse;
+window.c1AnswerAsk=answerAsk;
+window.c1ExactFit=exactFit;
+window.c1OwnWorkedAt=ownWorkedAt;
 })();
 </script>
 
