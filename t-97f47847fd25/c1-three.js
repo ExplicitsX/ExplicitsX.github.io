@@ -3,9 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113p15';
 
 const THREE_VERSION = '0.187.0';
+const C1_ASSET_V = '20261113p15';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -91,9 +92,10 @@ function injectCss() {
   st.id = 'c1-three-css';
   st.textContent = `
     .c1-3d-dock{flex:none;width:100%;min-width:0}
-    .c1gl-host{position:relative;min-height:96px}
+    .c1gl-host{position:relative;min-height:96px;width:100%;max-width:100%}
     .c1gl-host.c1gl-on>.c1-2d-src{visibility:hidden;pointer-events:none;position:absolute;inset:0;overflow:hidden}
     .c1gl{display:block;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none}
+    .c1gl-rmnote{position:absolute;left:4px;right:4px;bottom:2px;z-index:3;text-align:center;font-size:11px;line-height:14px;color:#8A94A8;pointer-events:none}
     @media (prefers-reduced-motion:reduce){
       .c1gl-host .c1gl{/* still 3D, held still in JS */}
     }
@@ -576,24 +578,64 @@ function prepareHost(el, height) {
   return { host, canvas };
 }
 
+function ensureRmNote(host) {
+  let n = host.querySelector('.c1gl-rmnote');
+  if (!rm()) { if (n) n.remove(); return; }
+  if (!n) {
+    n = document.createElement('div');
+    n.className = 'c1gl-rmnote';
+    n.textContent = 'Motion is off (Reduce Motion)';
+    host.appendChild(n);
+  }
+}
+
+function resizeMount(m) {
+  const w = m.host.clientWidth || 0;
+  const h = m.host.clientHeight || 0;
+  if (w < 2 || h < 2) return false;
+  m.renderer.setSize(w, h, false);
+  if (m.camera.isPerspectiveCamera) {
+    m.camera.aspect = w / h;
+    m.camera.updateProjectionMatrix();
+  }
+  m.visible = true;
+  try { m.update(0, performance.now()); m.renderer.render(m.scene, m.camera); } catch (e) {}
+  return true;
+}
+
+function revealMounts() {
+  mounts.forEach((m) => {
+    if (!m.canvas.isConnected) return;
+    ensureRmNote(m.host);
+    resizeMount(m);
+  });
+  kick();
+}
+
 function observe(m) {
+  // A host inside a display:none tab starts at 0×0. iPhone Safari often
+  // does not fire IntersectionObserver when the tab later becomes flex, so
+  // we also resize/kick from ResizeObserver and from go()/tab hooks.
   m.visible = true;
   m.io = new IntersectionObserver((entries) => {
-    m.visible = entries.some((e) => e.isIntersecting);
-    if (m.visible) kick();
-  }, { threshold: 0.05 });
+    const on = entries.some((e) => e.isIntersecting && e.intersectionRatio > 0);
+    if (on) {
+      m.visible = true;
+      resizeMount(m);
+      kick();
+    } else if (m.host.clientWidth < 2 || m.host.clientHeight < 2) {
+      m.visible = false;
+    } else {
+      m.visible = entries.some((e) => e.isIntersecting);
+      if (m.visible) kick();
+    }
+  }, { threshold: [0, 0.01, 0.05] });
   m.io.observe(m.host);
   m.ro = new ResizeObserver(() => {
-    const w = m.host.clientWidth || 1;
-    const h = m.host.clientHeight || 1;
-    m.renderer.setSize(w, h, false);
-    const aspect = w / h;
-    if (m.camera.isPerspectiveCamera) {
-      m.camera.aspect = aspect;
-      m.camera.updateProjectionMatrix();
-    }
+    if (resizeMount(m)) kick();
   });
   m.ro.observe(m.host);
+  ensureRmNote(m.host);
 }
 
 function startMount(kind, el, height, setup) {
@@ -1042,6 +1084,10 @@ export function remountAll() {
   // Wallet card
   const wcard = document.querySelector('#c1wallet .c1wcard');
   if (wcard) mountWallet(wcard);
+  // Ask your buddy — replace the CSS/SVG buddy wherever it is
+  document.querySelectorAll('#c1ask-tab .c1buddy3d, #c1ask .c1buddy3d, #c1p-buddy').forEach((el) => {
+    mountBuddy(el, { id: set.buddyId, height: 110 });
+  });
   window.c1Three = Object.assign(window.c1Three || {}, {
     webgl: true,
     version: THREE_VERSION,
@@ -1066,10 +1112,12 @@ function hook(name, after) {
 
 function boot() {
   injectCss();
-  const go = () => { try { remountAll(); } catch (e) {} };
+  const go = () => { try { remountAll(); revealMounts(); } catch (e) {} };
   hook('renderWallet', () => setTimeout(go, 0));
   hook('renderProfileV23', () => setTimeout(go, 0));
   hook('openEditV23', () => setTimeout(go, 0));
+  hook('renderAsk', () => setTimeout(go, 0));
+  hook('mountAsk', () => setTimeout(go, 0));
   hook('decorateSheet', () => setTimeout(go, 30));
   hook('pick', () => setTimeout(go, 40));
   hook('fillStation', () => setTimeout(go, 40));
@@ -1082,8 +1130,13 @@ function boot() {
     });
   });
   hook('mountLot', () => setTimeout(go, 40));
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') kick(); });
+  hook('go', () => setTimeout(go, 0));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { revealMounts(); kick(); } });
+  window.addEventListener('pageshow', () => { revealMounts(); kick(); });
   go();
+  // First paint of a later tab: catch class changes even if go() is not used
+  const mo = new MutationObserver(() => { setTimeout(() => { revealMounts(); kick(); }, 0); });
+  document.querySelectorAll('.screen').forEach((s) => mo.observe(s, { attributes: true, attributeFilter: ['class', 'hidden', 'style'] }));
 }
 
 window.c1Three = { webgl: webglAvailable(), version: THREE_VERSION, revision: THREE.REVISION, ready: false, remount: remountAll, webglAvailable };
