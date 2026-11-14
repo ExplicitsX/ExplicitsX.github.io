@@ -3159,7 +3159,7 @@ function renderProfile(){
   const dots=PALETTE.filter(([k])=>k!=='blue').map(([,c])=>`<span class="c1dot" style="background:${c}" title="${L('More buddies will show up here later.','Más compañeros aparecerán aquí más adelante.')}"></span>`).join('');
   root.innerHTML=`<div class="card" style="display:flex;gap:12px;align-items:center;background:#DDE5F2">
     ${buddy3d(buddyFace())}
-    <div><div class="card" style="display:inline-block;padding:8px 12px;color:#0B1530;font-weight:700" id="c1p-hi">${greeting()}</div>
+    <div><div class="c1p-hi" id="c1p-hi">${greeting()}</div>
     <div style="margin-top:8px"><input id="c1p-nick" maxlength="12" value="${prof.nickname.replace(/"/g,'')}" aria-label="${L('Edit nickname','Editar apodo')}"></div></div>
   </div>
   <div class="card"><b>${L('My picture','Mi imagen')}</b>
@@ -3502,8 +3502,8 @@ function renderProfileV22(){
   const face=rm()?'happy':(sleepy()?'sleepy':'happy');
   root.innerHTML=`<div class="card" style="display:flex;gap:12px;align-items:center;background:#DDE5F2">
     <div class="c1buddy3d">${crewSvg(prof.buddyId,face,88)}</div>
-    <div><div class="card" style="display:inline-block;padding:8px 12px;color:#0B1530;font-weight:700" id="c1p-hi">${greeting()}</div>
-    <div style="margin-top:8px;color:#0B1530;font-weight:800">${prof.nickname}</div>
+    <div><div class="c1p-hi" id="c1p-hi">${greeting()}</div>
+    <div class="c1p-name" id="c1p-name">${prof.nickname}</div>
     <button type="button" class="lnk" id="c1p-edit" style="color:#3B7BFF;background:none;border:0">${L('Edit','Editar')}</button></div>
   </div>
   <div class="card" style="display:flex;gap:12px">
@@ -3691,6 +3691,9 @@ if(!document.getElementById('c1v23css')){
   @media (prefers-reduced-motion:reduce){.c1avatar-spin,.c1avatar-spin *{animation:none!important}}
   @keyframes c1yaw{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
   .c1zap-pop{position:absolute;top:0;right:4px;color:#FFD23F;font-size:18px;pointer-events:none}
+
+  #c1profile .c1p-hi,.c1p-hi{display:inline-block;padding:8px 12px;border-radius:12px;background:#E6F1FF!important;color:#0B1530!important;border:1px solid #9FB3D1;font-weight:800}
+  #c1profile .c1p-name,.c1p-name{margin-top:8px;color:#F4F7FB!important;font-weight:800;font-size:1.125rem}
   .c1lot{perspective:640px}`;
   document.head.appendChild(st);
 }
@@ -3784,5 +3787,5 @@ window.openEditV23=openEditV23;
 </script>
 
 
-<script type="module" src="./c1-three.js?v=20261113p15" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113p15"></script>
+<script type="module" src="./c1-three.js?v=20261113q1" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q1"></script>
 </body></html>
