@@ -72,6 +72,21 @@ h1{font-size:1.625rem;margin-bottom:14px}h1 span{color:var(--g)}
 .hdr i{font-style:normal;color:var(--g);font-size:1.25rem;cursor:pointer}
 .screen{flex:1;overflow:auto;display:none;flex-direction:column}.screen.on{display:flex}.screen>*{flex-shrink:0}
 .chips{display:flex;gap:6px;padding:0 14px 10px;overflow-x:auto;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+#chips select.chip,select.chip{
+  appearance:none;-webkit-appearance:none;
+  background:#E6F1FF!important;
+  color:#0B1530!important;
+  -webkit-text-fill-color:#0B1530!important;
+  border:1px solid #9FB3D1!important;
+  font-weight:800;
+  color-scheme:light;
+  padding:0 28px 0 12px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%230B1530' stroke-width='2' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+}
+#chips select.chip option,select.chip option{background:#0B1530;color:#F4F7FB;-webkit-text-fill-color:#F4F7FB}
+
 .chip{border:1px solid var(--b);border-radius:8px;padding:6px 10px;font-size:0.875rem;white-space:nowrap;cursor:pointer}
 .chip.on{background:var(--g);color:#fff;border-color:var(--g)}
 #map{flex:1;min-height:300px}
@@ -2475,7 +2490,7 @@ body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
  try{
   const st=$('s-station'); if(!st||!$('clo')||!$('stsearch')||!$('nfbtn'))return;
   document.body.classList.add('v19x');
-  {const _ci=cardInto;cardInto=function(root,where,keep){if(where=='station')keep='.hdr,#stfind';const r=_ci.apply(this,arguments);if(where=='station'&&root){const hdr=root.querySelector(':scope>.hdr'),find=$('stfind');if(hdr&&find&&find.parentNode===root&&hdr.nextElementSibling!==find)hdr.after(find)}return r}}
+  {const _ci=cardInto;cardInto=function(root,where,keep){if(where=='station')keep='.hdr,#stfind,.c1-3d-dock,#c1-3d-dock-station';const r=_ci.apply(this,arguments);if(where=='station'&&root){const hdr=root.querySelector(':scope>.hdr'),find=$('stfind');if(hdr&&find&&find.parentNode===root&&hdr.nextElementSibling!==find)hdr.after(find)}return r}}
   function v19xDot(s){let key=s&&s.nf;if(!key&&typeof nfOf=='function')key=nfOf(s.net||'');if(!key||typeof NC=='undefined'||!NC[key])key='Other';const col=typeof NC!='undefined'&&NC[key];if(!col)return '';return `<span class="c1np${key==='Blink'?' blink':''}" style="background:${col}" aria-hidden="true"></span>`}
   cloRow=function(x,i){const [mi,s]=x,dm=Math.max(1,Math.round(mi*1.3/25*60)),pr=s.lp?lpShort(s.lp):L2('Price not listed','Sin precio'),price=pr==='Free'?L2('Free','Gratis'):pr,nn=s.nf&&s.nf!='Other'?s.nf:s.net,dist=mi<10?mi.toFixed(1):String(Math.round(mi));
    return `<div class="clr"><button type="button" class="clm" onclick="cloPick(${i})" aria-label="${mi.toFixed(1)} mi, ~${dm} min, ${esc(s.net)}, ${esc(s.name)}"><span class="cltop"><b>${dist} mi</b><i>·</i><span>${L2(s.kw>=50?'Fast':'Level 2',s.kw>=50?'Rápida':'Nivel 2')}</span><span class="clp${s.lp?' lpd':' muted'}">${esc(price)}</span></span><span class="clbot">${v19xDot(s)}<span class="cln">${esc(nn)}</span>${['ea','tesla'].includes(idleKey(s))?`<small class="clt">${L2('⏱ idle fee','⏱ tarifa inactiva')}</small>`:''}<span class="clnm">${esc(s.name)}</span></span></button><button type="button" class="cls" onclick="cloStart(${i})">${L2('Start','Iniciar')}</button><a class="clg" target="_blank" rel="noopener" href="${goURL(s)}" aria-label="${L2('Take me there','Llévame')}: ${esc(s.name)}">›</a></div>`};
@@ -3787,5 +3802,5 @@ window.openEditV23=openEditV23;
 </script>
 
 
-<script type="module" src="./c1-three.js?v=20261113q1" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q1"></script>
+<script type="module" src="./c1-three.js?v=20261113q2" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q2"></script>
 </body></html>
