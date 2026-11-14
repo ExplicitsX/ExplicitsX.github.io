@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q11';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261114q12';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q11';
+const C1_ASSET_V = '20261114q12';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -2377,10 +2377,14 @@ function ensureSheetDock(root) {
     dock.id = dockId;
     dock.className = 'c1-3d-dock c1-3d-card notr';
     dock.innerHTML = '<div class="c1-3d-charge" style="height:226px;min-height:226px;margin:6px 0 4px">' + chargeSceneSvg('station') + '</div>'
-      + '<div class="c1-3d-lot" style="height:220px;min-height:220px;margin:4px 0 0;background:#EEF1F4;border-radius:12px;overflow:hidden"></div>'
+      + '<div class="c1-3d-lot-gate" style="margin:8px 0 6px"><button type="button" class="btn c1-view-lot">' + lotLL('View lot', 'Ver lote') + '</button></div>'
+      + '<div class="c1-3d-lot-close-wrap" hidden style="margin:8px 0 4px"><button type="button" class="btn c1-3d-lot-close">' + lotLL('Close lot', 'Cerrar lote') + '</button></div>'
+      + '<div class="c1-3d-lot" hidden style="height:0;min-height:0;margin:0;background:#EEF1F4;border-radius:12px;overflow:hidden"></div>'
       + '<div class="c1-3d-lot-inspect" style="display:none;font-size:13px;font-weight:800;text-align:center;margin:6px 0 0;color:#F4F7FB"></div>'
-      + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:4px 0 2px;line-height:15px">Approximate layout<br>Layout is approximate<br>Live status coming soon</div>'
-      + '<div class="c1-3d-lot-legend muted" style="font-size:11px;text-align:center;margin:0 0 6px;line-height:15px">When live status arrives: <span style="color:#22C55E">● Available</span> · <span style="color:#E11D2E">● Busy</span> · <span style="color:#F5A524">▲ Out of order</span></div>';
+      + '<div class="c1-3d-lot-cap muted" hidden style="font-size:11px;text-align:center;margin:4px 0 2px;line-height:15px">Live status coming soon</div>'
+      + '<div class="c1-3d-lot-legend muted" hidden style="font-size:11px;text-align:center;margin:0 0 6px;line-height:15px">When live status arrives: <span style="color:#22C55E">● Available</span> · <span style="color:#E11D2E">● Busy</span> · <span style="color:#F5A524">▲ Out of order</span></div>';
+    dock.setAttribute('data-lot-open', '0');
+    bindLotGate(dock);
   }
   // Sit at the top of the Station tab, just under the header, on an opaque card.
   placeStationDock(root, dock);
@@ -2402,11 +2406,150 @@ function lotCountsFromStation(s) {
   return { dcPorts: dc, l2Ports: l2, portsListed: s.portsListed };
 }
 
+let c1LotHist = false;
+function lotStationToken(s) {
+  if (!s) return '';
+  return (s.id || '') + ':' + s.lat + ',' + (s.lon != null ? s.lon : s.lng);
+}
+function bindLotGate(dock) {
+  if (!dock || dock._lotBound) return;
+  dock._lotBound = 1;
+  dock.addEventListener('click', function (e) {
+    const t = e.target && e.target.closest && e.target.closest('.c1-view-lot, .c1-3d-lot-close');
+    if (!t) return;
+    e.preventDefault();
+    if (t.classList.contains('c1-3d-lot-close')) closeStationLot({ history: true });
+    else openStationLot();
+  });
+}
+function closeLotScene(dock) {
+  if (!dock) return;
+  dock.setAttribute('data-lot-open', '0');
+  dock.removeAttribute('data-lot-ready');
+  const lotHost = dock.querySelector('.c1-3d-lot');
+  if (lotHost) {
+    const host = lotHost.closest('.c1gl-host');
+    lotHost.innerHTML = '';
+    if (host && host.parentNode && host !== lotHost) {
+      host.parentNode.insertBefore(lotHost, host);
+      host.remove();
+    }
+    lotHost.hidden = true;
+    lotHost.style.height = '0';
+    lotHost.style.minHeight = '0';
+    lotHost.style.margin = '0';
+  }
+  const badge = dock.querySelector('.c1-3d-lot-badge');
+  if (badge) badge.remove();
+  const cap = dock.querySelector('.c1-3d-lot-cap');
+  const legend = dock.querySelector('.c1-3d-lot-legend');
+  const inspect = dock.querySelector('.c1-3d-lot-inspect');
+  const closer = dock.querySelector('.c1-3d-lot-close-wrap');
+  const gate = dock.querySelector('.c1-3d-lot-gate');
+  if (cap) cap.hidden = true;
+  if (legend) legend.hidden = true;
+  if (inspect) inspect.style.display = 'none';
+  if (closer) closer.hidden = true;
+  if (gate) gate.hidden = false;
+}
+function mountStationLot(dock, s) {
+  if (!dock || !s || typeof window.buildLotRow !== 'function') return;
+  const lotHost = dock.querySelector('.c1-3d-lot');
+  const cap = dock.querySelector('.c1-3d-lot-cap');
+  const legend = dock.querySelector('.c1-3d-lot-legend');
+  const inspect = dock.querySelector('.c1-3d-lot-inspect');
+  const closer = dock.querySelector('.c1-3d-lot-close-wrap');
+  const gate = dock.querySelector('.c1-3d-lot-gate');
+  if (!lotHost) return;
+  if (gate) gate.hidden = true;
+  if (closer) closer.hidden = false;
+  lotHost.hidden = false;
+  lotHost.style.height = '220px';
+  lotHost.style.minHeight = '220px';
+  lotHost.style.margin = '4px 0 0';
+  const row = window.buildLotRow(Object.assign({ plugs: s.plugs, userPlug: userPlug(), cap: LOT_SCENE_CAP }, lotCountsFromStation(s)));
+  if (!row.listed) {
+    lotHost.innerHTML = '<div class="c1lot-missing muted">Charger count not listed</div>';
+    if (cap) cap.hidden = true;
+    if (legend) legend.hidden = true;
+    if (inspect) inspect.style.display = 'none';
+    dock.setAttribute('data-lot-ready', 'missing');
+    return;
+  }
+  if (cap) cap.hidden = false;
+  if (legend) legend.hidden = false;
+  const opts = { stationId: s.id, maxKw: s.maxKw || s.kw, height: 220, network: s.network || s.net };
+  const cached = readLotOsmCache(s, Date.now());
+  mountLot(lotHost, row, Object.assign({ features: cached }, opts));
+  updateLotBadge(dock, layoutLotFromOsm(row, cached), cached);
+  const token = lotStationToken(s);
+  dock.setAttribute('data-lot-token', token);
+  dock.setAttribute('data-lot-ready', cached ? (layoutLotFromOsm(row, cached).source || 'approximate') : 'pending');
+  Promise.resolve(fetchLotOsm(s)).then(features => {
+    if (dock.getAttribute('data-lot-open') !== '1') return;
+    if (dock.getAttribute('data-lot-token') !== token) return;
+    if (features) {
+      mountLot(lotHost, row, Object.assign({ features: features }, opts));
+      updateLotBadge(dock, layoutLotFromOsm(row, features), features);
+    }
+    const laid = layoutLotFromOsm(row, features || cached);
+    dock.setAttribute('data-lot-ready', (laid && laid.source) || 'approximate');
+  }).catch(function () {
+    if (dock.getAttribute('data-lot-open') === '1' && dock.getAttribute('data-lot-token') === token) {
+      dock.setAttribute('data-lot-ready', 'approximate');
+    }
+  });
+}
+function openStationLot() {
+  try { if (typeof go === 'function') go('station'); } catch (e) {}
+  const run = function () {
+    const dock = document.getElementById('c1-3d-dock-station');
+    const s = (typeof cur !== 'undefined' && cur) || window.cur || window.c1GuideStation;
+    if (!dock || !s) return;
+    if (dock.getAttribute('data-lot-open') === '1') {
+      const el = dock.querySelector('.c1-3d-lot');
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: (typeof rm === 'function' && rm()) ? 'auto' : 'smooth' });
+      return;
+    }
+    dock.setAttribute('data-lot-open', '1');
+    mountStationLot(dock, s);
+    if (!c1LotHist) {
+      try { history.pushState({ c1Lot: 1 }, ''); c1LotHist = true; } catch (e) {}
+    }
+    setTimeout(function () {
+      const el = dock.querySelector('.c1-3d-lot, .c1-3d-lot-close-wrap');
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: (typeof rm === 'function' && rm()) ? 'auto' : 'smooth' });
+    }, 80);
+  };
+  setTimeout(run, 80);
+}
+function closeStationLot(opts) {
+  opts = opts || {};
+  const dock = document.getElementById('c1-3d-dock-station');
+  closeLotScene(dock);
+  if (opts.history && c1LotHist) {
+    c1LotHist = false;
+    try { history.back(); } catch (e) {}
+    return;
+  }
+  c1LotHist = false;
+}
+if (!window._c1LotPop) {
+  window._c1LotPop = 1;
+  window.addEventListener('popstate', function () {
+    if (!c1LotHist) return;
+    c1LotHist = false;
+    closeStationLot();
+  });
+}
+window.openStationLot = openStationLot;
+window.closeStationLot = closeStationLot;
+
 function fillStationDock(root, set, s) {
   if (!root || root.hidden) return;
   const dock = ensureSheetDock(root);
   if (!dock) return;
-  const cap = dock.querySelector('.c1-3d-lot-cap');
+  bindLotGate(dock);
   mountChargeScene(dock.querySelector('.c1-3d-charge'), {
     plugs: (s && s.plugs) || [],
     userPlug: userPlug(),
@@ -2414,39 +2557,13 @@ function fillStationDock(root, set, s) {
     paint: set.paint,
     height: 226,
   });
-  const lotHost = dock.querySelector('.c1-3d-lot');
-  if (lotHost && s && typeof window.buildLotRow === 'function') {
-    const row = window.buildLotRow(Object.assign({ plugs: s.plugs, userPlug: userPlug(), cap: LOT_SCENE_CAP }, lotCountsFromStation(s)));
-    const legend = dock.querySelector('.c1-3d-lot-legend');
-    const inspect = dock.querySelector('.c1-3d-lot-inspect');
-    if (!row.listed) {
-      lotHost.innerHTML = '<div class="c1lot-missing muted">Charger count not listed</div>';
-      if (cap) cap.hidden = true;
-      if (legend) legend.hidden = true;
-      if (inspect) inspect.style.display = 'none';
-    } else {
-      if (cap) cap.hidden = false;
-      if (legend) legend.hidden = false;
-      const opts = { stationId: s.id, maxKw: s.maxKw || s.kw, height: 220, network: s.network || s.net };
-      const cached = readLotOsmCache(s, Date.now());
-      mountLot(lotHost, row, Object.assign({ features: cached }, opts));
-      updateLotBadge(dock, layoutLotFromOsm(row, cached), cached);
-      const token = (s.id || '') + ':' + s.lat + ',' + (s.lon != null ? s.lon : s.lng);
-      dock.setAttribute('data-lot-token', token);
-      dock.setAttribute('data-lot-ready', cached ? (layoutLotFromOsm(row, cached).source || 'approximate') : 'pending');
-      Promise.resolve(fetchLotOsm(s)).then(features => {
-        if (dock.getAttribute('data-lot-token') !== token) return;
-        if (features) {
-          mountLot(lotHost, row, Object.assign({ features: features }, opts));
-          updateLotBadge(dock, layoutLotFromOsm(row, features), features);
-        }
-        const laid = layoutLotFromOsm(row, features || cached);
-        dock.setAttribute('data-lot-ready', (laid && laid.source) || 'approximate');
-      }).catch(function () {
-        if (dock.getAttribute('data-lot-token') === token) dock.setAttribute('data-lot-ready', 'approximate');
-      });
-    }
+  const token = lotStationToken(s);
+  if (dock.getAttribute('data-lot-station') !== token) {
+    dock.setAttribute('data-lot-station', token);
+    if (dock.getAttribute('data-lot-open') === '1') closeLotScene(dock);
   }
+  if (dock.getAttribute('data-lot-open') === '1') mountStationLot(dock, s);
+  else closeLotScene(dock);
 }
 
 
