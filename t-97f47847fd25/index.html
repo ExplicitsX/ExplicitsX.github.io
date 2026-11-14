@@ -595,23 +595,77 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 .c1x .c1lp{font-size:1.25rem;font-weight:800;color:var(--t);line-height:1.25;margin-top:2px;letter-spacing:-.015em}
 .c1x .c1lp.muted{font-size:.9375rem;font-weight:500;letter-spacing:0}
 
-</style></head><body><script>/* v19t openings: A Zap, B Power core, C Eye scan. Once per visit, tap skips, always removed */
-var C1INTRO='zap';
+
+/* v20: Kilolane openings, Zapsaurus faces, Point your phone (preview) */
+#intro.c1op.v-findTheLane,#intro.c1op.v-plugIn,#intro.c1op.v-nightDrive{background:#0a1430}
+#intro.c1op.v-findTheLane .c1tg,#intro.c1op.v-plugIn .c1tg,#intro.c1op.v-nightDrive .c1tg{color:#E6F1FF}
+#intro.c1op .c1stage{position:absolute;left:50%;top:46%;width:min(92vw,360px);height:min(58vh,420px);transform:translate(-50%,-54%);overflow:visible}
+#intro.c1op .c1stage svg{width:100%;height:100%;display:block}
+#intro.c1op .c1nm,#intro.c1op .c1tg{z-index:2}
+#intro.c1op.v-findTheLane.go .c1lane{stroke-dashoffset:420;animation:c1lane 1.3s ease-in-out forwards}
+#intro.c1op.v-findTheLane.go .c1pin{opacity:0;animation:c1fade 0.4s 1s ease-out forwards}
+#intro.c1op.v-findTheLane.go .c1nm{animation:c1nm .25s 1.3s ease-out forwards}
+#intro.c1op.v-findTheLane.go .c1tg{animation:c1tg .3s 1.45s ease-out forwards}
+#intro.c1op.v-plugIn.go .c1plug{transform:translateX(-108px);animation:c1plug 1s ease-in-out forwards}
+#intro.c1op.v-plugIn.go .c1bolt{opacity:0;animation:c1bolt 0.7s 1.05s ease-out forwards}
+#intro.c1op.v-plugIn.go .c1nm{animation:c1nm .25s 1.3s ease-out forwards}
+#intro.c1op.v-plugIn.go .c1tg{animation:c1tg .3s 1.45s ease-out forwards}
+#intro.c1op.v-nightDrive.go .c1beam{transform-origin:50% 100%;transform:scale(.2,.35);animation:c1beam 1.3s ease-out forwards}
+#intro.c1op.v-nightDrive.go .c1pin{opacity:0;animation:c1fade 0.4s .9s ease-out forwards}
+#intro.c1op.v-nightDrive.go .c1nm{animation:c1nm .25s 1.3s ease-out forwards}
+#intro.c1op.v-nightDrive.go .c1tg{animation:c1tg .3s 1.45s ease-out forwards}
+@keyframes c1lane{to{stroke-dashoffset:0}}
+@keyframes c1fade{to{opacity:1}}
+@keyframes c1plug{to{transform:none}}
+@keyframes c1bolt{0%{opacity:0;transform:scale(.7)}40%{opacity:1;transform:scale(1.08)}70%{opacity:.75;transform:scale(.96)}100%{opacity:1;transform:none}}
+@keyframes c1beam{to{transform:none}}
+#intro.c1op.rm .c1lane{stroke-dashoffset:0;animation:none}
+#intro.c1op.rm .c1pin,#intro.c1op.rm .c1bolt,#intro.c1op.rm .c1nm,#intro.c1op.rm .c1tg{opacity:1;animation:none}
+#intro.c1op.rm .c1plug,#intro.c1op.rm .c1beam{transform:none;animation:none}
+#s-map{position:relative}
+#s-map .c1ar-open{position:absolute;right:10px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:800;width:auto;max-width:calc(100% - 24px);padding:10px 14px;margin:0}
+#c1ar{position:fixed;inset:0;z-index:9800;background:#050814;color:#e6f1ff;display:flex;flex-direction:column}
+#c1ar[hidden]{display:none!important}
+#c1ar video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#050814}
+#c1ar .c1ar-ui{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;pointer-events:none}
+#c1ar .c1ar-ui button,#c1ar .c1ar-ui .card,#c1ar .c1ar-lab,#c1ar .c1ar-edge,#c1ar .c1ar-row{pointer-events:auto}
+#c1ar .c1ar-bar{display:flex;align-items:center;justify-content:space-between;padding:max(10px,env(safe-area-inset-top)) 12px 8px;background:linear-gradient(#0a1430ee,#0a143000)}
+#c1ar .c1ar-bar b{font-size:1rem}
+#c1ar .c1ar-msg{margin:12px 14px;background:#13214a;border:1px solid rgba(120,200,255,.18);border-radius:16px;padding:14px}
+#c1ar .c1ar-lab{position:absolute;width:220px;margin-left:-110px;background:rgba(19,33,74,.9);border:1px solid rgba(120,200,255,.18);border-radius:12px;padding:8px 10px}
+#c1ar .c1ar-edge{position:absolute;min-width:36px;min-height:36px;border-radius:18px;background:rgba(19,33,74,.9);border:1px solid #34D1BF;color:#34D1BF;font-weight:800}
+#c1ar .c1ar-list{flex:1;overflow:auto;padding:0 14px 20px}
+#c1ar .c1ar-row{display:flex;gap:12px;align-items:center;margin:6px 0;padding:12px;background:#13214a;border:1px solid rgba(120,200,255,.18);border-radius:14px;width:100%;text-align:left;color:inherit;font:inherit}
+#c1ar .c1ar-arr{width:40px;text-align:center;color:#34D1BF;font-weight:800}
+.c1you{background:none!important;border:0!important}
+.c1you svg{display:block;overflow:visible}
+@media (prefers-reduced-motion:reduce){#intro.c1op.go .c1lane,#intro.c1op.go .c1pin,#intro.c1op.go .c1plug,#intro.c1op.go .c1bolt,#intro.c1op.go .c1beam,#intro.c1op.go .c1nm,#intro.c1op.go .c1tg{animation:none}
+#intro.c1op.go .c1lane{stroke-dashoffset:0}#intro.c1op.go .c1pin,#intro.c1op.go .c1bolt,#intro.c1op.go .c1nm,#intro.c1op.go .c1tg{opacity:1}#intro.c1op.go .c1plug,#intro.c1op.go .c1beam{transform:none}}
+
+</style></head><body><script>/* v20 openings: Plug in, Find the lane (default), Night drive. ~2s, skippable, once per load. */
+var C1INTRO='findTheLane';
+var C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1};
 function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),320)}
-function c1IntroRun(id,rm){let o=document.getElementById('intro');if(o)o.remove();C1INTRO=id;
+function c1OpeningKind(){try{const q=new URLSearchParams(location.search).get('intro');if(C1_OPENINGS[q])return q;const s=localStorage.getItem('c1_opening');if(C1_OPENINGS[s])return s}catch(_){}
+ return 'findTheLane'}
+function c1OpeningArt(id){
+ const pin='<g class="c1pin" opacity="1"><path d="M160 124 C138 104 134 92 134 80 a26 26 0 0 1 52 0 C186 92 182 104 160 124z" fill="#FFD23F" stroke="#0B1530" stroke-width="3"/><circle cx="160" cy="80" r="9" fill="#0B1530"/></g>';
+ if(id==='plugIn') return '<svg viewBox="0 0 320 300" aria-hidden="true"><rect x="210" y="108" width="70" height="84" rx="12" fill="#13214a" stroke="#9fb3d1" stroke-width="3"/><rect x="200" y="122" width="18" height="56" rx="4" fill="#0B1530" stroke="#9fb3d1" stroke-width="2"/><circle cx="248" cy="138" r="7" fill="#0B1530" stroke="#34D1BF" stroke-width="2"/><circle cx="248" cy="162" r="7" fill="#0B1530" stroke="#34D1BF" stroke-width="2"/><g class="c1plug"><path d="M36 130 h88 a12 12 0 0 1 12 12 v16 h22 v12 h-22 v16 a12 12 0 0 1 -12 12 h-88z" fill="#1E4FD8" stroke="#0B1530" stroke-width="3"/><rect x="52" y="142" width="50" height="16" rx="4" fill="#9CC2FF"/></g><path class="c1bolt" d="M168 70 L148 112 L162 112 L152 158 L184 100 L168 100z" fill="#FFD23F" stroke="#0B1530" stroke-width="2.5"/></svg>';
+ if(id==='nightDrive') return '<svg viewBox="0 0 320 300" aria-hidden="true"><rect width="320" height="300" fill="#050814"/><path d="M70 300 L140 70 H180 L250 300z" fill="#12182c"/><path d="M158 80 v200" stroke="#34D1BF" stroke-width="3" stroke-dasharray="14 12" opacity=".6"/><path class="c1beam" d="M110 300 L142 112 L178 112 L210 300z" fill="#FFE9A0" opacity=".45"/>'+pin.replace('opacity="1"','opacity="1"')+'</svg>';
+ return '<svg viewBox="0 0 320 300" aria-hidden="true"><path class="c1lane" d="M28 260 C 70 252, 88 190, 140 160 C 200 126, 220 90, 268 88" fill="none" stroke="#34D1BF" stroke-width="16" stroke-linecap="round" opacity=".18" stroke-dasharray="420" stroke-dashoffset="420"/><path class="c1lane" d="M28 260 C 70 252, 88 190, 140 160 C 200 126, 220 90, 268 88" fill="none" stroke="#34D1BF" stroke-width="8" stroke-linecap="round" opacity=".7" stroke-dasharray="420" stroke-dashoffset="420"/><path class="c1lane" d="M28 260 C 70 252, 88 190, 140 160 C 200 126, 220 90, 268 88" fill="none" stroke="#E6F1FF" stroke-width="3" stroke-linecap="round" stroke-dasharray="420" stroke-dashoffset="420"/>'+'<g class="c1pin"><path d="M268 124 C246 104 242 92 242 80 a26 26 0 0 1 52 0 C294 92 290 104 268 124z" fill="#FFD23F" stroke="#0B1530" stroke-width="3"/><circle cx="268" cy="80" r="9" fill="#0B1530"/></g></svg>';
+}
+function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.getElementById('intro');if(o)o.remove();C1INTRO=id;
  let es=0;try{es=(localStorage.getItem('c1_lang')||((navigator.language||'en').toLowerCase().startsWith('es')?'es':'en'))=='es'}catch(_){}
- const tg='<div class="c1tg" id="c1tg">'+(es?'Cada carga. ⚡ Un carril.':'Every charge. ⚡ One lane.')+'</div>';
+ const tg='<div class="c1tg" id="c1tg">'+(es?'Cada carga. Un carril.':'Every charge. One lane.')+'</div>';
  const nm='<div class="c1nm">Kilolane</div>';
- const art=rm?'':id=='zap'?'<svg class="opln" viewBox="0 0 20 400" preserveAspectRatio="none" aria-hidden="true"><path d="M10 400 L10 150" pathLength="100"/></svg><span class="c1bz" aria-hidden="true">⚡</span>'
-  :id=='core'?'<div class="crw" aria-hidden="true"><svg class="crg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="44" pathLength="100"/></svg><span class="cbz">⚡</span></div><i class="cln" aria-hidden="true"></i>':'';
  const e=document.createElement('div');e.id='intro';e.className='c1op v-'+id+(rm?' rm':' go');e.setAttribute('role','dialog');e.setAttribute('aria-label','Welcome to Kilolane');
- e.innerHTML=art+nm+tg;document.body.prepend(e);const t0=Date.now(),sk=()=>{if(Date.now()-t0>250)endIntro()};e.addEventListener('pointerdown',sk);e.addEventListener('click',sk);
- setTimeout(()=>{if(e.isConnected&&document.getElementById('intro')===e)endIntro()},rm?800:{zap:1200,core:1700,eye:1400}[id]);setTimeout(()=>{if(e.isConnected)e.remove()},2500)}
-(function(){const ids=['zap','core','eye'];let q=null;try{q=new URLSearchParams(location.search).get('intro')}catch(_){}
- let seen=0;try{seen=sessionStorage.getItem('c1_intro')=='1';sessionStorage.setItem('c1_intro','1')}catch(_){}
- let last=null;try{last=localStorage.getItem('c1_intro_last')}catch(_){}
- let id=ids.includes(q)?q:null;if(!id){if(seen){try{C1INTRO=sessionStorage.getItem('c1_intro_id')||last||'zap'}catch(_){}return}const p=ids.filter(x=>x!=last);id=p[Math.floor(Math.random()*p.length)]}
- try{localStorage.setItem('c1_intro_last',id);sessionStorage.setItem('c1_intro_id',id)}catch(_){}
+ e.innerHTML='<div class="c1stage">'+c1OpeningArt(id)+'</div>'+nm+tg;document.body.prepend(e);const t0=Date.now(),sk=()=>{if(Date.now()-t0>250)endIntro()};e.addEventListener('pointerdown',sk);e.addEventListener('click',sk);
+ setTimeout(()=>{if(e.isConnected&&document.getElementById('intro')===e)endIntro()},2000);setTimeout(()=>{if(e.isConnected)e.remove()},2800)}
+(function(){let q=null;try{q=new URLSearchParams(location.search).get('intro')}catch(_){}
+ let skip=0;try{skip=sessionStorage.getItem('c1_intro')=='1'}catch(_){}
+ if(skip){try{C1INTRO=c1OpeningKind()}catch(_){}return}
+ const id=C1_OPENINGS[q]?q:c1OpeningKind();
+ try{sessionStorage.setItem('c1_intro_id',id)}catch(_){}
  c1IntroRun(id,matchMedia('(prefers-reduced-motion: reduce)').matches)})();
 </script>
 <h1><span><span class="vlw">Kilolane</span></span> – Every charger. One app.</h1>
@@ -631,6 +685,7 @@ function c1IntroRun(id,rm){let o=document.getElementById('intro');if(o)o.remove(
  <div class="chips" id="chips"></div>
  <div class="nfit"><button class="btn g" onclick="nearestFit()" id="nfbtn" style="flex:1">⚡ Show chargers near me</button><button class="btn" id="stybtn" style="width:auto;white-space:nowrap" onclick="setStyle(MSTYLE=='sat'?'dark':'sat',1)"></button></div>
  <div id="map" role="region" aria-label="Charger map. Use &quot;Nearest charger&quot; or the filters to find one fast."></div>
+ <button type="button" class="btn c1ar-open" id="arbtn" onclick="openAR()">Point your phone</button>
  <div class="sheet" id="sheet" hidden role="region" aria-label="Selected station" aria-live="polite"></div>
 </section>
 
@@ -2451,6 +2506,351 @@ body.hc #s-map #sheet{background:#000!important;border-color:#fff!important}
  try{v19zRetear(layer,1)}catch(e){}
  try{if(typeof FMC!=="undefined"&&FMC)v19zRetear(FMC,0)}catch(e){}
  let n=0;const iv=setInterval(()=>{n++;try{if(typeof FMC!=="undefined"&&FMC)v19zRetear(FMC,0)}catch(e){}if(n>12)clearInterval(iv)},700);
+})();
+</script>
+
+<script>/* v20: Zapsaurus faces + Point your phone preview. Camera is live preview only; nothing is recorded or uploaded. */
+(function(){
+const L2 = window.L2 || function(en,es){try{return (typeof LANG!=='undefined'&&LANG==='es')?es:en}catch(e){return en}};
+const Txt = {
+  open: () => L2('Point your phone','Apunta el teléfono'),
+  notice: () => L2("Don't use while driving. Pull over or let a passenger use this.",'No lo uses mientras conduces. Detente o deja que lo use un pasajero.'),
+  notDriving: () => L2("I'm not driving",'No estoy conduciendo'),
+  paused: () => L2('Paused while moving. Pull over to use Point your phone.','En pausa mientras te mueves. Detente para usar Apunta el teléfono.'),
+  needs: () => L2('AR needs a camera and compass','La RA necesita una cámara y una brújula'),
+  fallback: () => L2('Here are the nearest chargers and which way to turn. Nothing is recorded or uploaded.','Aquí están los cargadores más cercanos y hacia dónde girar. No se graba ni se sube nada.'),
+  grantCam: () => L2('Allow camera','Permitir cámara'),
+  grantComp: () => L2('Allow compass','Permitir brújula'),
+  empty: () => L2('No compatible chargers nearby.','No hay cargadores compatibles cerca.'),
+  opening: () => L2('Opening scene','Escena de inicio'),
+  openingHint: () => L2('Shown once when you open the page. Tap to skip.','Se muestra una vez al abrir la página. Toca para saltarla.'),
+  plugIn: () => L2('Plug in','Enchufar'),
+  findTheLane: () => L2('Find the lane','Encuentra el carril'),
+  nightDrive: () => L2('Night drive','Viaje nocturno'),
+  close: () => L2('Close','Cerrar'),
+  fromN: () => L2('N','N')
+};
+
+function zapSvg(face){
+  const skin='url(#c1zskin)';
+  const base=`<svg xmlns="http://www.w3.org/2000/svg" width="44" height="55" viewBox="-60 -62 120 150" aria-hidden="true"><defs><linearGradient id="c1zskin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B7BFF"/><stop offset="1" stop-color="#1E4FD8"/></linearGradient></defs>
+<path d="M0 78 C-40 40 -52 10 -52 -12 a52 52 0 0 1 104 0 C52 10 40 40 0 78z" fill="#0B1530"/>
+<path d="M0 70 C-34 36 -45 9 -45 -12 a45 45 0 0 1 90 0 C45 9 34 36 0 70z" fill="#FFD23F"/>
+<path d="M-30 6 C-36 -30 -10 -46 14 -42 C36 -38 44 -24 42 -10 C40 6 26 14 8 13 C-6 12 -24 20 -30 6z" fill="${skin}" stroke="#0B1530" stroke-width="4" stroke-linejoin="round"/>
+<path d="M-24 -34 l7 -12 l-1 8 l8 -2 l-7 12 l1 -8z" fill="#FFD23F" stroke="#0B1530" stroke-width="1.5"/>`;
+  if(face==='charging') return base+`<path d="M3 -20 q7 -6 14 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M12 0 q10 7 22 -1" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="34" cy="-22" r="1.8" fill="#0B1530"/>
+<g transform="translate(36,-50)"><rect x="-11" y="-8" width="20" height="14" rx="2.5" fill="#34D1BF" stroke="#0B1530" stroke-width="2"/><rect x="9" y="-4" width="3.5" height="6" rx="1" fill="#0B1530"/><path d="M1 -5 L-4 1 L0 1 L-2 7 L6 -1 L1.5 -1z" fill="#0B1530"/></g></svg>`;
+  if(face==='sleepy') return base+`<path d="M3 -18 q7 5 14 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<ellipse cx="24" cy="2" rx="5" ry="4" fill="#0B1530"/>
+<circle cx="34" cy="-22" r="1.8" fill="#0B1530"/>
+<text x="40" y="-42" font-size="14" font-weight="700" fill="#5A6680">z</text>
+<text x="50" y="-54" font-size="18" font-weight="700" fill="#5A6680">Z</text></svg>`;
+  return base+`<circle cx="10" cy="-20" r="9" fill="#fff" stroke="#0B1530" stroke-width="2"/><circle cx="13" cy="-19" r="5" fill="#0B1530"/><circle cx="15" cy="-21" r="1.8" fill="#fff"/>
+<path d="M10 1 q14 9 28 -3" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="34" cy="-22" r="1.8" fill="#0B1530"/></svg>`;
+}
+
+function youPos(){
+  try{if(typeof me!=='undefined'&&me) return me}catch(e){}
+  return null;
+}
+function mascotFace(){
+  const gps=typeof ME_OK!=='undefined'&&ME_OK;
+  const p=gps?youPos():null;
+  let near=false;
+  if(p && typeof dist==='function'){
+    const pool=[...(typeof S!=='undefined'&&S?S:[]),...(typeof FPTS!=='undefined'&&FPTS?FPTS:[])];
+    for(const s of pool){if(s&&s.lat!=null&&dist(p[0],p[1],s.lat,s.lng)<=160){near=true;break}}
+  }
+  if(near) return 'charging';
+  if(document.body.classList.contains('night')) return 'sleepy';
+  return 'happy';
+}
+function placeYouMascot(){
+  try{
+    if(typeof map==='undefined'||!map||typeof L==='undefined') return;
+    const face=mascotFace();
+    const html='<div class="c1you">'+zapSvg(face)+'</div>';
+    const icon=L.divIcon({className:'c1you',html,iconSize:[44,55],iconAnchor:[22,55]});
+    let ll=null;
+    try{if(typeof youMk!=='undefined'&&youMk&&youMk.getLatLng) ll=youMk.getLatLng()}catch(e){}
+    if(!ll){try{if(typeof me!=='undefined'&&me) ll=L.latLng(me[0],me[1])}catch(e){}}
+    if(!ll) return;
+    if(typeof youMk!=='undefined'&&youMk){
+      if(youMk._c1face===face && youMk._c1mascot) return;
+      if(youMk.setIcon){youMk.setIcon(icon);youMk._c1mascot=1;youMk._c1face=face;return}
+      try{map.removeLayer(youMk)}catch(e){}
+    }
+    const mk=L.marker(ll,{icon,keyboard:false,alt:typeof T==='function'?T('You'):'You',zIndexOffset:1200}).addTo(map);
+    try{mk.bindTooltip(typeof T==='function'?T('You'):'You',{permanent:true,direction:'top',offset:[0,-8]})}catch(e){}
+    youMk=mk;youMk._c1mascot=1;youMk._c1face=face;
+  }catch(e){}
+}
+{const _n=typeof nightUI==='function'?nightUI:null;if(_n){nightUI=function(){const r=_n.apply(this,arguments);placeYouMascot();return r}}}
+{const _sl=typeof startLoc==='function'?startLoc:null;if(_sl){startLoc=function(){const r=_sl.apply(this,arguments);setTimeout(placeYouMascot,0);setTimeout(placeYouMascot,700);return r}}}
+setInterval(placeYouMascot,2000);
+setTimeout(placeYouMascot,800);
+window.c1MascotFace=mascotFace;
+window.c1PlaceYouMascot=placeYouMascot;
+
+/* Opening scene picker in the menu */
+function setOpeningKind(id){
+  if(!window.C1_OPENINGS||!C1_OPENINGS[id])return;
+  try{localStorage.setItem('c1_opening',id)}catch(e){}
+  C1INTRO=id;
+  try{if(typeof toast==='function')toast(L2('Saved on this phone','Guardado en este teléfono'))}catch(e){}
+  try{openMenu()}catch(e){}
+}
+window.setOpeningKind=setOpeningKind;
+{const _om=openMenu;openMenu=function(){const r=_om.apply(this,arguments);const b=$('menubox');if(!b)return r;
+  const old=b.querySelector('.c1ti');if(old)old.remove();
+  const cur=(typeof c1OpeningKind==='function'?c1OpeningKind():'findTheLane');
+  const chip=(id,lab)=>`<button type="button" class="chip${cur===id?' on':''}" aria-pressed="${cur===id}" onclick="setOpeningKind('${id}')">${lab}</button>`;
+  let box=b.querySelector('.c1opset');
+  const html=`<div class="c1opset card" style="margin:8px 0"><b>${Txt.opening()}</b><div class="muted" style="font-size:.8125rem;margin:4px 0 8px">${Txt.openingHint()}</div><div style="display:flex;flex-wrap:wrap;gap:6px">${chip('plugIn',Txt.plugIn())}${chip('findTheLane',Txt.findTheLane())}${chip('nightDrive',Txt.nightDrive())}</div></div>`;
+  if(box) box.outerHTML=html;
+  else {
+    const after=b.querySelector('.c1snd')||b.querySelector('.row');
+    if(after) after.insertAdjacentHTML('afterend',html); else b.insertAdjacentHTML('beforeend',html);
+  }
+  const ab=document.getElementById('arbtn');if(ab) ab.textContent=Txt.open();
+  return r}}
+if(typeof c1Try==='function'){const _try=c1Try;c1Try=function(id){const map={zap:'findTheLane',core:'plugIn',eye:'nightDrive'};return _try.call(this,C1_OPENINGS[id]?id:(map[id]||'findTheLane'))}}
+
+/* Speed lock */
+const AR_LOCK_MPS=4.5, AR_LOCK_MS=3000;
+function nextSpeedLock(prev,speed,dt){
+  const d=Math.max(0,dt||0);
+  if(speed==null||!isFinite(speed)||speed<0) return prev.paused?{paused:true,overMs:prev.overMs}:{paused:false,overMs:0};
+  if(speed>AR_LOCK_MPS){const over=Math.min(AR_LOCK_MS,prev.overMs+d);return {paused:over>=AR_LOCK_MS,overMs:over}}
+  return {paused:false,overMs:0};
+}
+window.c1NextSpeedLock=nextSpeedLock;
+window.c1SetArSpeed=function(s){arState.speed=s};
+window.c1ArLock=function(){return {paused:!!arState.lock.paused,overMs:arState.lock.overMs}};
+window.c1ArStations=arStations;
+
+/* AR finder */
+function wrapDeg(d){const x=((d+180)%360+360)%360-180;return x===-180?180:x}
+function bearingDeg(a,b){
+  const R=Math.PI/180,y=Math.sin((b[1]-a[1])*R)*Math.cos(b[0]*R),x=Math.cos(a[0]*R)*Math.sin(b[0]*R)-Math.sin(a[0]*R)*Math.cos(b[0]*R)*Math.cos((b[1]-a[1])*R);
+  return ((Math.atan2(y,x)*180/Math.PI)+360)%360;
+}
+function arStations(){
+  const origin=(typeof cloPos==='function'?cloPos():(youPos()||[34.0522,-118.2437]));
+  const seen=new Set(),out=[];
+  const add=s=>{
+    if(!s||s.lat==null||s.lng==null)return;
+    const k=s.lat.toFixed(4)+','+s.lng.toFixed(4)+'|'+(s.name||'').slice(0,20);
+    if(seen.has(k))return;seen.add(k);
+    if(typeof CAR!=='undefined'&&CAR&&typeof fit==='function'&&fit(s)!=='yes')return;
+    out.push({s,d:typeof dist==='function'?dist(origin[0],origin[1],s.lat,s.lng):0,br:bearingDeg(origin, [s.lat,s.lng])});
+  };
+  try{(S||[]).forEach(add)}catch(e){}
+  try{(FPTS||[]).forEach(add)}catch(e){}
+  out.sort((a,b)=>a.d-b.d);
+  return out.slice(0,5);
+}
+function plugLine(s){
+  const plugs=(s.plugs||[]).join(' · ')||L2('Plug type unknown','No sabemos qué conector tiene');
+  const dc=(s.dc>0)||(s.kw>=50);
+  const l2=(s.l2>0)||(!dc&&(s.plugs||[]).includes('J1772'));
+  const bits=[dc?L2('DC fast','Carga rápida DC'):null,l2?L2('Level 2','Nivel 2'):null].filter(Boolean);
+  return bits.length?plugs+' · '+bits.join(' · '):plugs;
+}
+function listedPrice(s){
+  if(!s)return '';
+  if(s.lp && String(s.lp).trim()) return String(s.lp).trim();
+  return '';
+}
+
+let arState={open:false,ack:false,heading:null,hasHeading:false,cam:false,stream:null,speed:null,lock:{paused:false,overMs:0},lastTick:0,watch:null,orientH:null,raf:0};
+
+function arAcked(){try{return localStorage.getItem('c1_ar_driving_ack')==='1'}catch(e){return false}}
+function setArAck(){try{localStorage.setItem('c1_ar_driving_ack','1')}catch(e){} arState.ack=true}
+
+function arRoot(){
+  let e=document.getElementById('c1ar');
+  if(e) return e;
+  e=document.createElement('div');e.id='c1ar';e.hidden=true;
+  e.innerHTML=`<video id="c1ar-vid" autoplay muted playsinline webkit-playsinline></video>
+    <div class="c1ar-ui" id="c1ar-ui"></div>`;
+  document.body.appendChild(e);
+  return e;
+}
+
+function stopCam(){
+  const v=document.getElementById('c1ar-vid');
+  if(arState.stream){try{arState.stream.getTracks().forEach(t=>t.stop())}catch(e){}}
+  arState.stream=null;arState.cam=false;
+  if(v){try{v.srcObject=null}catch(e){}}
+}
+function closeAR(){
+  arState.open=false;arState.sig="";
+  if(arState.raf) cancelAnimationFrame(arState.raf);
+  arState.raf=0;
+  if(arState.watch!=null&&navigator.geolocation) try{navigator.geolocation.clearWatch(arState.watch)}catch(e){}
+  arState.watch=null;
+  if(arState.orientH){try{window.removeEventListener('deviceorientation',arState.orientH)}catch(e){} try{window.removeEventListener('deviceorientationabsolute',arState.orientH)}catch(e){}}
+  arState.orientH=null;
+  stopCam();
+  const e=document.getElementById('c1ar');if(e)e.hidden=true;
+}
+window.closeAR=closeAR;
+
+function onOrient(e){
+  let h=null;
+  if(e&&e.webkitCompassHeading!=null&&isFinite(e.webkitCompassHeading)) h=e.webkitCompassHeading;
+  else if(e&&e.alpha!=null&&isFinite(e.alpha)) h=(360-e.alpha)%360;
+  if(h!=null){arState.heading=h;arState.hasHeading=true}
+}
+function listenOrient(){
+  if(arState.orientH) return;
+  arState.orientH=onOrient;
+  window.addEventListener('deviceorientation',onOrient,true);
+  window.addEventListener('deviceorientationabsolute',onOrient,true);
+}
+
+async function requestCompass(){
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    try{const st=await DeviceOrientationEvent.requestPermission();return st==='granted'}catch(e){return false}
+  }
+  return true;
+}
+async function requestCam(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return false;
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    arState.stream=stream;arState.cam=true;
+    const v=document.getElementById('c1ar-vid');
+    if(v){v.srcObject=stream;v.muted=true;v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');try{v.play()}catch(e){}}
+    return true;
+  }catch(e){return false}
+}
+
+function openStationFromAR(s){
+  closeAR();
+  try{if(typeof go==='function')go('map')}catch(e){}
+  try{if(typeof pick==='function')pick(s)}catch(e){}
+}
+
+function arSig(){
+  if(!arState.ack) return 'notice';
+  if(arState.lock.paused) return 'paused';
+  const sts=arStations();
+  const names=sts.map(it=>it.s.name||'').join('\t');
+  const can=arState.cam&&arState.hasHeading&&arState.heading!=null;
+  if(!can) return 'fb|'+(arState.cam?1:0)+'|'+(arState.hasHeading?1:0)+'|'+Math.round(arState.heading||0)+'|'+names;
+  return 'ar|'+Math.round(arState.heading)+'|'+names+'|'+sts.map(it=>Math.round(it.d)).join(',');
+}
+function renderAR(force){
+  const ui=document.getElementById('c1ar-ui');if(!ui)return;
+  const sig=arSig();
+  if(!force && sig===arState.sig) return;
+  arState.sig=sig;
+  const closeBtn=`<button type="button" class="lnk mx" style="pointer-events:auto;color:#e6f1ff" aria-label="${Txt.close()}" onclick="closeAR()">✕</button>`;
+  const bar=`<div class="c1ar-bar"><b>${Txt.open()}</b>${closeBtn}</div>`;
+  if(!arState.ack){
+    ui.innerHTML=bar+`<div class="c1ar-msg"><b>${Txt.notice()}</b><button type="button" class="btn g" id="c1ar-ack" style="margin-top:12px">${Txt.notDriving()}</button></div>`;
+    const b=document.getElementById('c1ar-ack');if(b)b.onclick=()=>arBeginFromTap();
+    const v=document.getElementById('c1ar-vid');if(v)v.style.visibility='hidden';
+    return;
+  }
+  if(arState.lock.paused){
+    ui.innerHTML=bar+`<div class="c1ar-msg"><b>${Txt.paused()}</b></div>`;
+    const v=document.getElementById('c1ar-vid');if(v){v.style.visibility='hidden';try{v.pause()}catch(e){}}
+    return;
+  }
+  const v=document.getElementById('c1ar-vid');if(v){v.style.visibility=arState.cam?'visible':'hidden';if(arState.cam) try{v.play()}catch(e){}}
+  const sts=arStations();
+  const canAR=arState.cam&&arState.hasHeading&&arState.heading!=null;
+  if(!canAR){
+    let acts='';
+    if(!arState.cam) acts+=`<button type="button" class="btn g" id="c1ar-cam">${Txt.grantCam()}</button>`;
+    if(!arState.hasHeading) acts+=`<button type="button" class="btn" id="c1ar-comp">${Txt.grantComp()}</button>`;
+    let list=sts.map(it=>{
+      const rel=arState.heading!=null?wrapDeg(it.br-arState.heading):it.br;
+      const mi=(it.d/1609).toFixed(1);
+      const price=listedPrice(it.s);
+      return `<button type="button" class="c1ar-row" data-i="${sts.indexOf(it)}"><span class="c1ar-arr" style="transform:rotate(${rel}deg)">▲</span><span><b>${it.s.name||''}</b><div class="muted">${mi} mi ${L2('approx.','aprox.')} · ${plugLine(it.s)}</div>${price?`<div>${price}</div>`:''}</span></button>`;
+    }).join('')||`<div class="c1ar-msg">${Txt.empty()}</div>`;
+    ui.innerHTML=bar+`<div class="c1ar-msg"><b>${Txt.needs()}</b><div class="muted" style="margin-top:6px">${Txt.fallback()}</div>${acts}</div><div class="c1ar-list">${list}</div>`;
+    const c=document.getElementById('c1ar-cam');if(c)c.onclick=()=>arBeginFromTap();
+    const k=document.getElementById('c1ar-comp');if(k)k.onclick=()=>arBeginFromTap();
+    ui.querySelectorAll('.c1ar-row').forEach((el,i)=>el.onclick=()=>openStationFromAR(sts[i].s));
+    return;
+  }
+  const w=window.innerWidth,h=window.innerHeight,fov=60,half=fov/2;
+  const labs=sts.map((it,i)=>{
+    const rel=wrapDeg(it.br-arState.heading);
+    const on=Math.abs(rel)<=half;
+    const nx=Math.max(-1,Math.min(1,rel/half));
+    const x=on?w/2+nx*(w/2):(rel>0?w-20:20);
+    const nearBoost=Math.max(0,1-Math.min(it.d/1609,2)/2)*(h*0.12);
+    const y=h*0.42+(i%5)*16+nearBoost;
+    const mi=(it.d/1609).toFixed(1);
+    const price=listedPrice(it.s);
+    if(on){
+      return `<button type="button" class="c1ar-lab" data-i="${i}" style="left:${x}px;top:${y}px"><b>${it.s.name||''}</b><div class="muted">${mi} mi ${L2('approx.','aprox.')} · ${plugLine(it.s)}</div>${price?`<div>${price}</div>`:''}</button>`;
+    }
+    const side=rel>0?'right':'left';
+    return `<button type="button" class="c1ar-edge" data-i="${i}" style="${side}:8px;top:${y}px">${side==='right'?'▶':'◀'}</button>`;
+  }).join('');
+  ui.innerHTML=bar+(sts.length?labs:`<div class="c1ar-msg">${Txt.empty()}</div>`);
+  ui.querySelectorAll('[data-i]').forEach(el=>el.onclick=()=>openStationFromAR(sts[+el.getAttribute('data-i')].s));
+}
+
+function arTick(){
+  if(!arState.open) return;
+  const now=Date.now();
+  const dt=arState.lastTick?now-arState.lastTick:0;
+  arState.lastTick=now;
+  arState.lock=nextSpeedLock(arState.lock,arState.speed,dt);
+  renderAR();
+  arState.raf=requestAnimationFrame(arTick);
+}
+
+async function arBeginFromTap(){
+  setArAck();
+  listenOrient();
+  const [comp,cam]=await Promise.all([requestCompass(), requestCam()]);
+  if(comp) listenOrient();
+  // give Safari a moment to deliver a heading
+  setTimeout(()=>{if(arState.open) renderAR()},1200);
+  renderAR();
+}
+
+function watchSpeed(){
+  if(!navigator.geolocation) return;
+  if(arState.watch!=null) return;
+  arState.watch=navigator.geolocation.watchPosition(p=>{
+    if(p&&p.coords){
+      if(p.coords.latitude!=null) {try{me=[p.coords.latitude,p.coords.longitude];ME_OK=true}catch(e){}}
+      const sp=p.coords.speed;
+      arState.speed=(sp!=null&&isFinite(sp)&&sp>=0)?sp:null;
+    }
+  },()=>{},{enableHighAccuracy:true,maximumAge:1000,timeout:8000});
+}
+
+function openAR(){
+  arState.ack=arAcked();
+  arState.open=true;
+  arState.sig="";
+  arState.lock={paused:false,overMs:0};
+  arState.lastTick=Date.now();
+  arRoot().hidden=false;
+  watchSpeed();
+  renderAR();
+  if(arState.ack){ /* need a tap to start camera/compass on iOS; if already acked, show allow buttons or try if already permitted */ }
+  if(!arState.raf) arState.raf=requestAnimationFrame(arTick);
+}
+window.openAR=openAR;
+
+const ab=document.getElementById('arbtn');
+if(ab){ab.textContent=Txt.open();ab.addEventListener('click',e=>{/* onclick already */});}
+try{if(typeof setLang==='function'){const _sl=setLang;setLang=function(){const r=_sl.apply(this,arguments);const b=document.getElementById('arbtn');if(b)b.textContent=Txt.open();return r}}}catch(e){}
 })();
 </script>
 
