@@ -969,7 +969,7 @@ function pick(s){cur=s;sheet.innerHTML=`<div class="row"><b style="font-size:1.0
  <div class="muted">${s.net} · ${s.addr}</div><div style="margin-top:6px">${rbadge(s)} <span class="muted">${(CI[s.name]||[]).length} new check-ins</span></div>
  <div class="stats"><div>🔌 ${s.avail} of ${s.total}<div class="muted">free</div></div><div>$${priceOf(s).v.toFixed(2)}/<div class="muted">kWh · ${priceOf(s).src}</div></div><div>⚡ ${s.kw}<div class="muted">kW</div></div></div>
  <div class="green" style="font-size:0.875rem">${s.kw>=50?'Fast · ':''}${s.plugs.join(' · ')}</div><div style="font-size:0.875rem;margin:2px 0 6px">${fitTag(s)}</div><div style="font-size:0.875rem;margin:0 0 6px">${busyTag(s)} <span class="muted" style="font-size:0.875rem">sample</span></div>
- <div class="row" style="gap:8px"><button class="btn" onclick="go('station')">View Station</button><button class="btn g" onclick="directions()">Directions</button></div>`;fillStation();}
+ <div class="row" style="gap:8px"><button class="btn" onclick="go('station')">View Station</button><button class="btn" onclick="openStationLot()">View lot layout</button><button class="btn g" onclick="directions()">Directions</button></div>`;fillStation();}
 const sheet=document.getElementById('sheet');
 function fillStation(){const s=cur;$('st-trust').textContent=tline(s);$('st-net').textContent=s.net;$('st-rb').innerHTML=rbadge(s);$('st-name').textContent=s.name;$('st-addr').textContent=s.addr+'';
  $('st-plugcount').innerHTML=`Plugs (${s.total}) · ${fitTag(s)}`;$('st-rate').textContent=`${s.rate} (${s.n})`;
@@ -2146,10 +2146,10 @@ function chData(k){if(k=='key'){const ln=lpNum(SK.s.lp)!=null;return {p:SK.soc,k
 function chHdr(){const h=document.querySelector('#chx .chh');if(!h)return;const nm=CAR?`${CAR} ✎`:L2('Add your car ✎','Agrega tu auto ✎');
  h.innerHTML=`<button type="button" class="chi" aria-label="${L2('Safety','Seguridad')}" onclick="openSafe()">🛡</button><b>${L2('Charging','Carga')}</b><button type="button" class="carchip notr" aria-label="${CAR?L2('Change car: ','Cambiar auto: ')+esc(CAR):L2('Add your car','Agrega tu auto')}" onclick="openCars()">${esc(nm)}</button><button type="button" class="chi" aria-label="${L2('More','Más')}" aria-haspopup="dialog" onclick="chMenu()">⋯</button>`}
 function chxUI(){if(!$('chx'))return;chHdr();const k=chState(),car=$('chcar'),b=$('chbody');if(!car.firstChild)car.innerHTML=carHTML();const hc=car.firstChild;
- if(k=='idle'){heroSet(hc,CAR?soc:0,'idle');if(CHK!='idle')b.innerHTML=`<div class="chsp"></div><button class="btn g" onclick="chFind()">${L2('Find a charger','Buscar un cargador')}</button>`;CHK='idle';return}
+ if(k=='idle'){heroSet(hc,CAR?soc:0,'idle');if(CHK!='idle')b.innerHTML=`<div class="chsp"></div>${cur?`<button class="btn" onclick="openStationLot()">${L2('View lot layout','Ver disposición del lote')}</button>`:''}<button class="btn g" onclick="chFind()">${L2('Find a charger','Buscar un cargador')}</button>`;CHK='idle';return}
  if(CHEND){heroSet(hc,CHEND.p,'done');return}
  const d=chData(k);heroSet(hc,d.p,'chg');
- b.innerHTML=`${bigPct(d.p,L2('estimate','estimado'),d.edit?'pctEdit()':'')}<div class="sts">${kwS(d.kw)}${minS(d.sec,d.tg)}${costS(d.c,d.cl)}</div>${d.net?`<div class="chidle">${esc(idleL({net:d.net}))}</div>`:''}<div class="chsp"></div><button class="btn stopb" onclick="chStop()">■ ${L2('STOP','DETENER')}</button>`;CHK=k}
+ b.innerHTML=`${bigPct(d.p,L2('estimate','estimado'),d.edit?'pctEdit()':'')}<div class="sts">${kwS(d.kw)}${minS(d.sec,d.tg)}${costS(d.c,d.cl)}</div>${d.net?`<div class="chidle">${esc(idleL({net:d.net}))}</div>`:''}<div class="chsp"></div>${cur?`<button class="btn" onclick="openStationLot()">${L2('View lot layout','Ver disposición del lote')}</button>`:''}<button class="btn stopb" onclick="chStop()">■ ${L2('STOP','DETENER')}</button>`;CHK=k}
 function chStop(){const k=chState();if(k=='key')return stStop();if(k=='ca')return caStop();if(k=='leg'){CHEND={p:soc};chxUI();setTimeout(()=>{CHEND=0;try{stopCharge()}finally{setTimeout(chxUI,800)}},950)}}
 function chFind(){go('map');setTimeout(()=>{try{cloOpen(1)}catch(e){}},250)}
 function chMenu(){const spk=document.querySelector('#s-charge>.muted [data-spk]'),vh=[...document.querySelectorAll('#s-charge>.hdr i,#s-charge>.hdr button')].find(e=>/🗣/.test(e.textContent));
@@ -2964,6 +2964,36 @@ function openAR(){
   if(!arState.raf) arState.raf=requestAnimationFrame(arTick);
 }
 window.openAR=openAR;
+(function hookArrivedLot(){
+  const prev=window.renderAR;
+  if(typeof prev!=='function' || prev._c1lot) return;
+  const wrapped=function(){
+    const r=prev.apply(this,arguments);
+    try{
+      const st=window.c1GuideStation||window.cur;
+      const ui=document.getElementById('c1ar-ui');
+      if(!ui||!st||!arState||!arState.ack||(arState.lock&&arState.lock.paused)) return r;
+      if(!arrivedAtStation(st)) return r;
+      if(ui.querySelector('.c1-ar-lot')) return r;
+      const box=document.createElement('div');
+      box.className='c1-ar-lot-wrap';
+      box.style.cssText='pointer-events:auto;margin:8px 12px 16px;padding:10px;border-radius:14px;background:#13214a;color:#F4F7FB';
+      box.innerHTML='<b style="display:block;margin:0 0 8px">'+L("You've arrived. Here's the lot layout.","Ya llegaste. Así está el lote.")+'</b>'
+        +'<div class="c1-ar-lot" style="height:220px;background:#EEF1F4;border-radius:12px;overflow:hidden"></div>'
+        +'<div class="muted" style="font-size:11px;text-align:center;margin-top:6px">'+L('Layout is illustrative','La disposición es ilustrativa')+' · '+L('Live status coming soon','Estado en vivo próximamente')+'</div>';
+      ui.appendChild(box);
+      const host=box.querySelector('.c1-ar-lot');
+      if(host && typeof window.buildLotRow==='function' && typeof window.mountLotScene==='function'){
+        const row=window.buildLotRow({dcPorts:st.dcPorts,l2Ports:st.l2Ports,portsListed:st.portsListed,plugs:st.plugs,userPlug:(typeof userPlug==='function'?userPlug():null),cap:24});
+        if(row.listed) window.mountLotScene(host,row,{stationId:st.id,maxKw:st.maxKw||st.kw,height:220});
+        else host.innerHTML='<div class="c1lot-missing muted">'+L('Charger count not listed','Número de cargadores no indicado')+'</div>';
+      }
+    }catch(e){}
+    return r;
+  };
+  wrapped._c1lot=1;
+  window.renderAR=wrapped;
+})();
 
 const ab=document.getElementById('arbtn');
 if(ab){ab.textContent=Txt.open();ab.addEventListener('click',e=>{/* onclick already */});}
@@ -3726,8 +3756,28 @@ function lotRowHtml(s){
   const row=buildLotRow({dcPorts:s.dcPorts,l2Ports:s.l2Ports,portsListed:s.portsListed,plugs:s.plugs,userPlug:userPlug()});
   if(!row.listed) return `<div class="c1lot-missing muted">${L('Charger count not listed','Número de cargadores no indicado')}</div>`;
   const more=row.hidden?`<div class="c1lot-more" style="color:#3B7BFF;font-weight:800;padding:0 8px">+${row.hidden} ${L('more','más')}</div>`:'';
-  return `<div class="c1lot" style="display:flex;align-items:flex-end;overflow-x:auto;margin:8px 0">${row.stalls.map(stallSvg).join('')}${more}</div>`;
+  const note=`<div class="muted" style="font-size:11px;line-height:15px;text-align:center;padding:4px 8px 0">${L('Layout is illustrative','La disposición es ilustrativa')}</div>`;
+  const cap=`<div class="muted" style="font-size:11px;line-height:15px;text-align:center">${L('Live status coming soon','Estado en vivo próximamente')}</div>`;
+  const legend=`<div class="c1lot-legend muted" style="font-size:11px;line-height:15px;text-align:center;padding:0 8px 4px">${L('When live status arrives','Cuando llegue el estado en vivo')}: <span style="color:#22C55E">● ${L('Available','Disponible')}</span> · <span style="color:#E11D2E">● ${L('Busy','En carga')}</span> · <span style="color:#F5A524">▲ ${L('Out of order','Fuera de servicio')}</span></div>`;
+  return `<div class="c1lot" style="margin:8px 0"><div style="display:flex;align-items:flex-end;overflow-x:auto">${row.stalls.map(stallSvg).join('')}${more}</div>${note}${cap}${legend}</div>`;
 }
+function openStationLot(){
+  try{ if(typeof go==='function') go('station'); }catch(e){}
+  setTimeout(()=>{
+    const el=document.querySelector('#s-station .c1-3d-lot, #c1-3d-dock-station .c1-3d-lot, .c1-3d-lot');
+    if(el && el.scrollIntoView) el.scrollIntoView({block:'center',behavior:(typeof rm==='function'&&rm())?'auto':'smooth'});
+  },80);
+}
+function arrivedAtStation(st){
+  try{
+    st=st||window.c1GuideStation||window.cur;
+    const here=(typeof originHere==='function')?originHere():(typeof me!=='undefined'?me:null);
+    if(!here||!st||here.lat==null||st.lat==null) return false;
+    return milesTo(here,st)<=0.1;
+  }catch(e){ return false; }
+}
+window.openStationLot=openStationLot;
+window.arrivedAtStation=arrivedAtStation;
 
 if(!document.getElementById('c1v23css')){
   const st=document.createElement('style'); st.id='c1v23css';
@@ -3860,6 +3910,6 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261113q8"></script>
-<script type="module" src="./c1-three.js?v=20261113q8" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q8"></script>
+<script src="./c1-demo.js?v=20261113q9"></script>
+<script type="module" src="./c1-three.js?v=20261113q9" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q9"></script>
 </body></html>
