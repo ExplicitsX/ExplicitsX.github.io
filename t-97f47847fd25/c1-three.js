@@ -161,19 +161,22 @@ function buildCar(body, paint) {
   const wheelMat = hexMat(0x22304f);
   const hubMat = hexMat(0xc9d1de);
   const wdx = isTruck ? 0.72 : 0.62;
+  const wheels = [];
   [[-wdx, -bodyW * 0.52], [wdx, -bodyW * 0.52], [-wdx, bodyW * 0.52], [wdx, bodyW * 0.52]].forEach(([x, z]) => {
+    const wg = new THREE.Group();
     const w = new THREE.Mesh(GEO.cyl, wheelMat);
     w.scale.set(0.2, 0.14, 0.2);
-    w.rotation.z = Math.PI / 2;
-    w.rotation.y = Math.PI / 2;
-    // cylinder Y-up: rotate on X to face along Z
     w.rotation.set(Math.PI / 2, 0, 0);
-    add(g, w, x, 0.2, z);
     const hub = new THREE.Mesh(GEO.cyl, hubMat);
     hub.scale.set(0.08, 0.16, 0.08);
     hub.rotation.set(Math.PI / 2, 0, 0);
-    add(g, hub, x, 0.2, z);
+    const spoke = mesh(GEO.box, 0xc9d1de, 0.04, 0.18, 0.04);
+    spoke.rotation.x = Math.PI / 2;
+    wg.add(w, hub, spoke);
+    add(g, wg, x, 0.2, z);
+    wheels.push(wg);
   });
+  g.userData.wheels = wheels;
   // headlights / tails
   const hl = mesh(GEO.box, LAMP, 0.08, 0.1, 0.16);
   add(g, hl, bodyL * 0.48, 0.5, bodyW * 0.28);
@@ -249,8 +252,9 @@ function setBuddyFace(g, face) {
   if (!eyes) return;
   const sleepy = face === 'sleepy';
   const winkOn = face === 'wink';
-  eyes.forEach((e, i) => { e.visible = !sleepy && !(winkOn && i === 1); });
-  if (lids) lids.forEach((l) => { l.visible = sleepy; });
+  const blink = face === 'blink';
+  eyes.forEach((e, i) => { e.visible = !sleepy && !blink && !(winkOn && i === 1); });
+  if (lids) lids.forEach((l) => { l.visible = sleepy || blink; });
   if (wink) wink.visible = winkOn;
   if (spark) spark.visible = winkOn;
   if (zeds) zeds.visible = sleepy;
@@ -369,6 +373,10 @@ function buildBuddy(id) {
   sparkHop.visible = false;
   add(g, sparkHop, 0.32, headY + hy + 0.28, faceZ);
   g.userData.hopSpark = sparkHop;
+  const tail = mesh(GEO.cone, def.color, 0.1, 0.36, 0.1);
+  tail.rotation.x = Math.PI * 0.75;
+  add(g, tail, 0.14, -0.38, -0.06);
+  g.userData.tail = tail;
   return g;
 }
 
@@ -667,11 +675,15 @@ function mountCar(el, opts) {
     fx.add(pop, zap);
     zap.visible = false;
     m.state.taps = 0;
+    m.state.blinkUntil = 0;
+    m.state.wheel = 0;
+    m.state.t0 = performance.now();
     attachSpin(m.canvas, m.state, {
       inertia: true,
       onTap: () => {
         if (m.still) return;
         m.state.taps += 1;
+        m.state.blinkUntil = performance.now() + 280;
         if (m.state.taps % 3 === 0) {
           pop.visible = true; zap.visible = true;
           setTimeout(() => { pop.visible = false; zap.visible = false; }, 1400);
@@ -697,10 +709,26 @@ function mountCar(el, opts) {
       } else if (port) {
         port.material.emissiveIntensity = 0.7;
       }
+      const blinkOn = !m.still && (m.userHeadlights || now < (m.state.blinkUntil || 0));
       if (car.userData.headlights) {
         car.userData.headlights.forEach((h) => {
-          h.material.color.set(m.userHeadlights && !m.still ? 0xfff3b0 : 0xf4f7fb);
+          h.material.color.set(blinkOn ? 0xfff3b0 : 0xf4f7fb);
         });
+      }
+      if (m.still) {
+        car.position.x = 0;
+        car.position.y = 0;
+        car.rotation.z = 0;
+      } else {
+        const age = now - (m.state.t0 || now);
+        const u = Math.min(1, age / 700);
+        car.position.x = u >= 1 ? 0 : 2.2 * (1 - Math.pow(1 - u, 3));
+        car.position.y = 0.03 * Math.sin(now / 550);
+        car.rotation.z = 0.025 * Math.sin(now / 650);
+        const driving = age < 700;
+        const speed = (driving ? 7 : 0) + (m.state.vel || 0) * 1.4;
+        m.state.wheel = (m.state.wheel || 0) + speed * dt;
+        (car.userData.wheels || []).forEach((w) => { w.rotation.z = m.state.wheel; });
       }
     };
   });
@@ -819,25 +847,43 @@ function mountBuddy(el, opts) {
       if (m.still) {
         setBuddyFace(buddy, 'happy');
         buddy.position.y = 0;
-        if (buddy.userData.body) buddy.userData.body.rotation.z = 0;
+        if (buddy.userData.body) {
+          buddy.userData.body.rotation.z = 0;
+          buddy.userData.body.rotation.x = 0;
+          buddy.userData.body.scale.set(1, 1, 1);
+        }
+        if (buddy.userData.tail) buddy.userData.tail.rotation.z = 0;
         if (buddy.userData.trail) buddy.userData.trail.visible = false;
         if (buddy.userData.hum) buddy.userData.hum.visible = true;
         return;
       }
+      // idle breath + head sway
+      const body = buddy.userData.body;
+      const p = Math.sin(now / 700);
+      if (body) {
+        body.scale.set(1 - 0.015 * p, 1 + 0.03 * p, 1);
+        body.rotation.x = Math.sin(now / 900) * 0.08;
+      }
+      if (buddy.userData.tail) {
+        buddy.userData.tail.rotation.z = Math.sin(now / 450) * 0.35;
+      }
       // wave periodically
       const wavePhase = ((now / 1000) % 7);
       const waving = wavePhase < 0.9 && buddy.userData.face !== 'sleepy';
-      if (buddy.userData.body) {
-        buddy.userData.body.rotation.z = waving ? Math.sin(now / 90) * 0.28 : 0;
+      if (body) {
+        body.rotation.z = waving ? Math.sin(now / 90) * 0.28 : 0;
       }
       // hop
       if (m.state.hopT > 0) {
         m.state.hopT = Math.max(0, m.state.hopT - dt * 3.2);
         buddy.position.y = Math.sin((1 - m.state.hopT) * Math.PI) * 0.22 * m.state.hopT * 2;
       } else buddy.position.y = 0;
-      // sleepy after idle
+      // sleepy after idle; blink while awake
       if (now - m.state.idleAt > IDLE_MS) setBuddyFace(buddy, 'sleepy');
-      else if (buddy.userData.face === 'sleepy') setBuddyFace(buddy, 'happy');
+      else {
+        const blink = ((now % 3200) + 3200) % 3200 < 140;
+        setBuddyFace(buddy, blink ? 'blink' : 'happy');
+      }
       if (buddy.userData.trail) buddy.userData.trail.visible = true;
       if (buddy.userData.hum) {
         buddy.userData.hum.rotation.z = Math.sin(now / 180) * 0.4;
