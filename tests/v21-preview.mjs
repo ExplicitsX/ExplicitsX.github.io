@@ -49,6 +49,8 @@ check(html.includes('3D dino') && html.includes('3D car') && html.includes('c1_s
 check(html.includes('Live status coming soon') && html.includes('Charger count not listed'), 'lot row status copy');
 check(html.includes('LOT_CAP=12') || html.includes('LOT_STALL_CAP') || html.includes('cap==null?LOT_CAP'), 'lot row caps visible stalls');
 check(!/taken|parked car/i.test(html.slice(html.indexOf('/* v23: profile avatar'))), 'v23 lot row does not show taken or a parked car');
+check(html.includes('c1-three.js') && html.includes('three-0.187.0'), 'three.js 0.187.0 is pinned and hooked');
+check(html.includes('Live status coming soon') && html.includes('Coming soon') && html.includes('SAMPLE'), 'wallet and lot labels stay');
 
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
 
@@ -141,6 +143,16 @@ try {
   check(sheet.findAr, 'Find it in AR on the sheet');
   check(!sheet.spin, 'charger is still under reduced motion');
   check(sheet.lot && sheet.stall && sheet.lotOk, 'station sheet has a generic lot row with live-status-coming-soon');
+  await new Promise(r => setTimeout(r, 400));
+  const sheet3 = await a.page.evaluate(() => {
+    const canvases = [...document.querySelectorAll('#sheet canvas[data-c1-three]')];
+    const lot = (document.querySelector('#sheet .c1lot, #sheet .c1lot-missing') || {}).innerText || '';
+    return {
+      n: canvases.length,
+      lotClean: !/taken|parked|in use|\bfree\b|occupied/i.test(lot),
+    };
+  });
+  check(sheet3.n >= 1 && sheet3.lotClean, 'station sheet three.js canvases load without fake stall status');
 
   await a.page.click('.tab[data-t="ask"]');
   await new Promise(r => setTimeout(r, 250));
@@ -193,6 +205,28 @@ try {
     };
   });
   check(lotFn.missing && lotFn.cap && lotFn.fits && lotFn.clean, 'buildLotRow caps at 12, missing counts, no fake status');
+
+  // three.js scenes (WebGL) with SVG fallback still in the page
+  const three = await a.page.evaluate(() => {
+    const canvases = [...document.querySelectorAll('canvas[data-c1-three]')];
+    const info = window.c1Three || {};
+    const wallet = document.getElementById('c1wallet');
+    const wt = wallet ? wallet.innerText : '';
+    return {
+      ready: !!info.ready,
+      webgl: !!info.webgl,
+      version: info.version || '',
+      mounts: info.mounts || 0,
+      canvases: canvases.length,
+      still: matchMedia('(prefers-reduced-motion: reduce)').matches,
+      walletSample: /SAMPLE/.test(wt) && /Coming soon/.test(wt),
+      walletFields: /\b(CVV|PIN|balance|rewards|Visa|Mastercard|card number)\b/i.test(wt),
+    };
+  });
+  check(three.ready && three.version === '0.187.0', 'c1Three reports pinned three.js');
+  check(three.webgl && three.canvases > 0 && three.mounts > 0, 'three.js canvases created with a WebGL context');
+  check(three.still, 'reduced motion still honored with 3D scenes');
+  check(three.walletSample && !three.walletFields, 'wallet card stays SAMPLE / Coming soon with no card fields');
 
   // Near my destination answers from station data, plug fit only, no price/status
   const dest = await a.page.evaluate(() => {
