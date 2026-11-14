@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113p15';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q1';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113p15';
+const C1_ASSET_V = '20261113q1';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -33,11 +33,50 @@ const CREW = {
 
 const GEO = {
   box: new THREE.BoxGeometry(1, 1, 1),
-  sphere: new THREE.SphereGeometry(1, 16, 12),
-  sphereLo: new THREE.SphereGeometry(1, 12, 10),
-  cyl: new THREE.CylinderGeometry(1, 1, 1, 14),
-  cone: new THREE.ConeGeometry(1, 1, 10),
+  sphere: new THREE.SphereGeometry(1, 22, 16),
+  sphereLo: new THREE.SphereGeometry(1, 14, 11),
+  cyl: new THREE.CylinderGeometry(1, 1, 1, 18),
+  cone: new THREE.ConeGeometry(1, 1, 14),
 };
+
+const PORT_SNAP = 0.38;
+const PINCH_MIN = 0.7;
+const PINCH_MAX = 2.2;
+const TRAIL_LIFE_MS = 800;
+const SHAKE_G = 18;
+const ROAR_MS = 700;
+const DOUBLE_TAP_MS = 280;
+
+function dist3(a, b) {
+  const dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
+  return Math.sqrt(dx * dx + dy * dy + dz * dz);
+}
+function plugInRange(plug, port, radius) {
+  return dist3(plug, port) <= (radius == null ? PORT_SNAP : radius);
+}
+function snapPlugToPort(port) { return { x: port.x, y: port.y, z: port.z }; }
+function sagPoint(a, b, t, sag) {
+  const k = Math.max(0, Math.min(1, t));
+  return {
+    x: a.x + (b.x - a.x) * k,
+    y: a.y + (b.y - a.y) * k - sag * Math.sin(Math.PI * k),
+    z: a.z + (b.z - a.z) * k,
+  };
+}
+function trailTick(points, now, life) {
+  const ms = life == null ? TRAIL_LIFE_MS : life;
+  return points.filter((p) => now - p.t < ms);
+}
+function pinchScale(startDist, dist, prev, min, max) {
+  const lo = min == null ? PINCH_MIN : min;
+  const hi = max == null ? PINCH_MAX : max;
+  if (!(startDist > 0) || !isFinite(dist) || !isFinite(prev)) return Math.max(lo, Math.min(hi, prev || 1));
+  return Math.max(lo, Math.min(hi, prev * (dist / startDist)));
+}
+function accelMag(x, y, z) { return Math.sqrt(x * x + y * y + z * z); }
+function shouldRoarShake(gMag, threshold) { return gMag >= (threshold == null ? SHAKE_G : threshold); }
+function isDoubleTap(prevAt, now, windowMs) { return prevAt > 0 && now - prevAt <= (windowMs == null ? DOUBLE_TAP_MS : windowMs); }
+
 
 const mounts = [];
 let raf = 0;
@@ -61,11 +100,20 @@ function hexMat(color, extra) {
   const m = new THREE.MeshLambertMaterial({ color, ...extra });
   return m;
 }
+function softMat(color, extra) {
+  return hexMat(color, { emissive: color, emissiveIntensity: 0.1, ...(extra || {}) });
+}
+
 function mesh(geo, color, sx, sy, sz, extra) {
-  const o = new THREE.Mesh(geo, typeof color === 'number' ? hexMat(color, extra) : color);
+  const mat = typeof color === 'number' ? hexMat(color, extra) : color;
+  const o = new THREE.Mesh(geo, mat);
   o.scale.set(sx, sy, sz);
   return o;
 }
+function soft(geo, color, sx, sy, sz, extra) {
+  return mesh(geo, softMat(color, extra), sx, sy, sz);
+}
+
 function add(parent, obj, x, y, z) {
   obj.position.set(x || 0, y || 0, z || 0);
   parent.add(obj);
@@ -96,6 +144,16 @@ function injectCss() {
     .c1gl-host.c1gl-on>.c1-2d-src{visibility:hidden;pointer-events:none;position:absolute;inset:0;overflow:hidden}
     .c1gl{display:block;width:100%;height:100%;touch-action:none;-webkit-user-select:none;user-select:none}
     .c1gl-rmnote{position:absolute;left:4px;right:4px;bottom:2px;z-index:3;text-align:center;font-size:11px;line-height:14px;color:#8A94A8;pointer-events:none}
+    #c1profile .c1p-hi, .c1p-hi{
+      display:inline-block;padding:8px 12px;border-radius:12px;
+      background:#E6F1FF!important;color:#0B1530!important;
+      border:1px solid #9FB3D1;font-weight:800;
+    }
+    #c1profile .c1p-name, .c1p-name{
+      margin-top:8px;color:#F4F7FB!important;font-weight:800;font-size:1.125rem;
+    }
+    .c1-3d-play{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:2px 0 6px}
+    .c1-3d-play .chip{min-height:36px;font-weight:700}
     @media (prefers-reduced-motion:reduce){
       .c1gl-host .c1gl{/* still 3D, held still in JS */}
     }
@@ -124,9 +182,12 @@ function litScene() {
   const d = new THREE.DirectionalLight(0xffffff, 0.75);
   d.position.set(2.2, 4.2, 3.2);
   scene.add(d);
-  const f = new THREE.DirectionalLight(0xc8d8ff, 0.25);
+  const f = new THREE.DirectionalLight(0xc8d8ff, 0.32);
   f.position.set(-2, 1.5, -2);
   scene.add(f);
+  const rim = new THREE.DirectionalLight(0xfff1c8, 0.28);
+  rim.position.set(0.4, 2.6, -3.1);
+  scene.add(rim);
   return scene;
 }
 
@@ -206,8 +267,9 @@ function buildCharger(plugs) {
   const body = mesh(GEO.box, 0xffffff, 0.85, 2.05, 0.55);
   add(g, body, 0, 1.15, 0);
   // navy stroke feel: slightly larger box behind? skip for perf — use dark edges via a thin wrap
-  const cap = mesh(GEO.box, BLUE, 0.86, 0.38, 0.56);
+  const cap = mesh(GEO.box, BLUE, 0.86, 0.38, 0.56, { emissive: BLUE, emissiveIntensity: 0.35 });
   add(g, cap, 0, 2.05, 0);
+  g.userData.cap = cap;
   const mark = bolt(0.28);
   mark.scale.set(0.7, 0.7, 0.7);
   add(g, mark, 0, 2.12, 0.29);
@@ -242,6 +304,8 @@ function buildCharger(plugs) {
   add(g, handle, 0.48, 0.82, 0.12);
   const glow = mesh(GEO.box, BLUE, 0.86, 0.05, 0.56, { emissive: BLUE, emissiveIntensity: 0.35 });
   add(g, glow, 0, 0.28, 0);
+  g.userData.glow = glow;
+  g.userData.screen = screen;
   return g;
 }
 
@@ -263,123 +327,295 @@ function setBuddyFace(g, face) {
   g.userData.face = face;
 }
 
-function buildBuddy(id) {
-  const def = CREW[id] || CREW.zapsaurus;
-  const g = new THREE.Group();
-  const kind = def.kind;
-  // Gold map-pin backing (circle + point) so the badge reads like the 2D art
-  const pinTop = mesh(GEO.sphere, GOLD, 0.62, 0.62, 0.28);
-  add(g, pinTop, 0, 0.08, -0.22);
-  const pinTip = mesh(GEO.cone, GOLD, 0.38, 0.7, 0.2);
-  pinTip.rotation.x = Math.PI;
-  add(g, pinTip, 0, -0.55, -0.22);
-  const body = new THREE.Group();
-  g.add(body);
-  g.userData.body = body;
-  const hx = kind === 'ankylo' ? 0.42 : 0.38;
-  const hy = kind === 'ankylo' ? 0.32 : 0.36;
-  const hz = 0.32;
-  const headY = 0.16;
-  const headZ = 0.12;
-  const head = mesh(GEO.sphere, def.color, hx, hy, hz);
-  add(body, head, 0, headY, headZ);
-  if (kind === 'rex') {
-    add(body, bolt(0.2), 0, headY + hy + 0.08, headZ);
-    const crest = mesh(GEO.box, GOLD, 0.28, 0.08, 0.06);
-    add(body, crest, 0, headY + hy + 0.02, headZ + 0.02);
-  } else if (kind === 'tri') {
-    const frill = mesh(GEO.cone, 0xfff3d6, 0.42, 0.28, 0.1);
-    frill.rotation.x = -Math.PI / 2;
-    add(body, frill, 0, headY + 0.28, headZ - 0.12);
-    const h1 = bolt(0.12); h1.rotation.z = 0.4; add(body, h1, -0.16, headY + hy + 0.1, headZ);
-    const h2 = bolt(0.12); h2.rotation.z = -0.4; add(body, h2, 0.16, headY + hy + 0.1, headZ);
-  } else if (kind === 'stego') {
-    [-0.2, -0.07, 0.07, 0.2].forEach((x, i) => {
-      const h = 0.16 + (i === 1 || i === 2 ? 0.08 : 0);
-      const p = mesh(GEO.cone, GOLD, 0.07, h, 0.06);
-      add(body, p, x, headY + hy + h * 0.15, headZ);
-    });
-  } else if (kind === 'ankylo') {
-    const club = mesh(GEO.box, GRAY, 0.22, 0.08, 0.08);
-    add(body, club, hx + 0.18, headY, headZ);
-    const prong = mesh(GEO.box, NAVY, 0.06, 0.1, 0.05);
-    add(body, prong, hx + 0.3, headY, headZ);
-  } else if (kind === 'ptero') {
-    const wingL = mesh(GEO.box, def.color, 0.42, 0.06, 0.2);
-    wingL.rotation.z = 0.4;
-    add(body, wingL, -0.38, headY + 0.08, headZ - 0.08);
-    const wingR = mesh(GEO.box, 0xffd9a0, 0.34, 0.05, 0.16);
-    wingR.rotation.z = -0.3;
-    add(body, wingR, 0.32, headY - 0.02, headZ);
-    const trail = new THREE.Group();
-    trail.add(bolt(0.12), bolt(0.08));
-    trail.children[1].position.set(-0.1, -0.12, 0);
-    add(body, trail, -0.55, headY + 0.2, headZ);
-    trail.visible = false;
-    g.userData.trail = trail;
-  } else {
-    const crest = mesh(GEO.cone, 0xffd9a0, 0.16, 0.34, 0.1);
-    crest.rotation.z = 0.7;
-    add(body, crest, -0.32, headY + 0.28, headZ);
-    const hum = bolt(0.1);
-    add(body, hum, -0.42, headY + 0.42, headZ + 0.04);
-    g.userData.hum = hum;
-    const beak = mesh(GEO.sphere, 0xbfede8, 0.16, 0.1, 0.14);
-    add(body, beak, 0.28, headY - 0.04, headZ + hz * 0.55);
-  }
-  // Eyes sit on the front of the head (not inside the sphere)
-  const faceZ = headZ + hz * 0.98;
-  const eyeY = headY + 0.06;
-  const eyeX = 0.12;
-  const eyeL = mesh(GEO.sphereLo, 0xffffff, 0.07, 0.07, 0.05);
-  const eyeR = mesh(GEO.sphereLo, 0xffffff, 0.07, 0.07, 0.05);
-  add(body, eyeL, -eyeX, eyeY, faceZ);
-  add(body, eyeR, eyeX, eyeY, faceZ);
-  const puL = mesh(GEO.sphereLo, NAVY, 0.04, 0.04, 0.04);
-  const puR = mesh(GEO.sphereLo, NAVY, 0.04, 0.04, 0.04);
-  add(body, puL, -eyeX + 0.012, eyeY, faceZ + 0.03);
-  add(body, puR, eyeX + 0.012, eyeY, faceZ + 0.03);
-  const glL = mesh(GEO.sphereLo, 0xffffff, 0.016, 0.016, 0.016);
-  const glR = mesh(GEO.sphereLo, 0xffffff, 0.016, 0.016, 0.016);
-  add(body, glL, -eyeX + 0.02, eyeY + 0.015, faceZ + 0.05);
-  add(body, glR, eyeX + 0.02, eyeY + 0.015, faceZ + 0.05);
-  const lidL = mesh(GEO.box, def.color, 0.14, 0.03, 0.06);
-  const lidR = mesh(GEO.box, def.color, 0.14, 0.03, 0.06);
-  add(body, lidL, -eyeX, eyeY, faceZ + 0.02);
-  add(body, lidR, eyeX, eyeY, faceZ + 0.02);
+
+function addEyes(head, g, x, y, z, spread, col) {
+  const eyeL = mesh(GEO.sphereLo, 0xffffff, 0.055, 0.055, 0.04);
+  const eyeR = mesh(GEO.sphereLo, 0xffffff, 0.055, 0.055, 0.04);
+  add(head, eyeL, x - spread, y, z);
+  add(head, eyeR, x + spread, y, z);
+  const puL = mesh(GEO.sphereLo, NAVY, 0.03, 0.03, 0.03);
+  const puR = mesh(GEO.sphereLo, NAVY, 0.03, 0.03, 0.03);
+  add(head, puL, x - spread + 0.01, y, z + 0.025);
+  add(head, puR, x + spread + 0.01, y, z + 0.025);
+  const glL = mesh(GEO.sphereLo, 0xffffff, 0.012, 0.012, 0.012);
+  const glR = mesh(GEO.sphereLo, 0xffffff, 0.012, 0.012, 0.012);
+  add(head, glL, x - spread + 0.016, y + 0.012, z + 0.038);
+  add(head, glR, x + spread + 0.016, y + 0.012, z + 0.038);
+  const lidL = mesh(GEO.box, col, 0.11, 0.025, 0.05);
+  const lidR = mesh(GEO.box, col, 0.11, 0.025, 0.05);
+  add(head, lidL, x - spread, y, z + 0.015);
+  add(head, lidR, x + spread, y, z + 0.015);
   lidL.visible = lidR.visible = false;
-  const winkBit = mesh(GEO.box, NAVY, 0.13, 0.022, 0.04);
-  add(body, winkBit, eyeX, eyeY, faceZ + 0.02);
+  const winkBit = mesh(GEO.box, NAVY, 0.1, 0.018, 0.03);
+  add(head, winkBit, x + spread, y, z + 0.015);
   winkBit.visible = false;
+  g.userData.eyes = [eyeL, eyeR, puL, puR, glL, glR];
+  g.userData.lids = [lidL, lidR];
+  g.userData.winkBit = winkBit;
+}
+
+function crestBolt(parent, x, y, z, size) {
+  const b = bolt(size);
+  add(parent, b, x, y, z);
+  return b;
+}
+
+function finishBuddy(g, body, id, kind, col, head, jaw) {
   const faceSpark = bolt(0.14);
-  add(body, faceSpark, 0.36, headY + hy + 0.08, faceZ);
+  add(body, faceSpark, 0.2, 1.55, 0.55);
   faceSpark.visible = false;
   const zeds = new THREE.Group();
   const z1 = mesh(GEO.box, 0x5a6680, 0.1, 0.04, 0.04);
   const z2 = mesh(GEO.box, 0x5a6680, 0.07, 0.03, 0.03);
-  add(zeds, z1, 0.34, headY + hy + 0.16, faceZ);
-  add(zeds, z2, 0.46, headY + hy + 0.3, faceZ);
+  add(zeds, z1, 0.28, 1.62, 0.5);
+  add(zeds, z2, 0.4, 1.76, 0.5);
   zeds.visible = false;
   body.add(zeds);
-  g.userData.eyes = [eyeL, eyeR, puL, puR, glL, glR];
-  g.userData.lids = [lidL, lidR];
-  g.userData.winkBit = winkBit;
   g.userData.faceSpark = faceSpark;
   g.userData.zeds = zeds;
   g.userData.kind = kind;
   g.userData.id = id;
-  setBuddyFace(g, 'happy');
+  g.userData.jaw = jaw || null;
   const sparkHop = new THREE.Group();
   sparkHop.add(bolt(0.2), bolt(0.14));
   sparkHop.children[1].position.set(0.14, -0.1, 0);
   sparkHop.visible = false;
-  add(g, sparkHop, 0.32, headY + hy + 0.28, faceZ);
+  add(g, sparkHop, 0.15, 1.7, 0.55);
   g.userData.hopSpark = sparkHop;
-  const tail = mesh(GEO.cone, def.color, 0.1, 0.36, 0.1);
-  tail.rotation.x = Math.PI * 0.75;
-  add(g, tail, 0.14, -0.38, -0.06);
-  g.userData.tail = tail;
+  setBuddyFace(g, 'happy');
   return g;
+}
+
+function spinePlate(parent, x, y, z, h) {
+  const p = mesh(GEO.cone, GOLD, 0.09, h, 0.05, { emissive: GOLD, emissiveIntensity: 0.4 });
+  add(parent, p, x, y, z);
+  return p;
+}
+
+function buildRex(body, col, g) {
+  // Torso sits back so the big head and long tail read in 3/4 view
+  const torso = soft(GEO.sphere, col, 0.34, 0.3, 0.42);
+  add(body, torso, 0, 0.92, -0.05);
+  const belly = soft(GEO.sphere, BLUE, 0.26, 0.2, 0.28, { emissiveIntensity: 0.06 });
+  add(body, belly, 0, 0.74, 0.06);
+  // thick legs
+  [[0.2, 0.02], [-0.2, -0.08]].forEach(([x, z]) => {
+    add(body, soft(GEO.sphere, col, 0.18, 0.3, 0.18), x, 0.52, z);
+    add(body, soft(GEO.sphere, col, 0.13, 0.26, 0.13), x, 0.22, z + 0.08);
+    add(body, soft(GEO.sphere, col, 0.18, 0.07, 0.28), x, 0.07, z + 0.2);
+  });
+  // tiny T-rex arms
+  const arm = new THREE.Group();
+  add(arm, soft(GEO.sphere, col, 0.05, 0.11, 0.05), 0, -0.08, 0);
+  add(arm, soft(GEO.sphere, col, 0.04, 0.09, 0.04), 0.03, -0.18, 0.06);
+  add(body, arm, 0.26, 1.0, 0.22);
+  g.userData.arm = arm;
+  const armR = new THREE.Group();
+  add(armR, soft(GEO.sphere, col, 0.05, 0.11, 0.05), 0, -0.08, 0);
+  add(armR, soft(GEO.sphere, col, 0.04, 0.09, 0.04), -0.03, -0.18, 0.06);
+  add(body, armR, -0.26, 1.0, 0.22);
+  // long tapering tail
+  const tail = new THREE.Group();
+  add(tail, soft(GEO.sphere, col, 0.2, 0.16, 0.42), 0, 0, 0);
+  add(tail, soft(GEO.sphere, col, 0.14, 0.11, 0.4), 0, -0.08, -0.38);
+  add(tail, soft(GEO.sphere, col, 0.08, 0.07, 0.36), 0, -0.16, -0.72);
+  add(tail, soft(GEO.sphere, col, 0.045, 0.04, 0.22), 0, -0.22, -1.0);
+  spinePlate(tail, 0, 0.28, 0.05, 0.28);
+  spinePlate(tail, 0, 0.22, -0.32, 0.24);
+  spinePlate(tail, 0, 0.14, -0.64, 0.18);
+  add(body, tail, 0, 0.86, -0.5);
+  g.userData.tail = tail;
+  // thick neck into a big head with a long snout and jaw
+  add(body, soft(GEO.sphere, col, 0.18, 0.18, 0.22), 0, 1.18, 0.28);
+  const head = new THREE.Group();
+  add(body, head, 0, 1.42, 0.55);
+  add(head, soft(GEO.sphere, col, 0.28, 0.26, 0.28), 0, 0.04, 0);
+  // snout
+  add(head, soft(GEO.sphere, col, 0.16, 0.12, 0.36), 0, -0.02, 0.38);
+  add(head, soft(GEO.sphere, col, 0.11, 0.08, 0.16), 0, 0.0, 0.62);
+  // nostrils
+  add(head, mesh(GEO.sphereLo, NAVY, 0.02, 0.015, 0.02), 0.04, 0.04, 0.72);
+  add(head, mesh(GEO.sphereLo, NAVY, 0.02, 0.015, 0.02), -0.04, 0.04, 0.72);
+  const jaw = new THREE.Group();
+  add(jaw, soft(GEO.sphere, col, 0.14, 0.06, 0.32), 0, 0, 0.16);
+  add(jaw, mesh(GEO.box, 0xf4f7fb, 0.1, 0.02, 0.22), 0, 0.04, 0.16);
+  add(head, jaw, 0, -0.16, 0.22);
+  g.userData.head = head;
+  // yellow lightning crest along the whole back
+  spinePlate(body, 0, 1.58, 0.32, 0.32);
+  spinePlate(body, 0, 1.36, 0.08, 0.36);
+  spinePlate(body, 0, 1.18, -0.16, 0.32);
+  spinePlate(body, 0, 1.06, -0.36, 0.26);
+  addEyes(head, g, 0.0, 0.1, 0.2, 0.13, col);
+  return { head, jaw };
+}
+
+function buildTri(body, col, g) {
+  add(body, soft(GEO.sphere, col, 0.48, 0.32, 0.6), 0, 0.72, 0);
+  [[0.22, 0.28], [-0.22, 0.28], [0.22, -0.22], [-0.22, -0.22]].forEach(([x, z]) => {
+    add(body, soft(GEO.sphere, col, 0.1, 0.22, 0.1), x, 0.28, z);
+    add(body, soft(GEO.sphere, col, 0.12, 0.06, 0.16), x, 0.07, z + 0.06);
+  });
+  const tail = new THREE.Group();
+  add(tail, soft(GEO.sphere, col, 0.12, 0.1, 0.32), 0, 0, 0);
+  add(body, tail, 0, 0.7, -0.55);
+  g.userData.tail = tail;
+  const head = new THREE.Group();
+  add(body, head, 0, 0.95, 0.52);
+  const frill = mesh(GEO.sphere, 0xfff3d6, 0.46, 0.4, 0.08);
+  add(head, frill, 0, 0.12, -0.16);
+  add(head, soft(GEO.sphere, col, 0.22, 0.18, 0.24), 0, 0, 0.08);
+  add(head, mesh(GEO.cone, 0xfff3d6, 0.07, 0.28, 0.07), 0.0, 0.06, 0.32).rotation.x = Math.PI / 2;
+  const hornL = mesh(GEO.cone, GOLD, 0.05, 0.2, 0.05);
+  hornL.rotation.x = Math.PI / 2; hornL.rotation.z = 0.35;
+  add(head, hornL, -0.14, 0.16, 0.12);
+  const hornR = mesh(GEO.cone, GOLD, 0.05, 0.2, 0.05);
+  hornR.rotation.x = Math.PI / 2; hornR.rotation.z = -0.35;
+  add(head, hornR, 0.14, 0.16, 0.12);
+  const mid = mesh(GEO.cone, GOLD, 0.055, 0.32, 0.055);
+  mid.rotation.x = Math.PI / 2;
+  add(head, mid, 0, 0.2, 0.18);
+  g.userData.head = head;
+  addEyes(head, g, 0, 0.08, 0.28, 0.1, col);
+  return { head, jaw: null };
+}
+
+function buildStego(body, col, g) {
+  add(body, soft(GEO.sphere, col, 0.32, 0.24, 0.7), 0, 0.62, 0);
+  [[0.16, 0.32], [-0.16, 0.32], [0.16, -0.28], [-0.16, -0.28]].forEach(([x, z]) => {
+    add(body, soft(GEO.sphere, col, 0.09, 0.2, 0.09), x, 0.26, z);
+    add(body, soft(GEO.sphere, col, 0.11, 0.05, 0.14), x, 0.07, z + 0.05);
+  });
+  const tail = new THREE.Group();
+  add(tail, soft(GEO.sphere, col, 0.1, 0.08, 0.4), 0, 0, 0);
+  [[-0.08, -0.3], [0.08, -0.3], [-0.06, -0.4], [0.06, -0.4]].forEach(([x, z]) => {
+    const sp = mesh(GEO.cone, GOLD, 0.03, 0.18, 0.03);
+    sp.rotation.x = Math.PI / 2;
+    add(tail, sp, x, 0.02, z);
+  });
+  add(body, tail, 0, 0.6, -0.62);
+  g.userData.tail = tail;
+  [-0.4, -0.2, 0, 0.2, 0.38].forEach((z, i) => {
+    const h = 0.22 + (i === 2 || i === 1 ? 0.1 : 0);
+    const p = mesh(GEO.cone, GOLD, 0.08, h, 0.04);
+    add(body, p, (i % 2 ? 0.06 : -0.06), 0.78 + h * 0.15, z);
+  });
+  const head = new THREE.Group();
+  add(body, head, 0, 0.7, 0.62);
+  add(head, soft(GEO.sphere, col, 0.12, 0.1, 0.16), 0, 0, 0);
+  g.userData.head = head;
+  addEyes(head, g, 0, 0.04, 0.12, 0.07, col);
+  return { head, jaw: null };
+}
+
+function buildAnkylo(body, col, g) {
+  add(body, soft(GEO.sphere, col, 0.46, 0.22, 0.62), 0, 0.5, 0);
+  [[0.2, 0.28], [-0.2, 0.28], [0.2, -0.24], [-0.2, -0.24]].forEach(([x, z]) => {
+    add(body, soft(GEO.sphere, col, 0.09, 0.16, 0.09), x, 0.22, z);
+    add(body, soft(GEO.sphere, col, 0.11, 0.05, 0.13), x, 0.07, z + 0.04);
+  });
+  [[-0.2, 0.2], [0, 0.28], [0.2, 0.2], [-0.16, 0], [0.16, 0], [0, -0.16], [0.24, -0.08]].forEach(([x, z]) => {
+    add(body, mesh(GEO.sphereLo, 0xd7dce6, 0.08, 0.06, 0.08), x, 0.66, z);
+  });
+  const tail = new THREE.Group();
+  add(tail, soft(GEO.sphere, col, 0.08, 0.07, 0.32), 0, 0, 0);
+  add(tail, soft(GEO.sphere, col, 0.16, 0.12, 0.16), 0, 0, -0.34);
+  add(body, tail, 0, 0.5, -0.52);
+  g.userData.tail = tail;
+  const head = new THREE.Group();
+  add(body, head, 0, 0.58, 0.52);
+  add(head, soft(GEO.sphere, col, 0.16, 0.12, 0.18), 0, 0, 0);
+  add(head, mesh(GEO.sphere, 0xd7dce6, 0.08, 0.06, 0.12), 0, -0.02, 0.16);
+  g.userData.head = head;
+  addEyes(head, g, 0, 0.04, 0.14, 0.08, col);
+  return { head, jaw: null };
+}
+
+function buildPtero(body, col, g) {
+  add(body, soft(GEO.sphere, col, 0.18, 0.16, 0.28), 0, 0.85, 0);
+  const wingL = soft(GEO.sphere, col, 0.7, 0.04, 0.32);
+  wingL.rotation.z = 0.2;
+  add(body, wingL, -0.55, 0.95, -0.05);
+  const wingR = soft(GEO.sphere, 0xffd9a0, 0.7, 0.04, 0.32);
+  wingR.rotation.z = -0.2;
+  add(body, wingR, 0.55, 0.95, -0.05);
+  add(body, soft(GEO.sphere, col, 0.06, 0.28, 0.06), 0.08, 0.4, 0.04);
+  add(body, soft(GEO.sphere, col, 0.06, 0.28, 0.06), -0.08, 0.4, 0.04);
+  add(body, soft(GEO.sphere, col, 0.1, 0.04, 0.14), 0.08, 0.12, 0.1);
+  add(body, soft(GEO.sphere, col, 0.1, 0.04, 0.14), -0.08, 0.12, 0.1);
+  const tail = new THREE.Group();
+  add(tail, soft(GEO.sphere, col, 0.04, 0.04, 0.28), 0, 0, 0);
+  add(body, tail, 0, 0.78, -0.32);
+  g.userData.tail = tail;
+  const trail = new THREE.Group();
+  trail.add(bolt(0.12), bolt(0.08));
+  trail.children[1].position.set(-0.1, -0.12, 0);
+  add(body, trail, -0.7, 1.15, 0.05);
+  trail.visible = false;
+  g.userData.trail = trail;
+  const head = new THREE.Group();
+  add(body, head, 0, 1.05, 0.22);
+  add(head, soft(GEO.sphere, col, 0.12, 0.11, 0.14), 0, 0, 0);
+  const beak = soft(GEO.sphere, col, 0.06, 0.05, 0.28);
+  add(head, beak, 0, -0.02, 0.26);
+  const crest = soft(GEO.sphere, col, 0.04, 0.16, 0.1);
+  crest.rotation.x = -0.6;
+  add(head, crest, 0, 0.16, -0.06);
+  g.userData.head = head;
+  addEyes(head, g, 0, 0.04, 0.1, 0.07, col);
+  return { head, jaw: null };
+}
+
+function buildPara(body, col, g) {
+  add(body, soft(GEO.sphere, col, 0.32, 0.28, 0.42), 0, 0.92, 0);
+  add(body, soft(GEO.sphere, 0xbfede8, 0.2, 0.16, 0.24, { emissiveIntensity: 0.05 }), 0, 0.78, 0.08);
+  [[0.16, 0.04], [-0.16, -0.05]].forEach(([x, z]) => {
+    add(body, soft(GEO.sphere, col, 0.14, 0.24, 0.14), x, 0.5, z);
+    add(body, soft(GEO.sphere, col, 0.11, 0.22, 0.11), x, 0.22, z + 0.05);
+    add(body, soft(GEO.sphere, col, 0.14, 0.06, 0.2), x, 0.07, z + 0.14);
+  });
+  const arm = new THREE.Group();
+  add(arm, soft(GEO.sphere, col, 0.05, 0.12, 0.05), 0, -0.06, 0);
+  add(body, arm, 0.26, 0.98, 0.2);
+  g.userData.arm = arm;
+  const tail = new THREE.Group();
+  add(tail, soft(GEO.sphere, col, 0.14, 0.12, 0.4), 0, 0, 0);
+  add(tail, soft(GEO.sphere, col, 0.08, 0.07, 0.28), 0, -0.06, -0.32);
+  add(body, tail, 0, 0.86, -0.4);
+  g.userData.tail = tail;
+  const head = new THREE.Group();
+  add(body, head, 0, 1.28, 0.36);
+  add(head, soft(GEO.sphere, col, 0.16, 0.14, 0.18), 0, 0, 0);
+  add(head, mesh(GEO.sphere, 0xbfede8, 0.12, 0.08, 0.2), 0, -0.02, 0.2);
+  const crest = new THREE.Group();
+  add(crest, mesh(GEO.sphere, 0xffd9a0, 0.07, 0.08, 0.32), 0, 0.1, -0.22);
+  const hum = bolt(0.1);
+  add(crest, hum, 0, 0.22, -0.36);
+  add(head, crest, 0, 0.12, -0.04);
+  g.userData.head = head;
+  g.userData.hum = hum;
+  addEyes(head, g, 0, 0.04, 0.14, 0.08, col);
+  return { head, jaw: null };
+}
+
+function buildBuddy(id) {
+  const def = CREW[id] || CREW.zapsaurus;
+  const g = new THREE.Group();
+  const kind = def.kind;
+  const col = def.color;
+  const body = new THREE.Group();
+  g.add(body);
+  g.userData.body = body;
+  const sh = mesh(GEO.sphere, 0x0b1530, 0.7, 0.08, 0.45, { transparent: true, opacity: 0.22 });
+  add(g, sh, 0, 0.04, 0);
+  let parts;
+  if (kind === 'rex') parts = buildRex(body, col, g);
+  else if (kind === 'tri') parts = buildTri(body, col, g);
+  else if (kind === 'stego') parts = buildStego(body, col, g);
+  else if (kind === 'ankylo') parts = buildAnkylo(body, col, g);
+  else if (kind === 'ptero') parts = buildPtero(body, col, g);
+  else parts = buildPara(body, col, g);
+  return finishBuddy(g, body, id || 'zapsaurus', kind, col, parts && parts.head, parts && parts.jaw);
 }
 
 function buildStall(stall) {
@@ -854,22 +1090,63 @@ function mountCharger(el, opts) {
   });
 }
 
+
+function triggerRoar(m, buddy) {
+  if (!buddy || m.still) return;
+  const now = performance.now();
+  if (m.state.roarUntil && now < m.state.roarUntil) return;
+  m.state.roarUntil = now + ROAR_MS;
+  m.state.hopT = 1;
+  m.state.idleAt = now;
+  setBuddyFace(buddy, 'happy');
+  if (buddy.userData.hopSpark) buddy.userData.hopSpark.visible = true;
+  if (buddy.userData.faceSpark) buddy.userData.faceSpark.visible = true;
+  if (buddy.userData.jaw) buddy.userData.jaw.rotation.x = 0.55;
+  setTimeout(() => {
+    if (buddy.userData.hopSpark) buddy.userData.hopSpark.visible = false;
+    if (buddy.userData.faceSpark) buddy.userData.faceSpark.visible = false;
+    if (buddy.userData.jaw) buddy.userData.jaw.rotation.x = 0;
+  }, ROAR_MS);
+}
+
+function bindBuddyPlay(m, buddy) {
+  let lastTap = 0;
+  const canvas = m.canvas;
+  canvas.addEventListener('pointerdown', () => {
+    if (m.still) return;
+    const t = performance.now();
+    if (isDoubleTap(lastTap, t)) triggerRoar(m, buddy);
+    lastTap = t;
+  });
+  const onMotion = (ev) => {
+    if (m.still) return;
+    const a = ev.accelerationIncludingGravity || ev.acceleration;
+    if (!a) return;
+    if (shouldRoarShake(accelMag(a.x || 0, a.y || 0, a.z || 0))) triggerRoar(m, buddy);
+  };
+  try { window.addEventListener('devicemotion', onMotion, { passive: true }); } catch (e) {}
+  m._roarMotion = onMotion;
+}
+
 function mountBuddy(el, opts) {
   return startMount('buddy', el, opts.height || 140, (m) => {
     const buddy = buildBuddy(opts.id || 'zapsaurus');
     m.scene.add(buddy);
-    m.camera.position.set(0.15, 0.12, 3.15);
-    m.camera.lookAt(0, 0.0, 0);
+    m.camera.position.set(3.35, 1.15, 1.85);
+    m.camera.lookAt(0.05, 0.82, 0.05);
     m.camera.fov = 32;
     m.camera.updateProjectionMatrix();
     if (m.host) {
-      m.host.style.width = '148px';
-      m.host.style.maxWidth = '48%';
+      m.host.style.width = '168px';
+      m.host.style.maxWidth = '54%';
+      m.host.style.minHeight = (opts.height || 168) + 'px';
     }
     m.state.waveT = 0;
     m.state.hopT = 0;
+    m.state.yaw = 0.18;
     m.state.auto = !m.still;
     const t0 = performance.now();
+    bindBuddyPlay(m, buddy);
     attachSpin(m.canvas, m.state, {
       inertia: true,
       onTap: () => {
@@ -883,18 +1160,23 @@ function mountBuddy(el, opts) {
     });
     m.update = (dt, now) => {
       if (m.state.auto && !m.state.dragging && !m.still && !m.state.vel) {
-        m.state.yaw = 0.35 * Math.sin((now - t0) / 2500);
+        m.state.yaw = 0.18 + 0.16 * Math.sin((now - t0) / 2500);
       }
       spinUpdate(m, buddy, dt, now);
       if (m.still) {
         setBuddyFace(buddy, 'happy');
         buddy.position.y = 0;
+        m.state.yaw = 0.18;
+        buddy.rotation.y = 0.18;
         if (buddy.userData.body) {
           buddy.userData.body.rotation.z = 0;
           buddy.userData.body.rotation.x = 0;
           buddy.userData.body.scale.set(1, 1, 1);
         }
         if (buddy.userData.tail) buddy.userData.tail.rotation.z = 0;
+        if (buddy.userData.head) buddy.userData.head.rotation.y = 0;
+        if (buddy.userData.arm) buddy.userData.arm.rotation.z = 0;
+        if (buddy.userData.jaw) buddy.userData.jaw.rotation.x = 0;
         if (buddy.userData.trail) buddy.userData.trail.visible = false;
         if (buddy.userData.hum) buddy.userData.hum.visible = true;
         return;
@@ -904,16 +1186,17 @@ function mountBuddy(el, opts) {
       const p = Math.sin(now / 700);
       if (body) {
         body.scale.set(1 - 0.015 * p, 1 + 0.03 * p, 1);
-        body.rotation.x = Math.sin(now / 900) * 0.08;
+        body.rotation.x = Math.sin(now / 900) * 0.06;
       }
+      if (buddy.userData.head) buddy.userData.head.rotation.y = Math.sin(now / 1100) * 0.18;
       if (buddy.userData.tail) {
-        buddy.userData.tail.rotation.z = Math.sin(now / 450) * 0.35;
+        buddy.userData.tail.rotation.y = Math.sin(now / 450) * 0.28;
       }
-      // wave periodically
+      // wave periodically with the small arm, not the whole body
       const wavePhase = ((now / 1000) % 7);
       const waving = wavePhase < 0.9 && buddy.userData.face !== 'sleepy';
-      if (body) {
-        body.rotation.z = waving ? Math.sin(now / 90) * 0.28 : 0;
+      if (buddy.userData.arm) {
+        buddy.userData.arm.rotation.z = waving ? Math.sin(now / 90) * 0.9 : 0;
       }
       // hop
       if (m.state.hopT > 0) {
@@ -1011,6 +1294,215 @@ function loadPaintBody() {
 }
 
 
+
+function setChargerLights(chg, on) {
+  const cap = chg && chg.userData.cap;
+  const glow = chg && chg.userData.glow;
+  if (cap) {
+    cap.material.color.setHex(on ? BLUE : 0x5a6680);
+    cap.material.emissive.setHex(on ? BLUE : 0x000000);
+    cap.material.emissiveIntensity = on ? 0.45 : 0;
+  }
+  if (glow) {
+    glow.material.color.setHex(on ? BLUE : 0xc9d1de);
+    glow.material.emissive.setHex(on ? BLUE : 0x000000);
+    glow.material.emissiveIntensity = on ? 0.4 : 0;
+    glow.visible = true;
+  }
+}
+
+function buildSagCable(from, to, sag) {
+  const pts = [];
+  for (let i = 0; i <= 12; i++) {
+    const p = sagPoint(from, to, i / 12, sag);
+    pts.push(new THREE.Vector3(p.x, p.y, p.z));
+  }
+  const geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, 0.032, 6, false);
+  return new THREE.Mesh(geo, hexMat(NAVY));
+}
+
+function canvasHit(m, cx, cy, yPlane) {
+  const rect = m.canvas.getBoundingClientRect();
+  const nx = ((cx - rect.left) / Math.max(1, rect.width)) * 2 - 1;
+  const ny = -(((cy - rect.top) / Math.max(1, rect.height)) * 2 - 1);
+  const v = new THREE.Vector3(nx, ny, 0.5).unproject(m.camera);
+  const dir = v.sub(m.camera.position).normalize();
+  const planeY = yPlane == null ? 0.55 : yPlane;
+  if (Math.abs(dir.y) < 0.02) return new THREE.Vector3(nx * 2, planeY, 0);
+  const t = (planeY - m.camera.position.y) / dir.y;
+  return m.camera.position.clone().add(dir.multiplyScalar(t));
+}
+
+function mountChargeScene(el, opts) {
+  if (!el) return null;
+  return startMount('charge', el, opts.height || 200, (m) => {
+    const root = new THREE.Group();
+    m.scene.add(root);
+    const chg = buildCharger(opts.plugs || []);
+    chg.scale.set(0.72, 0.72, 0.72);
+    chg.position.set(-1.35, 0, 0);
+    root.add(chg);
+    const car = buildCar(opts.body, opts.paint);
+    car.position.set(1.15, 0, 0.05);
+    car.rotation.y = -Math.PI / 2;
+    root.add(car);
+    const hang = { x: -0.55, y: 0.62, z: 0.15 };
+    const plug = mesh(GEO.box, 0x5a6680, 0.12, 0.2, 0.1);
+    add(root, plug, hang.x, hang.y, hang.z);
+    const outlet = { x: -0.95, y: 0.78, z: 0.12 };
+    let cable = buildSagCable(outlet, hang, 0.28);
+    root.add(cable);
+    const trailGrp = new THREE.Group();
+    root.add(trailGrp);
+    const zapBolt = bolt(0.28);
+    zapBolt.visible = false;
+    root.add(zapBolt);
+
+    m.state.lightsOn = true;
+    m.state.plugged = false;
+    m.state.zoom = 1;
+    m.state.trails = [];
+    m.state.plug = { ...hang };
+    setChargerLights(chg, true);
+    const baseCam = m.camera.position.clone();
+    const pad = mesh(GEO.cyl, 0x12203c, 2.6, 0.04, 1.5, { transparent: true, opacity: 0.7 });
+    add(root, pad, 0, 0.02, 0);
+    m.camera.position.set(0.55, 1.25, 5.8);
+    m.camera.lookAt(-0.05, 0.7, 0);
+    m.camera.fov = 30;
+    m.camera.updateProjectionMatrix();
+    baseCam.copy(m.camera.position);
+
+    const portWorld = () => {
+      const v = new THREE.Vector3();
+      if (car.userData.port) car.userData.port.getWorldPosition(v);
+      else v.set(0.55, 0.55, 0.15);
+      return v;
+    };
+
+    function refreshCable() {
+      const dest = m.state.plugged ? portWorld() : m.state.plug;
+      root.remove(cable);
+      try { cable.geometry.dispose(); } catch (e) {}
+      cable = buildSagCable(outlet, dest, m.state.plugged ? 0.22 : 0.28);
+      root.add(cable);
+      plug.position.set(dest.x, dest.y, dest.z);
+      if (car.userData.port) {
+        car.userData.port.material.emissiveIntensity = m.state.plugged ? 1.1 : 0.7;
+      }
+    }
+
+    const btn = opts.lightsBtn;
+    if (btn) {
+      btn.setAttribute('aria-pressed', 'true');
+      btn.textContent = 'Charger lights on';
+      btn.onclick = () => {
+        m.state.lightsOn = !m.state.lightsOn;
+        setChargerLights(chg, m.state.lightsOn);
+        btn.setAttribute('aria-pressed', m.state.lightsOn ? 'true' : 'false');
+        btn.textContent = m.state.lightsOn ? 'Charger lights on' : 'Charger lights off';
+      };
+    }
+
+    const ptrs = new Map();
+    let dragging = false;
+    let drawing = false;
+    let pinch0 = 0;
+    let pinchZoom = 1;
+    const onDown = (e) => {
+      if (m.still) return;
+      m.canvas.setPointerCapture?.(e.pointerId);
+      ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (ptrs.size === 2) {
+        const arr = [...ptrs.values()];
+        pinch0 = Math.hypot(arr[0].x - arr[1].x, arr[0].y - arr[1].y);
+        pinchZoom = m.state.zoom;
+        dragging = drawing = false;
+        return;
+      }
+      const hit = canvasHit(m, e.clientX, e.clientY, 0.6);
+      const dest = m.state.plugged ? portWorld() : m.state.plug;
+      if (!m.state.plugged && dist3(hit, dest) < 0.45) dragging = true;
+      else drawing = true;
+    };
+    const onMove = (e) => {
+      if (m.still) return;
+      if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (ptrs.size === 2) {
+        const arr = [...ptrs.values()];
+        const dist = Math.hypot(arr[0].x - arr[1].x, arr[0].y - arr[1].y);
+        m.state.zoom = pinchScale(pinch0, dist, pinchZoom);
+        const z = m.state.zoom;
+        m.camera.position.copy(baseCam).multiplyScalar(1 / z);
+        return;
+      }
+      if (dragging) {
+        const hit = canvasHit(m, e.clientX, e.clientY, 0.6);
+        m.state.plug = { x: hit.x, y: Math.max(0.2, Math.min(1.2, hit.y)), z: hit.z };
+        refreshCable();
+        return;
+      }
+      if (drawing) {
+        const hit = canvasHit(m, e.clientX, e.clientY, 0.9);
+        m.state.trails.push({ x: hit.x, y: hit.y, z: hit.z, t: performance.now() });
+      }
+    };
+    const onUp = (e) => {
+      ptrs.delete(e.pointerId);
+      if (dragging) {
+        const port = portWorld();
+        if (plugInRange(m.state.plug, port, 0.42)) {
+          m.state.plugged = true;
+          m.state.plug = snapPlugToPort(port);
+          zapBolt.position.set(port.x, port.y + 0.2, port.z);
+          zapBolt.visible = true;
+          setTimeout(() => { zapBolt.visible = false; }, 450);
+        } else {
+          m.state.plug = { ...hang };
+        }
+        refreshCable();
+      }
+      dragging = false;
+      drawing = false;
+    };
+    m.canvas.addEventListener('pointerdown', onDown);
+    m.canvas.addEventListener('pointermove', onMove);
+    m.canvas.addEventListener('pointerup', onUp);
+    m.canvas.addEventListener('pointercancel', onUp);
+
+    m.update = (dt, now) => {
+      if (car.userData.port && !m.still) {
+        const pulse = 0.55 + 0.35 * Math.sin(now / 400);
+        car.userData.port.material.emissiveIntensity = m.state.plugged ? 1.15 : pulse;
+      }
+      if (car.userData.wheels && !m.still && !m.state.plugged) {
+        car.userData.wheels.forEach((w) => { w.rotation.z += dt * 0.4; });
+      }
+      // refresh trail meshes lightly
+      const live = trailTick(m.state.trails, now);
+      m.state.trails = live;
+      while (trailGrp.children.length > live.length) {
+        const c = trailGrp.children[trailGrp.children.length - 1];
+        trailGrp.remove(c);
+      }
+      live.forEach((p, i) => {
+        let b = trailGrp.children[i];
+        if (!b) {
+          b = bolt(0.12);
+          trailGrp.add(b);
+        }
+        b.position.set(p.x, p.y, p.z);
+        b.visible = !m.still;
+      });
+      if (m.still) {
+        trailGrp.visible = false;
+        zapBolt.visible = false;
+      } else trailGrp.visible = true;
+    };
+    refreshCable();
+  });
+}
+
 function ensureSheetDock(root) {
   // cardInto() moves any #sheet sibling that is not .c1h / .c1more
   // into hidden .c1more. Keep the dock inside the visible header.
@@ -1026,10 +1518,9 @@ function ensureSheetDock(root) {
   dock = document.createElement('div');
   dock.id = dockId;
   dock.className = 'c1-3d-dock notr';
-  dock.innerHTML = '<div class="c1-3d-row" style="display:flex;align-items:flex-end;gap:6px;margin:6px 0 4px">'
-    + '<div class="c1-3d-chg" style="flex:1;min-height:128px"></div>'
-    + '<div class="c1-3d-car" style="flex:1;min-height:116px"></div>'
-    + '</div><div class="c1-3d-lot" style="min-height:100px;margin:4px 0 0"></div>'
+  dock.innerHTML = '<div class="c1-3d-charge" style="height:168px;min-height:168px;max-height:168px;margin:6px 0 4px"></div>'
+    + '<div class="c1-3d-play"><button type="button" class="chip c1-lights-btn" aria-pressed="true">Charger lights on</button></div>'
+    + '<div class="c1-3d-lot" style="min-height:100px;margin:4px 0 0"></div>'
     + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:0 0 4px">Live status coming soon</div>';
   const btns = head.querySelector('.c1btns');
   if (btns) head.insertBefore(dock, btns);
@@ -1042,8 +1533,14 @@ function fillStationDock(root, set, s) {
   const dock = ensureSheetDock(root);
   if (!dock) return;
   const cap = dock.querySelector('.c1-3d-lot-cap');
-  mountCharger(dock.querySelector('.c1-3d-chg'), { plugs: (s && s.plugs) || [], userPlug: userPlug(), height: 128 });
-  mountCar(dock.querySelector('.c1-3d-car'), { body: set.body, paint: set.paint, height: 116 });
+  mountChargeScene(dock.querySelector('.c1-3d-charge'), {
+    plugs: (s && s.plugs) || [],
+    userPlug: userPlug(),
+    body: set.body,
+    paint: set.paint,
+    height: 168,
+    lightsBtn: dock.querySelector('.c1-lights-btn'),
+  });
   const lotHost = dock.querySelector('.c1-3d-lot');
   if (lotHost && s && typeof window.buildLotRow === 'function') {
     const row = window.buildLotRow({ dcPorts: s.dcPorts, l2Ports: s.l2Ports, portsListed: s.portsListed, plugs: s.plugs, userPlug: userPlug() });
@@ -1067,13 +1564,13 @@ export function remountAll() {
   const hero = document.querySelector('#c1profile .c1avatar-wrap');
   if (hero) {
     if (set.avatar === 'car') mountCar(hero, { body: set.body, paint: set.paint, height: 140 });
-    else mountBuddy(hero, { id: set.buddyId, height: 140 });
+    else mountBuddy(hero, { id: set.buddyId, height: 168 });
   }
   // Edit preview
   const prev = document.getElementById('c1av-preview');
   if (prev) {
     if (set.avatar === 'car') mountCar(prev, { body: set.body, paint: set.paint, height: 130 });
-    else mountBuddy(prev, { id: set.buddyId, height: 130 });
+    else mountBuddy(prev, { id: set.buddyId, height: 150 });
   }
   // Station scene — dock inside the visible .c1h (cardInto swallows other siblings)
   const s = window.c1GuideStation || window.cur;
@@ -1086,15 +1583,17 @@ export function remountAll() {
   if (wcard) mountWallet(wcard);
   // Ask your buddy — replace the CSS/SVG buddy wherever it is
   document.querySelectorAll('#c1ask-tab .c1buddy3d, #c1ask .c1buddy3d, #c1p-buddy').forEach((el) => {
-    mountBuddy(el, { id: set.buddyId, height: 110 });
+    mountBuddy(el, { id: set.buddyId, height: 160 });
   });
   window.c1Three = Object.assign(window.c1Three || {}, {
     webgl: true,
     version: THREE_VERSION,
     revision: THREE.REVISION,
+    asset: C1_ASSET_V,
     ready: true,
     mounts: mounts.length,
     remount: remountAll,
+    play: { plugInRange, sagPoint, pinchScale, shouldRoarShake, isDoubleTap, trailTick, snapPlugToPort },
   });
 }
 
@@ -1139,6 +1638,6 @@ function boot() {
   document.querySelectorAll('.screen').forEach((s) => mo.observe(s, { attributes: true, attributeFilter: ['class', 'hidden', 'style'] }));
 }
 
-window.c1Three = { webgl: webglAvailable(), version: THREE_VERSION, revision: THREE.REVISION, ready: false, remount: remountAll, webglAvailable };
+window.c1Three = { webgl: webglAvailable(), version: THREE_VERSION, revision: THREE.REVISION, asset: C1_ASSET_V, ready: false, remount: remountAll, webglAvailable };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();

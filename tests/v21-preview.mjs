@@ -56,6 +56,11 @@ check(threeSrc.includes('userData.wheels') && threeSrc.includes('w.rotation.z'),
 check(threeSrc.includes('blinkUntil') && threeSrc.includes('Math.sin(now / 550)'), 'headlight blink on tap and suspension bob');
 check(html.includes('c1-three.js?v=') && html.includes('three-0.187.0.module.min.js?v='), 'three.js assets are cache-busted');
 check(threeSrc.includes('Motion is off (Reduce Motion)') && threeSrc.includes('revealMounts'), 'hidden-tab reveal and reduced-motion note');
+check(threeSrc.includes('function buildRex') && threeSrc.includes('crestBolt') && !threeSrc.includes('Gold map-pin backing'), 'Zapsaurus is a full-body T-rex, not a map pin');
+check(threeSrc.includes('function buildTri') && threeSrc.includes('function buildStego') && threeSrc.includes('function buildAnkylo') && threeSrc.includes('function buildPtero') && threeSrc.includes('function buildPara'), 'all six buddies have species bodies');
+check(html.includes('c1p-hi') && html.includes('#E6F1FF') && html.includes('c1p-name') && html.includes('#F4F7FB'), 'profile greeting and name meet contrast on the dark card');
+check(threeSrc.includes('mountChargeScene') && threeSrc.includes('buildSagCable') && threeSrc.includes('plugInRange'), 'charging scene has a sagging cable and a snappable plug');
+check(threeSrc.includes('setChargerLights') && threeSrc.includes('pinchScale') && threeSrc.includes('triggerRoar'), 'play widgets: lights, pinch, roar');
 check(html.includes('Live status coming soon') && html.includes('Coming soon') && html.includes('SAMPLE'), 'wallet and lot labels stay');
 
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
