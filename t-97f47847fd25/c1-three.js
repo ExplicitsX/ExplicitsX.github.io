@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q6';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q7';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q6';
+const C1_ASSET_V = '20261113q7';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -188,7 +188,7 @@ function injectCss() {
       padding:8px 8px 6px;
     }
     #s-station .c1gl-host, #s-charge .c1gl-host, .c1-3d-card .c1gl-host{background:#0B1530;border-radius:12px}
-    #s-charge:has(#c1-3d-dock-charge .c1gl-on) #chcar .evh{display:none}
+    #s-charge:has(#c1-3d-dock-charge) #chcar{display:none}
     #s-charge .c1-3d-dock, #s-charge .c1-3d-card{background:#091925!important}
     .c1-chg-svg{display:block;width:100%;height:100%;border-radius:12px}
     @media (prefers-reduced-motion:reduce){
@@ -1427,69 +1427,89 @@ const CHARGE_GRAY_LT = 0x6a7a88;
 
 function buildChargePillar() {
   const g = new THREE.Group();
-  add(g, mesh(GEO.box, CHARGE_GRAY, 0.36, 2.14, 0.32, { flatShading: true }), 0, 1.12, 0);
+  add(g, mesh(GEO.box, CHARGE_GRAY, 0.34, 2.2, 0.3, { flatShading: true }), 0, 1.16, 0);
   add(g, mesh(GEO.box, CHARGE_GRAY_DK, 0.4, 0.1, 0.36, { flatShading: true }), 0, 0.05, 0);
-  const iconHalo = mesh(GEO.box, CHARGE_TEAL, 0.18, 0.28, 0.04, { emissive: CHARGE_TEAL, emissiveIntensity: 0.45, transparent: true, opacity: 0.32 });
-  add(g, iconHalo, 0, 1.74, 0.18);
-  const icon = mesh(GEO.box, CHARGE_TEAL, 0.1, 0.18, 0.03, { emissive: CHARGE_TEAL, emissiveIntensity: 0.8 });
-  add(g, icon, 0, 1.72, 0.195);
-  const nub = mesh(GEO.box, CHARGE_TEAL, 0.05, 0.05, 0.03, { emissive: CHARGE_TEAL, emissiveIntensity: 0.8 });
-  add(g, nub, 0, 1.84, 0.195);
-  const boltI = mesh(GEO.box, CHARGE_TEAL, 0.05, 0.1, 0.02, { emissive: CHARGE_TEAL, emissiveIntensity: 0.9 });
-  add(g, boltI, 0, 1.7, 0.21);
-  add(g, mesh(GEO.box, 0x1a2430, 0.22, 0.18, 0.04, { flatShading: true }), 0, 1.38, 0.17);
-  ;[-0.05, 0, 0.05].forEach((x) => add(g, mesh(GEO.sphereLo, 0x3a4856, 0.015, 0.015, 0.015), x, 1.26, 0.19));
-  g.userData.iconMats = [iconHalo.material, icon.material, nub.material, boltI.material];
-  g.userData.cableDoor = new THREE.Vector3(0.2, 1.08, 0.02);
+  // framed plug/bolt pictogram — not a battery gauge
+  add(g, mesh(GEO.box, 0x1a2430, 0.16, 0.28, 0.02, { flatShading: true }), 0, 1.82, 0.165);
+  const iconHalo = mesh(GEO.box, CHARGE_TEAL, 0.17, 0.3, 0.015, { emissive: CHARGE_TEAL, emissiveIntensity: 0.55, transparent: true, opacity: 0.4 });
+  add(g, iconHalo, 0, 1.82, 0.16);
+  const ring = mesh(GEO.box, CHARGE_TEAL, 0.12, 0.22, 0.02, { emissive: CHARGE_TEAL, emissiveIntensity: 0.35, transparent: true, opacity: 0.35 });
+  add(g, ring, 0, 1.8, 0.175);
+  ;[[0, 0.1, 0.12, 0.018],[0, -0.1, 0.12, 0.018],[0.055, 0, 0.018, 0.2],[-0.055, 0, 0.018, 0.2]].forEach((p) => {
+    const edge = mesh(GEO.box, CHARGE_TEAL, p[2], p[3], 0.02, { emissive: CHARGE_TEAL, emissiveIntensity: 0.95 });
+    add(g, edge, p[0], 1.8 + p[1], 0.185);
+    (g.userData.iconEdges || (g.userData.iconEdges = [])).push(edge);
+  });
+  const nub = mesh(GEO.box, CHARGE_TEAL, 0.04, 0.045, 0.02, { emissive: CHARGE_TEAL, emissiveIntensity: 0.95 });
+  add(g, nub, 0, 1.94, 0.185);
+  const boltI = mesh(GEO.box, CHARGE_TEAL, 0.035, 0.1, 0.02, { emissive: CHARGE_TEAL, emissiveIntensity: 1 });
+  add(g, boltI, 0, 1.78, 0.19);
+  add(g, mesh(GEO.box, 0x1a2430, 0.2, 0.16, 0.04, { flatShading: true }), 0, 1.42, 0.165);
+  add(g, mesh(GEO.box, 0x2a3848, 0.16, 0.04, 0.02, { flatShading: true }), 0, 1.42, 0.19);
+  g.userData.iconMats = [iconHalo.material, ring.material, nub.material, boltI.material].concat((g.userData.iconEdges || []).map((e) => e.material));
   return g;
 }
 
-/** Generic gray coupe-SUV, nose +X, no badge or grille. */
+/** Generic gray coupe-SUV, nose +X, no badge, grille, or brand silhouette. */
 function buildChargeCar() {
   const g = new THREE.Group();
   const col = CHARGE_GRAY;
-  add(g, mesh(GEO.sphere, col, 1.05, 0.38, 0.52, { flatShading: true }), 0.05, 0.52, 0);
-  add(g, mesh(GEO.sphere, col, 0.42, 0.32, 0.5, { flatShading: true }), 0.7, 0.5, 0);
-  add(g, mesh(GEO.sphere, col, 0.46, 0.36, 0.5, { flatShading: true }), -0.7, 0.52, 0);
-  add(g, mesh(GEO.sphere, CHARGE_GRAY_LT, 0.7, 0.2, 0.48, { flatShading: true, transparent: true, opacity: 0.25 }), 0.05, 0.62, 0);
-  const glass = { transparent: true, opacity: 0.82, flatShading: true };
-  add(g, mesh(GEO.sphere, 0x243240, 0.62, 0.28, 0.42, glass), 0.05, 0.86, 0);
-  add(g, mesh(GEO.box, CHARGE_GRAY_DK, 0.04, 0.22, 0.44, { flatShading: true }), 0.1, 0.86, 0);
-  add(g, mesh(GEO.box, CHARGE_GRAY_LT, 0.28, 0.1, 0.36, { flatShading: true }), -0.95, 0.72, 0);
+  const flat = { flatShading: true };
+  const glassOpt = { transparent: true, opacity: 0.88, flatShading: true };
+  // closed liftback hull — one lower body + one sloped cabin, no truck bed
+  add(g, mesh(GEO.box, col, 2.0, 0.44, 0.98, flat), 0.0, 0.48, 0);
+  add(g, mesh(GEO.sphere, col, 1.02, 0.24, 0.5, flat), 0.02, 0.56, 0);
+  add(g, mesh(GEO.sphere, col, 0.3, 0.24, 0.47, flat), 0.92, 0.5, 0);
+  add(g, mesh(GEO.box, col, 0.14, 0.48, 0.96, flat), -0.96, 0.54, 0);
+  add(g, mesh(GEO.box, CHARGE_GRAY_LT, 0.03, 0.1, 0.24, flat), -1.04, 0.5, 0);
+  const cabin = mesh(GEO.box, col, 1.55, 0.4, 0.86, flat);
+  cabin.rotation.z = -0.2;
+  cabin.position.set(0.06, 0.82, 0);
+  g.add(cabin);
+  const roofSoft = mesh(GEO.sphere, col, 0.72, 0.2, 0.44, flat);
+  roofSoft.position.set(0.1, 0.94, 0);
+  g.add(roofSoft);
+  const wind = mesh(GEO.box, 0x243240, 0.4, 0.28, 0.8, glassOpt);
+  wind.rotation.z = 0.38;
+  wind.position.set(0.55, 0.82, 0);
+  g.add(wind);
+  const rearGlass = mesh(GEO.box, 0x243240, 0.55, 0.24, 0.8, glassOpt);
+  rearGlass.rotation.z = -0.32;
+  rearGlass.position.set(-0.48, 0.84, 0);
+  g.add(rearGlass);
   const tails = [];
   ;[-1, 1].forEach((s) => {
-    const lamp = mesh(GEO.box, 0xe01018, 0.06, 0.07, 0.2, { emissive: 0xe01018, emissiveIntensity: 0.8 });
-    add(g, lamp, -0.98, 0.78, s * 0.28);
+    const lamp = mesh(GEO.box, 0xe01018, 0.04, 0.07, 0.28, { emissive: 0xe01018, emissiveIntensity: 0.95 });
+    add(g, lamp, -1.02, 0.7, s * 0.33);
     tails.push(lamp);
   });
   g.userData.tails = tails;
-  const port = mesh(GEO.box, CHARGE_TEAL, 0.08, 0.1, 0.08, { emissive: CHARGE_TEAL, emissiveIntensity: 0.55 });
-  add(g, port, -0.92, 0.72, 0.42);
-  g.userData.port = port;
-  const wheels = [];
-  [[-0.68, -0.5], [-0.68, 0.5], [0.68, -0.5], [0.68, 0.5]].forEach(([x, z]) => {
+  const port = mesh(GEO.box, CHARGE_GRAY_DK, 0.06, 0.1, 0.08, flat);
+  add(g, port, -0.9, 0.64, 0.5);
+  const portGlow = mesh(GEO.sphere, CHARGE_TEAL, 0.03, 0.03, 0.03, { emissive: CHARGE_TEAL, emissiveIntensity: 0.7 });
+  add(g, portGlow, -0.86, 0.64, 0.5);
+  g.userData.port = portGlow;
+  [[-0.62, -0.52], [-0.62, 0.52], [0.62, -0.52], [0.62, 0.52]].forEach(([x, z]) => {
     const w = new THREE.Group();
-    const tire = mesh(GEO.cyl, 0x1a1f26, 0.22, 0.16, 0.22, { flatShading: true });
+    const tire = mesh(GEO.cyl, 0x1a1f26, 0.22, 0.16, 0.22, flat);
     tire.rotation.x = Math.PI / 2;
     w.add(tire);
-    const rim = mesh(GEO.cyl, CHARGE_GRAY_LT, 0.12, 0.17, 0.12, { flatShading: true });
+    const rim = mesh(GEO.cyl, CHARGE_GRAY_LT, 0.12, 0.17, 0.12, flat);
     rim.rotation.x = Math.PI / 2;
     w.add(rim);
     w.position.set(x, 0.22, z);
     g.add(w);
-    wheels.push(w);
   });
-  g.userData.wheels = wheels;
   return g;
 }
 
 function makeChargeCurve() {
   return new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-1.45, 1.08, 0.12),
-    new THREE.Vector3(-1.05, 0.55, 0.28),
-    new THREE.Vector3(-0.55, 0.12, 0.38),
-    new THREE.Vector3(0.05, 0.12, 0.4),
-    new THREE.Vector3(0.22, 0.72, 0.42),
+    new THREE.Vector3(-1.38, 1.05, 0.28),
+    new THREE.Vector3(-1.05, 0.45, 0.38),
+    new THREE.Vector3(-0.55, 0.1, 0.48),
+    new THREE.Vector3(-0.05, 0.1, 0.52),
+    new THREE.Vector3(0.12, 0.64, 0.5),
   ]);
 }
 
@@ -1507,77 +1527,75 @@ function mountChargeScene(el, opts) {
     m.scene.add(root);
     try { m.renderer.setClearColor(0x091925, 1); } catch (e) {}
     m.scene.traverse((o) => {
-      if (o.isAmbientLight) o.intensity = 0.32;
-      if (o.isDirectionalLight) o.intensity *= 0.42;
+      if (o.isAmbientLight) o.intensity = 0.28;
+      if (o.isDirectionalLight) o.intensity *= 0.38;
     });
+    try { m.scene.background = new THREE.Color(0x0b1b28); } catch (e) {}
     if (!low) {
-      const c = document.createElement('canvas');
-      c.width = 8; c.height = 128;
-      const ctx = c.getContext('2d');
-      const gr = ctx.createLinearGradient(0, 0, 0, 128);
-      gr.addColorStop(0, '#091925');
-      gr.addColorStop(1, '#212E3A');
-      ctx.fillStyle = gr;
-      ctx.fillRect(0, 0, 8, 128);
-      const tex = new THREE.CanvasTexture(c);
-      const bg = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ map: tex }));
-      bg.position.set(0.2, 1.1, -4.2);
+      const bgMat = new THREE.ShaderMaterial({
+        vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+        fragmentShader: 'varying vec2 vUv; void main(){ vec3 a = vec3(0.035, 0.10, 0.145); vec3 b = vec3(0.13, 0.18, 0.227); gl_FragColor = vec4(mix(a, b, vUv.y), 1.0); }',
+        depthWrite: false,
+      });
+      const bg = new THREE.Mesh(new THREE.PlaneGeometry(28, 16), bgMat);
+      bg.position.set(-0.2, 1.3, -6);
       root.add(bg);
     }
-    const floor = mesh(GEO.cyl, 0x1a2733, 3.4, 0.03, 2.2, { flatShading: true });
-    add(root, floor, 0.2, 0.01, 0.1);
-    const shadow = mesh(GEO.sphere, 0x000000, 1.9, 0.08, 0.7, { transparent: true, opacity: 0.32 });
-    add(root, shadow, 0.3, 0.05, 0);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(16, 10), new THREE.MeshBasicMaterial({ color: 0x1a2733 }));
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.set(0.1, 0, 0.2);
+    root.add(floor);
+    const shadow = mesh(GEO.sphere, 0x000000, 2.1, 0.06, 0.8, { transparent: true, opacity: 0.28 });
+    add(root, shadow, 0.15, 0.04, 0.05);
 
     const pillar = buildChargePillar();
-    pillar.position.set(-1.62, 0, 0.05);
+    pillar.position.set(-1.58, 0, 0.12);
+    pillar.rotation.y = 0.42;
     root.add(pillar);
     const car = buildChargeCar();
-    car.position.set(1.12, 0, 0);
+    car.position.set(1.02, 0, 0);
     root.add(car);
 
     const curve = makeChargeCurve();
     const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(curve, low ? 16 : 28, 0.032, 8, false),
+      new THREE.TubeGeometry(curve, low ? 16 : 32, 0.028, 8, false),
       hexMat(0x1a2430)
     );
     root.add(tube);
     const beadN = low ? 3 : 6;
     const beads = [];
     for (let i = 0; i < beadN; i++) {
-      const b = mesh(GEO.sphereLo, CHARGE_TEAL, 0.055, 0.055, 0.055, { emissive: CHARGE_TEAL, emissiveIntensity: 0.95 });
+      const b = mesh(GEO.sphere, CHARGE_TEAL, 0.045, 0.045, 0.045, { emissive: CHARGE_TEAL, emissiveIntensity: 1 });
       root.add(b);
       beads.push(b);
-      const p = curve.getPoint(i / beadN);
-      b.position.copy(p);
+      b.position.copy(curve.getPoint(i / beadN));
     }
 
-    const basePos = new THREE.Vector3(-0.85, 1.32, 4.35);
-    const look = new THREE.Vector3(0.15, 0.68, 0);
+    const basePos = new THREE.Vector3(-2.35, 1.62, 3.95);
+    const look = new THREE.Vector3(0.15, 0.78, 0.05);
     m.camera.position.copy(basePos);
     m.camera.lookAt(look);
-    m.camera.fov = 28;
+    m.camera.fov = 32;
     m.camera.updateProjectionMatrix();
 
     m.update = (_dt, now) => {
       const still = m.still;
-      const icon = still ? 0.7 : 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(now / 420));
+      const icon = still ? 0.75 : 0.5 + 0.5 * (0.5 + 0.5 * Math.sin(now / 420));
       (pillar.userData.iconMats || []).forEach((mat) => { mat.emissiveIntensity = icon; });
-      const tail = still ? 0.85 : 0.7 + 0.3 * (0.5 + 0.5 * Math.sin(now / 640));
+      const tail = still ? 0.9 : 0.75 + 0.35 * (0.5 + 0.5 * Math.sin(now / 640));
       (car.userData.tails || []).forEach((lamp) => { lamp.material.emissiveIntensity = tail; });
       const period = 2800;
       const base = still ? 0 : ((now % period) / period);
       beads.forEach((b, i) => {
-        const t = (base + i / beadN) % 1;
-        b.position.copy(curve.getPoint(t));
+        b.position.copy(curve.getPoint((base + i / beadN) % 1));
       });
       if (still || low) {
         m.camera.position.copy(basePos);
       } else {
         m.camera.position.set(
-          basePos.x + 0.12 * Math.sin(now / 1800),
-          basePos.y + 0.05 * Math.sin(now / 2200),
-          basePos.z + 0.1 * Math.cos(now / 2000)
+          basePos.x + 0.1 * Math.sin(now / 1800),
+          basePos.y + 0.04 * Math.sin(now / 2200),
+          basePos.z + 0.08 * Math.cos(now / 2000)
         );
       }
       m.camera.lookAt(look);
@@ -1705,7 +1723,7 @@ export function remountAll() {
   const station = document.getElementById('s-station');
   if (station && s) fillStationDock(station, set, s);
   const charge = document.getElementById('s-charge');
-  if (charge && s) fillChargeDock(charge, set, s);
+  if (charge) fillChargeDock(charge, set, s);
   // Wallet card
   const wcard = document.querySelector('#c1wallet .c1wcard');
   if (wcard) mountWallet(wcard);
