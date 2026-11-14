@@ -888,7 +888,7 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  <div class="tab" data-t="trip" onclick="go('trip')"><b>🧭</b>Trip</div>
  <div class="tab" data-t="wallet" onclick="go('wallet')"><b>💳</b>Wallet</div>
  <div class="tab" data-t="ask" onclick="go('ask')"><b>💬</b>Ask</div>
- <div class="tab" data-t="profile" onclick="go('profile')"><b>🦕</b>Profile</div>
+ <div class="tab" data-t="profile" onclick="go('profile')"><b aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 3 v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="10" y="1.2" width="4" height="3" rx="1" fill="currentColor"/><ellipse cx="12" cy="13" rx="7.5" ry="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="12" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="21.2" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg></b>Profile</div>
 </nav>
 </div>
 <div class="foot" id="datasrc">This is a preview. Stations are real; prices, status and accounts are sample.</div>
@@ -2639,7 +2639,7 @@ const Txt = {
   nightDrive: () => L2('Night drive','Viaje nocturno'),
   rotate: () => L2('Rotate','Rotar'),
   laneLights: () => L2('Lane lights','Luces del carril'),
-  zapHello: () => L2('Zapsaurus hello','Saludo de Zapsaurus'),
+  zapHello: () => L2('Voltbot hello','Saludo de Voltbot'),
   close: () => L2('Close','Cerrar'),
   fromN: () => L2('N','N')
 };
@@ -2649,20 +2649,22 @@ function zapSvg(face){
   const base=`<svg xmlns="http://www.w3.org/2000/svg" width="44" height="55" viewBox="-60 -62 120 150" aria-hidden="true"><defs><linearGradient id="c1zskin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B7BFF"/><stop offset="1" stop-color="#1E4FD8"/></linearGradient></defs>
 <path d="M0 78 C-40 40 -52 10 -52 -12 a52 52 0 0 1 104 0 C52 10 40 40 0 78z" fill="#0B1530"/>
 <path d="M0 70 C-34 36 -45 9 -45 -12 a45 45 0 0 1 90 0 C45 9 34 36 0 70z" fill="#FFD23F"/>
-<path d="M-30 6 C-36 -30 -10 -46 14 -42 C36 -38 44 -24 42 -10 C40 6 26 14 8 13 C-6 12 -24 20 -30 6z" fill="${skin}" stroke="#0B1530" stroke-width="4" stroke-linejoin="round"/>
-<path d="M-24 -34 l7 -12 l-1 8 l8 -2 l-7 12 l1 -8z" fill="#FFD23F" stroke="#0B1530" stroke-width="1.5"/>`;
-  if(face==='charging') return base+`<path d="M3 -20 q7 -6 14 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M12 0 q10 7 22 -1" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<circle cx="34" cy="-22" r="1.8" fill="#0B1530"/>
+<rect x="-22" y="-36" width="44" height="56" rx="20" fill="${skin}" stroke="#0B1530" stroke-width="4"/>
+<path d="M0 -36 L0 -50" stroke="#0B1530" stroke-width="3" stroke-linecap="round"/>
+<rect x="-7" y="-58" width="14" height="10" rx="3" fill="#C9D1DE" stroke="#0B1530" stroke-width="2"/>`;
+  if(face==='charging') return base+`<path d="M-16 -14 q8 -6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M0 -14 q8 -6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M-8 4 q8 8 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
 <g transform="translate(36,-50)"><rect x="-11" y="-8" width="20" height="14" rx="2.5" fill="#34D1BF" stroke="#0B1530" stroke-width="2"/><rect x="9" y="-4" width="3.5" height="6" rx="1" fill="#0B1530"/><path d="M1 -5 L-4 1 L0 1 L-2 7 L6 -1 L1.5 -1z" fill="#0B1530"/></g></svg>`;
-  if(face==='sleepy') return base+`<path d="M3 -18 q7 5 14 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<ellipse cx="24" cy="2" rx="5" ry="4" fill="#0B1530"/>
-<circle cx="34" cy="-22" r="1.8" fill="#0B1530"/>
-<text x="40" y="-42" font-size="14" font-weight="700" fill="#5A6680">z</text>
-<text x="50" y="-54" font-size="18" font-weight="700" fill="#5A6680">Z</text></svg>`;
-  return base+`<circle cx="10" cy="-20" r="9" fill="#fff" stroke="#0B1530" stroke-width="2"/><circle cx="13" cy="-19" r="5" fill="#0B1530"/><circle cx="15" cy="-21" r="1.8" fill="#fff"/>
-<path d="M10 1 q14 9 28 -3" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<circle cx="34" cy="-22" r="1.8" fill="#0B1530"/></svg>`;
+  if(face==='sleepy') return base+`<path d="M-16 -14 q8 6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M0 -14 q8 6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M-6 6 q6 4 12 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<text x="28" y="-36" font-size="14" font-weight="700" fill="#5A6680">z</text>
+<text x="38" y="-48" font-size="18" font-weight="700" fill="#5A6680">Z</text></svg>`;
+  return base+`<circle cx="-10" cy="-14" r="8" fill="#9CC2FF"/><circle cx="10" cy="-14" r="8" fill="#9CC2FF"/>
+<circle cx="-10" cy="-14" r="3.5" fill="#0B1530"/><circle cx="10" cy="-14" r="3.5" fill="#0B1530"/>
+<circle cx="-8" cy="-16" r="1.5" fill="#fff"/><circle cx="12" cy="-16" r="1.5" fill="#fff"/>
+<path d="M-8 4 q8 8 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
 }
 
 function youPos(){
@@ -3155,7 +3157,7 @@ try{renderWallet()}catch(e){}
 /* Profile */
 const PROF_KEY='c1_profile';
 const TRIPST_KEY='c1_trip_stats';
-function loadProf(){try{const o=JSON.parse(localStorage.getItem(PROF_KEY)||'{}');return {nickname:(o.nickname||'Zapsaurus').toString().slice(0,12)||'Zapsaurus'}}catch(e){return {nickname:'Zapsaurus'}}}
+function loadProf(){try{const o=JSON.parse(localStorage.getItem(PROF_KEY)||'{}');return {nickname:(o.nickname||'Voltbot').toString().slice(0,12)||'Voltbot'}}catch(e){return {nickname:'Voltbot'}}}
 function saveProf(o){try{localStorage.setItem(PROF_KEY,JSON.stringify(o))}catch(e){}}
 function tripStats(){try{const o=JSON.parse(localStorage.getItem(TRIPST_KEY)||'null');if(o&&typeof o.count==='number')return o; const n=+(localStorage.getItem(TRIPST_KEY)||0); return {count:n||0,lastAt:n?null:null}}catch(e){return {count:0,lastAt:null}}}
 function bumpTrips(){const s=tripStats();s.count=(s.count||0)+1;s.lastAt=Date.now();try{localStorage.setItem(TRIPST_KEY,JSON.stringify(s))}catch(e){}}
@@ -3179,13 +3181,13 @@ function renderProfile(){
   </div>
   <div class="card"><b>${L('My picture','Mi imagen')}</b>
     <div style="margin-top:8px">
-      <button type="button" class="chip on" id="c1pic-zap">${L('Zapsaurus','Zapsaurus')}</button>
+      <button type="button" class="chip on" id="c1pic-zap">${L('Voltbot','Voltbot')}</button>
       <button type="button" class="chip" id="c1pic-car">${L('My car','Mi auto')}</button>
     </div>
   </div>
   <div class="card"><b>${L('Pick your buddy','Elige tu compañero')}</b>
     <div class="muted">${L('More buddies will show up here later.','Más compañeros aparecerán aquí más adelante.')}</div>
-    <div style="margin-top:8px"><button type="button" class="chip on">Zapsaurus</button>${dots}</div>
+    <div style="margin-top:8px"><button type="button" class="chip on">Voltbot</button>${dots}</div>
   </div>
   <div class="card" style="display:flex;gap:12px">
     <div class="c1count"><b style="font-size:1.25rem">${trips}</b><div class="muted">${L('trips planned','viajes planeados')}</div></div>
@@ -3194,7 +3196,7 @@ function renderProfile(){
   <div style="padding:0 14px 16px"><button type="button" class="btn" id="c1p-clear">${L('Clear my data','Borrar mis datos')}</button>
     <div class="muted" style="text-align:center">${L('No sign-in. Everything stays on this phone.','Sin cuenta. Todo se queda en este teléfono.')}</div></div>`;
   const nick=document.getElementById('c1p-nick');
-  if(nick) nick.addEventListener('change',()=>{saveProf({nickname:(nick.value||'Zapsaurus').slice(0,12)||'Zapsaurus'})});
+  if(nick) nick.addEventListener('change',()=>{saveProf({nickname:(nick.value||'Voltbot').slice(0,12)||'Voltbot'})});
   const clr=document.getElementById('c1p-clear');
   if(clr) clr.onclick=()=>{
     if(!confirm(L('Clear check-ins, planned-trip counts, network ticks, and nickname from this phone?','¿Borrar registros, conteo de viajes, redes marcadas y el apodo de este teléfono?'))) return;
@@ -3387,39 +3389,54 @@ window.mountAsk=mountAsk;
 /* v22: energy crew, ask tab only, slimmer map, 3D car eggs */
 (function(){
 const CREW=[
-  {id:'zapsaurus',name:'Zapsaurus',color:'#1E4FD8',kind:'rex'},
-  {id:'voltatops',name:'Voltatops',color:'#F2EEE6',kind:'tri'},
-  {id:'stegowatt',name:'Stegowatt',color:'#E69F00',kind:'stego'},
-  {id:'tankamp',name:'Tankamp',color:'#8A94A8',kind:'ankylo'},
-  {id:'pterowatt',name:'Pterowatt',color:'#CC79A7',kind:'ptero'},
-  {id:'honkwatt',name:'Honkwatt',color:'#1FA39A',kind:'para'}
+  {id:'voltbot',name:'Voltbot',color:'#1E4FD8',kind:'volt'},
+  {id:'ampbot',name:'Ampbot',color:'#F2EEE6',kind:'amp'},
+  {id:'sparkbot',name:'Sparkbot',color:'#E69F00',kind:'spark'},
+  {id:'coilbot',name:'Coilbot',color:'#8A94A8',kind:'coil'},
+  {id:'plugbot',name:'Plugbot',color:'#CC79A7',kind:'plug'},
+  {id:'glowbot',name:'Glowbot',color:'#1FA39A',kind:'glow'}
 ];
+const CREW_ALIAS={zapsaurus:'voltbot',voltatops:'ampbot',stegowatt:'sparkbot',tankamp:'coilbot',pterowatt:'plugbot',honkwatt:'glowbot'};
+function crewOf(id){const c=CREW.find(x=>x.id===id)||CREW.find(x=>x.id===CREW_ALIAS[id]);return c||CREW[0]}
 const GREET=["Fully charged?","Need a spark?","Let's plug in."];
 const SLEEPY='Need a boost?';
 const rm=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
 const L=(en,es)=> (typeof L2==='function'?L2(en,es):en);
-function loadProf(){try{const o=JSON.parse(localStorage.getItem('c1_profile')||'{}');const id=CREW.some(c=>c.id===o.buddyId)?o.buddyId:'zapsaurus';return {nickname:(o.nickname||'Zapsaurus').toString().slice(0,12)||'Zapsaurus',buddyId:id}}catch(e){return {nickname:'Zapsaurus',buddyId:'zapsaurus'}}}
+function loadProf(){try{const o=JSON.parse(localStorage.getItem('c1_profile')||'{}');const raw=o.buddyId,id=crewOf(raw).id;const nickMap={Zapsaurus:'Voltbot',Voltatops:'Ampbot',Stegowatt:'Sparkbot',Tankamp:'Coilbot',Pterowatt:'Plugbot',Honkwatt:'Glowbot'};let nickname=(o.nickname||'Voltbot').toString().slice(0,12)||'Voltbot';if(nickMap[nickname])nickname=nickMap[nickname];return {nickname,buddyId:id}}catch(e){return {nickname:'Voltbot',buddyId:'voltbot'}}}
 function saveProf(o){try{localStorage.setItem('c1_profile',JSON.stringify({...loadProf(),...o}))}catch(e){}}
 function sleepy(){try{const s=JSON.parse(localStorage.getItem('c1_trip_stats')||'null'); if(!s||!s.count) return true; if(s.lastAt==null) return false; return (Date.now()-s.lastAt)>=7*864e5;}catch(e){return true}}
 function greeting(){ if(sleepy()&&!rm()) return SLEEPY; return GREET[Math.floor(Date.now()/864e5)%3]; }
 
 function crewSvg(id, face, size){
-  const b=CREW.find(c=>c.id===id)||CREW[0];
-  const c=b.color, O='#0B1530', G='#FFD23F';
-  let head='';
-  if(b.kind==='rex') head=`<path d="M-6 -34 l4 -9 l4 9 l4 -9 l4 9" fill="${G}" stroke="${O}" stroke-width="2.5"/><ellipse cx="0" cy="0" rx="32" ry="30" fill="${c}" stroke="${O}" stroke-width="3.5"/>`;
-  else if(b.kind==='tri') head=`<path d="M-30 -14 Q0 -54 30 -14 Z" fill="#FFF3D6" stroke="${O}" stroke-width="3"/><path d="M-16 -24 l-5 -16 h4 l-3 8 h4 Z" fill="${G}" stroke="${O}" stroke-width="1.8"/><path d="M16 -24 l5 -16 h-4 l3 8 h-4 Z" fill="${G}" stroke="${O}" stroke-width="1.8"/><ellipse cx="0" cy="4" rx="32" ry="27" fill="${c}" stroke="${O}" stroke-width="3.5"/><path d="M-4 16 l4 -12 l4 12 Z" fill="#FFF3D6" stroke="${O}" stroke-width="2"/>`;
-  else if(b.kind==='stego') head=`<path d="M-27 -22 L-20 -36 L-13 -22 Z M-14 -22 L-7 -42 L0 -22 Z M0 -22 L7 -42 L14 -22 Z M13 -22 L20 -36 L27 -22 Z" fill="${G}" stroke="${O}" stroke-width="2.5"/><ellipse cx="0" cy="0" rx="32" ry="28" fill="${c}" stroke="${O}" stroke-width="3.5"/>`;
-  else if(b.kind==='ankylo') head=`<path d="M-44 0 l10 -6 v12 Z M-36 -16 l10 -2 l-4 10 Z M36 -16 l-10 -2 l4 10 Z" fill="#FFF3D6" stroke="${O}" stroke-width="2.5"/><rect x="-38" y="-26" width="76" height="52" rx="22" fill="${c}" stroke="${O}" stroke-width="3.5"/><path d="M44 0 l12 -5 v4 h6 v6 h-6 v4 Z" fill="#C9D1DE" stroke="${O}" stroke-width="2"/><rect x="56" y="-3" width="5" height="8" rx="1" fill="${O}"/>`;
-  else if(b.kind==='ptero') head=`<path d="M-6 -24 L-40 -40 L-20 -12 Z" fill="${c}" stroke="${O}" stroke-width="3"/><path d="M14 6 L48 14 L14 18 Z" fill="#FFD9A0" stroke="${O}" stroke-width="3"/><ellipse cx="0" cy="0" rx="28" ry="27" fill="${c}" stroke="${O}" stroke-width="3.5"/>`;
-  else head=`<path d="M-6 -24 Q-30 -60 -50 -44 Q-36 -38 -18 -14 Z" fill="#FFD9A0" stroke="${O}" stroke-width="3"/><path d="M-28 -50 l-4 8 h3 l-3 7" fill="${G}" stroke="${O}" stroke-width="1.4"/><ellipse cx="0" cy="2" rx="30" ry="29" fill="${c}" stroke="${O}" stroke-width="3.5"/><ellipse cx="18" cy="14" rx="14" ry="9" fill="#BFEDE8" stroke="${O}" stroke-width="2"/>`;
-  const faceG = face==='wink'
-    ? `<circle cx="-10" cy="-6" r="4" fill="${O}"/><path d="M5 -6 q5 -5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-8 8 Q0 16 8 8" stroke="${O}" stroke-width="3" fill="none"/><path d="M40 -40 l-8 12 h7 l-5 12 l12 -16 h-7 l5 -8 Z" fill="${G}" stroke="${O}" stroke-width="2"/>`
+  const b=crewOf(id), c=b.color, O='#0B1530', G='#FFD23F', R='#C9D1DE', E='#9CC2FF';
+  const k=b.kind;
+  const ant=(v)=> v==='round'
+    ? `<path d="M80 36 L80 20" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="75" y="12" width="10" height="8" rx="3" fill="${R}" stroke="${O}" stroke-width="2"/>`
+    : v==='slim'
+    ? `<path d="M86 32 L90 16" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="86" y="6" width="8" height="12" rx="2" fill="${R}" stroke="${O}" stroke-width="2"/>`
+    : v==='coil'
+    ? `<path d="M80 48 q8 -10 0 -18 q-8 -10 0 -16" fill="none" stroke="${R}" stroke-width="3"/><rect x="76" y="8" width="8" height="6" rx="2" fill="${R}" stroke="${O}" stroke-width="1.8"/>`
+    : v==='block'
+    ? `<path d="M80 38 L80 22" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="73" y="12" width="14" height="10" rx="3" fill="${R}" stroke="${O}" stroke-width="2"/>`
+    : v==='ring'
+    ? `<path d="M80 32 L80 20" stroke="${O}" stroke-width="3"/><circle cx="80" cy="14" r="6" fill="none" stroke="${R}" stroke-width="3"/><circle cx="80" cy="14" r="2" fill="${G}"/>`
+    : `<path d="M80 32 L80 16" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="73" y="8" width="14" height="10" rx="3" fill="${R}" stroke="${O}" stroke-width="2"/>`;
+  const eyes = face==='wink'
+    ? `<circle cx="72" cy="66" r="5" fill="${E}"/><circle cx="72" cy="66" r="2.2" fill="${O}"/><path d="M83 66 q5 -5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
     : face==='sleepy'
-    ? `<path d="M-15 -6 q5 5 10 0 M5 -6 q5 5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="10" rx="3.5" ry="4" fill="${O}"/>`
-    : `<circle cx="-10" cy="-6" r="4" fill="${O}"/><circle cx="-8.5" cy="-7.5" r="1.3" fill="#fff"/><circle cx="10" cy="-6" r="4" fill="${O}"/><circle cx="11.5" cy="-7.5" r="1.3" fill="#fff"/><path d="M-8 8 Q0 16 8 8" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    ? `<path d="M67 66 q5 5 10 0 M83 66 q5 5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    : `<circle cx="72" cy="66" r="6" fill="${E}"/><circle cx="88" cy="66" r="6" fill="${E}"/><circle cx="72" cy="66" r="2.4" fill="${O}"/><circle cx="88" cy="66" r="2.4" fill="${O}"/>`;
+  const mouth = face==='sleepy' ? `<path d="M74 80 q6 3 12 0" stroke="${O}" stroke-width="2.4" fill="none"/>` : `<path d="M74 80 q6 6 12 0" stroke="${O}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  const arm=`<path d="M110 100 C124 96 130 108 128 118" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round"/><ellipse cx="130" cy="120" rx="6" ry="5" fill="${c}" stroke="${O}" stroke-width="2"/>`;
+  let body='';
+  if(k==='volt') body=`<circle cx="80" cy="168" r="20" fill="#1A1F2B" stroke="${O}" stroke-width="3"/><circle cx="80" cy="168" r="9" fill="${R}" stroke="${O}" stroke-width="2"/><rect x="74" y="140" width="12" height="16" rx="4" fill="${O}"/><ellipse cx="80" cy="112" rx="28" ry="40" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="68" rx="20" ry="18" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('flat')}`;
+  else if(k==='amp') body=`<ellipse cx="80" cy="168" rx="36" ry="7" fill="${c}" opacity=".45" stroke="${O}" stroke-width="2"/><ellipse cx="80" cy="118" rx="36" ry="34" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="78" rx="22" ry="18" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('round')}`;
+  else if(k==='spark') body=`<circle cx="80" cy="170" r="16" fill="#1A1F2B" stroke="${O}" stroke-width="3"/><path d="M80 154 L68 118 M80 154 L92 118" stroke="${O}" stroke-width="4"/><ellipse cx="80" cy="108" rx="22" ry="36" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="66" rx="16" ry="15" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('slim')}`;
+  else if(k==='coil') body=`<ellipse cx="80" cy="166" rx="42" ry="7" fill="${c}" opacity=".45" stroke="${O}" stroke-width="2"/><ellipse cx="80" cy="120" rx="44" ry="26" fill="${c}" stroke="${O}" stroke-width="3"/><rect x="54" y="68" width="52" height="34" rx="12" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('coil')}`;
+  else if(k==='plug') body=`<circle cx="80" cy="170" r="18" fill="#1A1F2B" stroke="${O}" stroke-width="3"/><path d="M58 160 Q80 148 102 160" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="116" rx="32" ry="38" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="74" rx="18" ry="16" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('block')}`;
+  else body=`<ellipse cx="80" cy="168" rx="28" ry="6" fill="${c}" opacity=".5" stroke="${O}" stroke-width="2"/><ellipse cx="80" cy="112" rx="20" ry="42" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="64" rx="16" ry="16" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('ring')}`;
   const w=size||72, h=Math.round(w*1.25);
-  return `<svg width="${w}" height="${h}" viewBox="-60 -70 120 150" aria-hidden="true"><path d="M0 -58 C34 -58 54 -34 54 -6 C54 30 0 66 0 66 C0 66 -54 30 -54 -6 C-54 -34 -34 -58 0 -58 Z" fill="${G}" stroke="${O}" stroke-width="4"/><g transform="translate(0,-4) scale(0.92)">${head}${faceG}</g></svg>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 160 200" aria-hidden="true"><ellipse cx="80" cy="188" rx="48" ry="6" fill="${O}" opacity=".18"/>${body}${arm}${eyes}${mouth}</svg>`;
 }
 
 function carSvg(paint, opts){
@@ -3544,7 +3561,7 @@ function openEdit(){
     <input id="c1e-nick" maxlength="12" value="${prof.nickname.replace(/"/g,'')}" style="margin-top:6px">
     <div style="margin-top:16px"><button type="button" class="btn" id="c1e-clear">${L('Clear my data','Borrar mis datos')}</button></div>`;
   document.body.appendChild(bg); document.body.appendChild(sh);
-  const close=()=>{ const n=document.getElementById('c1e-nick'); if(n) saveProf({nickname:(n.value||'Zapsaurus').slice(0,12)||'Zapsaurus'}); bg.remove(); sh.remove(); renderProfileV22(); };
+  const close=()=>{ const n=document.getElementById('c1e-nick'); if(n) saveProf({nickname:(n.value||'Voltbot').slice(0,12)||'Voltbot'}); bg.remove(); sh.remove(); renderProfileV22(); };
   bg.onclick=close; document.getElementById('c1edit-x').onclick=close;
   sh.querySelectorAll('[data-buddy]').forEach(b=>b.onclick=()=>{ saveProf({buddyId:b.getAttribute('data-buddy')}); openEdit(); });
   document.getElementById('c1e-clear').onclick=()=>{
@@ -3666,7 +3683,7 @@ function carBodySvg(paint, body, opts){
 }
 function avatarHtml(size){
   const set=loadSet();
-  const prof=(typeof loadProf==='function')?loadProf():{buddyId:'zapsaurus',nickname:'Zapsaurus'};
+  const prof=(typeof loadProf==='function')?loadProf():{buddyId:'voltbot',nickname:'Voltbot'};
   const spin=rm()?'':'c1avatar-spin';
   if(set.profileAvatar==='car') return carBodySvg(set.paint,set.body,{});
   const svg=(typeof crewSvg==='function')?crewSvg(prof.buddyId,'happy',size||88):'';
@@ -3729,7 +3746,7 @@ function renderProfileV23(){
   if(ed) ed.onclick=openEditV23;
 }
 function openEditV23(){
-  const prof=(typeof loadProf==='function')?loadProf():{buddyId:'zapsaurus',nickname:'Zapsaurus'};
+  const prof=(typeof loadProf==='function')?loadProf():{buddyId:'voltbot',nickname:'Voltbot'};
   const set=loadSet();
   document.getElementById('c1edit-bg')?.remove();
   document.getElementById('c1edit')?.remove();
@@ -3744,7 +3761,7 @@ function openEditV23(){
     <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">${crew}</div>
     <div style="margin-top:12px"><b>${L('Profile picture','Foto de perfil')}</b></div>
     <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
-      <button type="button" class="chip${set.profileAvatar==='dino'?' on':''}" id="c1av-dino">${L('3D dino','Dino 3D')}</button>
+      <button type="button" class="chip${set.profileAvatar==='dino'?' on':''}" id="c1av-dino">${L('3D robot','Robot 3D')}</button>
       <button type="button" class="chip${set.profileAvatar==='car'?' on':''}" id="c1av-car">${L('3D car','Auto 3D')}</button>
     </div>
     <div id="c1av-preview" style="margin-top:8px">${avatarHtml(72)}</div>
@@ -3753,7 +3770,7 @@ function openEditV23(){
     <input id="c1e-nick" maxlength="12" value="${(prof.nickname||'').replace(/"/g,'')}" style="margin-top:6px">
     <div style="margin-top:16px"><button type="button" class="btn" id="c1e-clear">${L('Clear my data','Borrar mis datos')}</button></div>`;
   document.body.appendChild(bg); document.body.appendChild(sh);
-  const close=()=>{ const n=document.getElementById('c1e-nick'); if(n && typeof saveProf==='function') saveProf({nickname:(n.value||'Zapsaurus').slice(0,12)||'Zapsaurus'}); bg.remove(); sh.remove(); renderProfileV23(); };
+  const close=()=>{ const n=document.getElementById('c1e-nick'); if(n && typeof saveProf==='function') saveProf({nickname:(n.value||'Voltbot').slice(0,12)||'Voltbot'}); bg.remove(); sh.remove(); renderProfileV23(); };
   bg.onclick=close; document.getElementById('c1edit-x').onclick=close;
   sh.querySelectorAll('[data-buddy]').forEach(b=>b.onclick=()=>{ if(typeof saveProf==='function') saveProf({buddyId:b.getAttribute('data-buddy')}); openEditV23(); });
   const dino=document.getElementById('c1av-dino'); if(dino) dino.onclick=()=>{ saveSet({profileAvatar:'dino'}); openEditV23(); };
@@ -3802,5 +3819,5 @@ window.openEditV23=openEditV23;
 </script>
 
 
-<script type="module" src="./c1-three.js?v=20261113q2" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q2"></script>
+<script type="module" src="./c1-three.js?v=20261113q3" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q3"></script>
 </body></html>
