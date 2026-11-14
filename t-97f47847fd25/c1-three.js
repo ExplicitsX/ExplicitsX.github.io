@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q8';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q9';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q8';
+const C1_ASSET_V = '20261113q9';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -1255,39 +1255,369 @@ function mountBuddy(el, opts) {
   });
 }
 
-function mountLot(el, row) {
-  if (!row || !row.listed || !row.stalls || !row.stalls.length) return null;
-  return startMount('lot', el, 130, (m) => {
-    const root = new THREE.Group();
-    m.scene.add(root);
-    const n = row.stalls.length;
-    row.stalls.forEach((st, i) => {
-      const s = buildStall(st);
-      const span = 1.15;
-      s.position.set((i - (n - 1) / 2) * span, 0, 0);
-      root.add(s);
-    });
-    const width = Math.max(3.2, n * 1.15 + 1);
-    m.camera.position.set(0.4, 2.2, 4.2);
-    m.camera.lookAt(0, 0.2, 0);
-    m.camera.fov = 32;
-    m.camera.updateProjectionMatrix();
-    // empty group at origin; we rotate the row slightly
-    attachSpin(m.canvas, m.state, { inertia: true });
-    m.state.yaw = 0.15;
-    m.update = (dt, now) => {
-      spinUpdate(m, root, dt, now);
-      // clamp lot yaw so stalls stay readable
-      root.rotation.y = Math.max(-0.5, Math.min(0.5, m.state.yaw));
+
+/* ---------- isometric station lot (DOE stall count, pending live status) ---------- */
+const LOT_SCENE_CAP = 24;
+const STALL_W = 2.5, STALL_L = 5.0, STALL_GAP = 0.28, AISLE = 1.6;
+const LOT_BG = 0xeef1f4;
+const STALL_LIGHT = { unknown: 0x9aa3b5, available: 0x22c55e, busy: 0xe11d2e, out_of_order: 0xf5a524 };
+const pendingStallStatusProvider = {
+  id: 'pending',
+  getStatus() { return 'unknown'; },
+};
+let activeStallStatusProvider = pendingStallStatusProvider;
+function setStallStatusProvider(provider) {
+  activeStallStatusProvider = provider || pendingStallStatusProvider;
+}
+function getStallStatusProvider() { return activeStallStatusProvider; }
+function readStallStatus(query) {
+  try {
+    const status = getStallStatusProvider().getStatus(query || {});
+    if (status === 'available' || status === 'busy' || status === 'out_of_order') return status;
+  } catch (e) {}
+  return 'unknown';
+}
+function stallLightColor(status) { return STALL_LIGHT[status] || STALL_LIGHT.unknown; }
+function stallPowerKw(kind, maxKw) {
+  if (kind !== 'dc' || maxKw == null || !isFinite(maxKw) || maxKw <= 0) return null;
+  return Math.round(maxKw);
+}
+function stallInspectLabel(stall, maxKw) {
+  const kw = stallPowerKw(stall && stall.kind, maxKw);
+  return kw != null ? ((stall.plugLabel || '') + ' · ' + kw + ' kW') : (stall && stall.plugLabel) || '';
+}
+function colsForLot(n) {
+  if (n <= 0) return 1;
+  if (n <= 4) return n;
+  if (n <= 10) return Math.ceil(n / 2);
+  return Math.min(6, Math.ceil(n / Math.ceil(n / 6)));
+}
+function emptyBuilding(padW, padD) {
+  const bw = Math.min(10, Math.max(6.5, padW * 0.48));
+  const bd = 4.2;
+  const bx = -padW / 2 + bw / 2 + 0.6;
+  const bz = -padD / 2 + bd / 2 + 0.35;
+  return {
+    x: bx, z: bz, w: bw, d: bd, h: 3.4,
+    annex: { x: bx - bw / 2 - 1.05, z: bz + 0.15, w: 1.9, d: 2.6, h: 2.2 },
+    utility: { x: bx - bw / 2 - 2.35, z: bz - 0.4, w: 1.1, d: 1.2, h: 1.5 },
+    glass: { x: bx, z: bz + bd / 2 - 0.08, w: bw * 0.92, d: 0.12, h: 2.7 },
+    mats: [
+      { x: bx - bw * 0.18, z: bz + bd / 2 + 0.85, w: 2.2, d: 1.5 },
+      { x: bx + bw * 0.22, z: bz + bd / 2 + 0.85, w: 2.2, d: 1.5 },
+    ],
+  };
+}
+function layoutFromRow(row) {
+  row = row || { listed: false, stalls: [], hidden: 0, dcCount: 0, l2Count: 0 };
+  if (!row.listed || !row.stalls || !row.stalls.length) {
+    const pad = { w: 14, d: 12, h: 0.18 };
+    return { listed: !!row.listed, hidden: 0, dcCount: row.dcCount || 0, l2Count: row.l2Count || 0, pad, building: emptyBuilding(pad.w, pad.d), stalls: [] };
+  }
+  const n = row.stalls.length;
+  const cols = colsForLot(n);
+  const rows = Math.ceil(n / cols);
+  const gridW = cols * STALL_W + (cols - 1) * STALL_GAP;
+  const gridD = rows * STALL_L + (rows - 1) * AISLE;
+  const court = 5.4;
+  const padW = Math.max(14, gridW + 6.4);
+  const padD = Math.max(12, gridD + court + 5.2);
+  const pad = { w: padW, d: padD, h: 0.18 };
+  const building = emptyBuilding(padW, padD);
+  const originX = -gridW / 2 + STALL_W / 2 + 1.4;
+  const originZ = building.z + building.d / 2 + court / 2 + STALL_L / 2;
+  const stalls = row.stalls.map((stall, i) => {
+    const c = i % cols;
+    const r = Math.floor(i / cols);
+    const x = originX + c * (STALL_W + STALL_GAP);
+    const z = originZ + r * (STALL_L + AISLE);
+    const halfW = STALL_W / 2, halfL = STALL_L / 2;
+    return {
+      stall, x, z, w: STALL_W, d: STALL_L,
+      pillar: { x, y: 0, z: z - halfL + 0.22 },
+      lines: [
+        { x1: x - halfW, z1: z - halfL, x2: x - halfW, z2: z + halfL },
+        { x1: x + halfW, z1: z - halfL, x2: x + halfW, z2: z + halfL },
+        { x1: x - halfW, z1: z + halfL, x2: x + halfW, z2: z + halfL },
+      ],
+      bollards: [
+        { x: x - halfW, y: 0, z: z + halfL },
+        { x: x + halfW, y: 0, z: z + halfL },
+      ],
     };
-    if (row.hidden > 0 && !el.parentNode.querySelector('.c1lot-more-gl')) {
-      const more = document.createElement('div');
-      more.className = 'c1lot-more c1lot-more-gl';
-      more.style.cssText = 'color:#3B7BFF;font-weight:800;padding:0 8px';
-      more.textContent = '+' + row.hidden + ' more';
-      el.parentNode.appendChild(more);
-    }
   });
+  return { listed: true, hidden: row.hidden || 0, dcCount: row.dcCount, l2Count: row.l2Count, pad, building, stalls };
+}
+
+function lotSceneSvg(layout, opts) {
+  opts = opts || {};
+  const W = 480, H = 250;
+  const pad = layout.pad;
+  const span = Math.max(pad.w, pad.d, 8);
+  const yaw = 0.58, pitch = 0.66, scale = 210 / span * (opts.zoom || 1);
+  const tgt = { x: 0.3, y: 0.2, z: 0.4 };
+  const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+  function proj(x, y, z) {
+    const tx = x - tgt.x, ty = y - tgt.y, tz = z - tgt.z;
+    const x1 = tx * cy + tz * sy;
+    const z1 = -tx * sy + tz * cy;
+    const y2 = ty * cp - z1 * sp;
+    const z2 = ty * sp + z1 * cp;
+    return { x: W / 2 + x1 * scale, y: H * 0.64 - y2 * scale, d: z2 };
+  }
+  function box(x, y, z, w, h, dpth, top, side, front, key) {
+    const hx = w / 2, hd = dpth / 2;
+    const c = [
+      [x - hx, y, z - hd], [x + hx, y, z - hd], [x + hx, y, z + hd], [x - hx, y, z + hd],
+      [x - hx, y + h, z - hd], [x + hx, y + h, z - hd], [x + hx, y + h, z + hd], [x - hx, y + h, z + hd],
+    ].map(p => proj(p[0], p[1], p[2]));
+    const sides = [
+      { i: [4, 5, 6, 7], f: top },
+      { i: [0, 1, 5, 4], f: side },
+      { i: [1, 2, 6, 5], f: front },
+      { i: [2, 3, 7, 6], f: side },
+      { i: [3, 0, 4, 7], f: front },
+    ];
+    return sides.map(s => {
+      const pts = s.i.map(i => c[i]);
+      const depth = s.i.reduce((a, i) => a + c[i].d, 0) / s.i.length;
+      const d = 'M' + pts.map(p => p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join('L') + 'Z';
+      return `<path d="${d}" fill="${s.f}" stroke="#b0b6be" stroke-width="0.6" stroke-linejoin="round"${key ? ' data-stall="' + key + '"' : ''}/>`;
+    }).map((html, idx) => ({ html, d: sides[idx].i.reduce((a, i) => a + c[i].d, 0) / sides[idx].i.length }));
+  }
+  const faces = [];
+  faces.push(...box(0, -pad.h, 0, pad.w, pad.h, pad.d, '#C5CAD1', '#A8AEB6', '#B0B6BE'));
+  const b = layout.building;
+  faces.push(...box(b.x, 0, b.z, b.w, b.h, b.d, '#D5D8DD', '#9EA4AC', '#B8BDC4'));
+  if (!opts.lowEnd) {
+    faces.push(...box(b.annex.x, 0, b.annex.z, b.annex.w, b.annex.h, b.annex.d, '#D9D3C8', '#C4BDB0', '#D9D3C8'));
+    faces.push(...box(b.utility.x, 0, b.utility.z, b.utility.w, b.utility.h, b.utility.d, '#A8ADB5', '#9EA4AC', '#A8ADB5'));
+    b.mats.forEach(m => faces.push(...box(m.x, 0.02, m.z, m.w, 0.03, m.d, '#1E3A6E', '#1E3A6E', '#1E3A6E')));
+  }
+  faces.push(...box(b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, '#1E6C74', '#1E6C74', '#3AA0A8'));
+  (layout.stalls || []).forEach(st => {
+    st.lines.forEach(ln => {
+      const a = proj(ln.x1, 0.04, ln.z1), c = proj(ln.x2, 0.04, ln.z2);
+      faces.push({ html: `<path d="M${a.x.toFixed(1)} ${a.y.toFixed(1)}L${c.x.toFixed(1)} ${c.y.toFixed(1)}" stroke="#F7F8FA" stroke-width="2" fill="none"/>`, d: (a.d + c.d) / 2 - 0.01 });
+    });
+    if (!opts.lowEnd) {
+      st.bollards.forEach(bol => faces.push(...box(bol.x, 0, bol.z, 0.12, 0.7, 0.12, '#E8A317', '#C4840C', '#E8A317')));
+    }
+    const p = st.pillar, key = st.stall.key;
+    faces.push(...box(p.x, 0, p.z, 0.46, 1.55, 0.32, '#E8EAED', '#C9CDD4', '#E8EAED', key));
+    faces.push(...box(p.x, 0.55, p.z + 0.15, 0.3, 0.7, 0.06, '#5B6570', '#5B6570', '#5B6570', key));
+    faces.push(...box(p.x, 1.15, p.z + 0.16, 0.2, 0.16, 0.04, '#9EC9DC', '#9EC9DC', '#9EC9DC', key));
+    const lamp = proj(p.x, 1.66, p.z);
+    const status = readStallStatus({ stationId: opts.stationId, stallKey: key });
+    const col = '#' + stallLightColor(status).toString(16).padStart(6, '0');
+    faces.push({ html: `<circle cx="${lamp.x.toFixed(1)}" cy="${lamp.y.toFixed(1)}" r="4.2" fill="${col}" stroke="#fff" stroke-width="0.8" data-stall="${key}"/>`, d: lamp.d + 0.2 });
+  });
+  faces.sort((a, b) => a.d - b.d);
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 250" width="100%" height="100%" role="img" aria-label="Station lot layout"><rect width="480" height="250" fill="#EEF1F4"/>' + faces.map(f => f.html).join('') + '</svg>';
+}
+
+function addLotBox(root, x, y, z, w, h, d, color, extra) {
+  const o = mesh(GEO.box, color, w, h, d, extra);
+  add(root, o, x, y + h / 2, z);
+  return o;
+}
+
+function buildLotGroup(layout, opts) {
+  opts = opts || {};
+  const root = new THREE.Group();
+  const low = !!opts.lowEnd;
+  const pad = layout.pad;
+  addLotBox(root, 0, -pad.h, 0, pad.w, pad.h, pad.d, 0xc5cad1);
+  const b = layout.building;
+  addLotBox(root, b.x, 0, b.z, b.w, b.h, b.d, 0xb8bdc4);
+  const roof = mesh(GEO.box, 0xd5d8dd, b.w + 0.08, 0.1, b.d + 0.08);
+  add(root, roof, b.x, b.h + 0.05, b.z);
+  if (!low) {
+    addLotBox(root, b.annex.x, 0, b.annex.z, b.annex.w, b.annex.h, b.annex.d, 0xd9d3c8);
+    addLotBox(root, b.utility.x, 0, b.utility.z, b.utility.w, b.utility.h, b.utility.d, 0xa8adb5);
+    b.mats.forEach(m => addLotBox(root, m.x, 0.02, m.z, m.w, 0.03, m.d, 0x1e3a6e));
+  }
+  const glass = addLotBox(root, b.glass.x, 0.35, b.glass.z, b.glass.w, b.glass.h, 0.14, 0x2a8a92, { transparent: true, opacity: 0.88, emissive: 0x1e6c74, emissiveIntensity: 0.18 });
+  glass.userData.glass = true;
+  const pickables = [];
+  (layout.stalls || []).forEach(st => {
+    st.lines.forEach(ln => {
+      const dx = ln.x2 - ln.x1, dz = ln.z2 - ln.z1, len = Math.hypot(dx, dz) || 1;
+      const line = mesh(GEO.box, 0xf7f8fa, 0.07, 0.03, len);
+      line.position.set((ln.x1 + ln.x2) / 2, 0.04, (ln.z1 + ln.z2) / 2);
+      line.rotation.y = Math.atan2(dx, dz);
+      root.add(line);
+    });
+    if (!low) {
+      st.bollards.forEach(bol => {
+        const post = mesh(GEO.cyl, 0xe8a317, 0.055, 0.7, 0.055);
+        add(root, post, bol.x, 0.35, bol.z);
+      });
+    }
+    const p = st.pillar;
+    const body = addLotBox(root, p.x, 0, p.z, 0.46, 1.55, 0.32, st.stall.fits ? 0xe8eaed : 0xe8eaed, st.stall.fits ? { emissive: 0x3b7bff, emissiveIntensity: 0.08 } : undefined);
+    body.userData.stall = st;
+    const screen = addLotBox(root, p.x, 0.55, p.z + 0.15, 0.3, 0.7, 0.06, 0x5b6570);
+    screen.userData.stall = st;
+    const disp = addLotBox(root, p.x, 1.15, p.z + 0.16, 0.2, 0.16, 0.04, 0x9ec9dc, { emissive: 0x9ec9dc, emissiveIntensity: 0.2 });
+    disp.userData.stall = st;
+    const status = readStallStatus({ stationId: opts.stationId, stallKey: st.stall.key });
+    const lamp = mesh(GEO.sphereLo, stallLightColor(status), 0.09, 0.09, 0.09, { emissive: stallLightColor(status), emissiveIntensity: 0.35 });
+    add(root, lamp, p.x, 1.66, p.z);
+    lamp.userData.stall = st;
+    pickables.push(body, screen, disp, lamp);
+  });
+  root.userData.pickables = pickables;
+  return root;
+}
+
+function showLotInspect(el, text) {
+  const host = el && (el.closest && el.closest('.c1-3d-dock, #c1-3d-dock-station, .c1gl-host') || el.parentNode);
+  const cap = (host && host.parentNode && host.parentNode.querySelector('.c1-3d-lot-inspect'))
+    || (el && el.parentNode && el.parentNode.querySelector('.c1-3d-lot-inspect'))
+    || document.querySelector('.c1-3d-lot-inspect');
+  if (!cap) return;
+  if (text) {
+    cap.textContent = text;
+    cap.style.display = 'block';
+  } else {
+    cap.textContent = '';
+    cap.style.display = 'none';
+  }
+}
+
+function attachLotControls(m, layout, opts) {
+  const canvas = m.canvas;
+  const state = m.state;
+  state.yaw = 0.58;
+  state.pitch = 0.66;
+  state.zoom = 1;
+  state.vel = 0;
+  if (m.still) return;
+  let pid = null, lastX = 0, lastY = 0, moved = 0, startDist = 0, startZoom = 1, pointers = new Map();
+  const pt = (ev, i) => {
+    const t = ev.touches ? ev.touches[i] : ev;
+    return { x: t.clientX, y: t.clientY, id: t.identifier != null ? t.identifier : ev.pointerId };
+  };
+  const pinchD = () => {
+    if (pointers.size < 2) return 0;
+    const pts = [...pointers.values()];
+    return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+  };
+  const down = (ev) => {
+    if (ev.pointerType !== 'mouse' && ev.preventDefault) ev.preventDefault();
+    const p = { x: ev.clientX, y: ev.clientY };
+    pointers.set(ev.pointerId != null ? ev.pointerId : 0, p);
+    if (pointers.size >= 2) {
+      startDist = pinchD();
+      startZoom = state.zoom || 1;
+      moved = 8;
+      return;
+    }
+    pid = ev.pointerId;
+    lastX = ev.clientX; lastY = ev.clientY; moved = 0;
+    state.dragging = true; state.vel = 0;
+  };
+  const move = (ev) => {
+    if (pointers.has(ev.pointerId != null ? ev.pointerId : 0)) {
+      pointers.set(ev.pointerId != null ? ev.pointerId : 0, { x: ev.clientX, y: ev.clientY });
+    }
+    if (pointers.size >= 2 && startDist > 0) {
+      const d = pinchD();
+      state.zoom = pinchScale(startDist, d, startZoom, 0.7, 1.9);
+      moved += 4;
+      return;
+    }
+    if (state.dragging) {
+      const dx = ev.clientX - lastX, dy = ev.clientY - lastY;
+      lastX = ev.clientX; lastY = ev.clientY;
+      moved += Math.abs(dx) + Math.abs(dy);
+      state.yaw += dx * 0.008;
+      state.pitch = Math.max(0.35, Math.min(1.15, (state.pitch || 0.66) + dy * 0.005));
+    }
+  };
+  const up = (ev) => {
+    pointers.delete(ev.pointerId != null ? ev.pointerId : 0);
+    if (pointers.size < 2) startDist = 0;
+    if (!state.dragging) return;
+    state.dragging = false;
+    if (moved > 12) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ev.clientX - rect.left, y = ev.clientY - rect.top;
+    const ndc = new THREE.Vector2((x / Math.max(rect.width, 1)) * 2 - 1, -(y / Math.max(rect.height, 1)) * 2 + 1);
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(ndc, m.camera);
+    const hits = ray.intersectObjects(m.root && m.root.userData.pickables || [], true);
+    const hit = hits.find(h => h.object && h.object.userData && h.object.userData.stall);
+    if (hit) {
+      const st = hit.object.userData.stall;
+      showLotInspect(m.el, stallInspectLabel(st.stall, opts.maxKw));
+    } else {
+      showLotInspect(m.el, '');
+    }
+  };
+  canvas.style.touchAction = 'none';
+  canvas.addEventListener('pointerdown', down);
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', up);
+  window.addEventListener('pointercancel', up);
+  m._lotOff = () => {
+    canvas.removeEventListener('pointerdown', down);
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', up);
+    window.removeEventListener('pointercancel', up);
+  };
+}
+
+function mountLot(el, row, opts) {
+  if (!el) return null;
+  opts = opts || {};
+  if (!row || !row.listed || !row.stalls || !row.stalls.length) {
+    el.innerHTML = '<div class="c1lot-missing muted">Charger count not listed</div>';
+    return null;
+  }
+  const low = typeof chargeLowEnd === 'function' ? chargeLowEnd() : false;
+  const layout = layoutFromRow(row);
+  el.innerHTML = lotSceneSvg(layout, { lowEnd: low, stationId: opts.stationId });
+  const mounted = startMount('lot', el, opts.height || 220, (m) => {
+    const root = buildLotGroup(layout, { lowEnd: low, stationId: opts.stationId });
+    m.scene.add(root);
+    m.root = root;
+    try { m.renderer.setClearColor(LOT_BG, 1); } catch (e) {}
+    try { m.scene.background = new THREE.Color(LOT_BG); } catch (e) {}
+    m.camera.fov = 30;
+    m.camera.near = 0.2;
+    m.camera.far = 200;
+    m.camera.updateProjectionMatrix();
+    m.state.yaw = 0.58;
+    m.state.pitch = 0.66;
+    m.state.zoom = 1;
+    const span = Math.max(layout.pad.w, layout.pad.d, 8);
+    const baseDist = Math.max(16, span * 1.15);
+    const look = new THREE.Vector3(0.3, 0.4, 0.4);
+    const placeCam = () => {
+      const yaw = m.still ? 0.58 : m.state.yaw;
+      const pitch = m.still ? 0.66 : Math.max(0.35, Math.min(1.15, m.state.pitch || 0.66));
+      const dist = baseDist / Math.max(0.7, m.state.zoom || 1);
+      m.camera.position.set(
+        look.x + dist * Math.sin(yaw) * Math.cos(pitch),
+        look.y + dist * Math.sin(pitch),
+        look.z + dist * Math.cos(yaw) * Math.cos(pitch),
+      );
+      m.camera.lookAt(look);
+    };
+    placeCam();
+    attachLotControls(m, layout, opts);
+    m.update = () => { placeCam(); };
+  });
+  if (row.hidden > 0 && el.parentNode && !el.parentNode.querySelector('.c1lot-more-gl')) {
+    const more = document.createElement('div');
+    more.className = 'c1lot-more c1lot-more-gl';
+    more.style.cssText = 'color:#3B7BFF;font-weight:800;padding:0 8px';
+    more.textContent = '+' + row.hidden + ' more';
+    el.parentNode.appendChild(more);
+  }
+  return mounted;
 }
 
 function mountWallet(el) {
@@ -1631,8 +1961,10 @@ function ensureSheetDock(root) {
     dock.id = dockId;
     dock.className = 'c1-3d-dock c1-3d-card notr';
     dock.innerHTML = '<div class="c1-3d-charge" style="height:226px;min-height:226px;margin:6px 0 4px">' + chargeSceneSvg('station') + '</div>'
-      + '<div class="c1-3d-lot" style="min-height:100px;margin:4px 0 0"></div>'
-      + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:0 0 4px">Live status coming soon</div>';
+      + '<div class="c1-3d-lot" style="height:220px;min-height:220px;margin:4px 0 0;background:#EEF1F4;border-radius:12px;overflow:hidden"></div>'
+      + '<div class="c1-3d-lot-inspect" style="display:none;font-size:13px;font-weight:800;text-align:center;margin:6px 0 0;color:#F4F7FB"></div>'
+      + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:4px 0 2px;line-height:15px">Layout is illustrative<br>Live status coming soon</div>'
+      + '<div class="c1-3d-lot-legend muted" style="font-size:11px;text-align:center;margin:0 0 6px;line-height:15px">When live status arrives: <span style="color:#22C55E">● Available</span> · <span style="color:#E11D2E">● Busy</span> · <span style="color:#F5A524">▲ Out of order</span></div>';
   }
   // Sit at the top of the Station tab, just under the header, on an opaque card.
   placeStationDock(root, dock);
@@ -1653,13 +1985,18 @@ function fillStationDock(root, set, s) {
   });
   const lotHost = dock.querySelector('.c1-3d-lot');
   if (lotHost && s && typeof window.buildLotRow === 'function') {
-    const row = window.buildLotRow({ dcPorts: s.dcPorts, l2Ports: s.l2Ports, portsListed: s.portsListed, plugs: s.plugs, userPlug: userPlug() });
+    const row = window.buildLotRow({ dcPorts: s.dcPorts, l2Ports: s.l2Ports, portsListed: s.portsListed, plugs: s.plugs, userPlug: userPlug(), cap: LOT_SCENE_CAP });
+    const legend = dock.querySelector('.c1-3d-lot-legend');
+    const inspect = dock.querySelector('.c1-3d-lot-inspect');
     if (!row.listed) {
       lotHost.innerHTML = '<div class="c1lot-missing muted">Charger count not listed</div>';
       if (cap) cap.hidden = true;
+      if (legend) legend.hidden = true;
+      if (inspect) inspect.style.display = 'none';
     } else {
       if (cap) cap.hidden = false;
-      mountLot(lotHost, row);
+      if (legend) legend.hidden = false;
+      mountLot(lotHost, row, { stationId: s.id, maxKw: s.maxKw || s.kw, height: 220 });
     }
   }
 }
@@ -1800,6 +2137,13 @@ function boot() {
   document.querySelectorAll('.screen').forEach((s) => mo.observe(s, { attributes: true, attributeFilter: ['class', 'hidden', 'style'] }));
 }
 
-window.c1Three = { webgl: webglAvailable(), version: THREE_VERSION, revision: THREE.REVISION, asset: C1_ASSET_V, ready: false, remount: remountAll, webglAvailable };
+window.mountLotScene = mountLot;
+window.layoutFromRow = layoutFromRow;
+window.lotSceneSvg = lotSceneSvg;
+window.pendingStallStatusProvider = pendingStallStatusProvider;
+window.setStallStatusProvider = setStallStatusProvider;
+window.getStallStatusProvider = getStallStatusProvider;
+window.readStallStatus = readStallStatus;
+window.c1Three = { webgl: webglAvailable(), version: THREE_VERSION, revision: THREE.REVISION, asset: C1_ASSET_V, ready: false, remount: remountAll, webglAvailable, mountLot };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
