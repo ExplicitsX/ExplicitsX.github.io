@@ -41,11 +41,11 @@ check(html.includes("Voice input isn't available on this phone") || html.include
 check(html.includes('speechSynthesis'), 'reads answers aloud on the phone');
 
 check(html.includes('Fully charged?') && html.includes('Need a spark?') && html.includes("Let's plug in."), 'energy greetings');
-check(html.includes('Stegowatt') && html.includes('Voltatops') && html.includes('Pterowatt') && html.includes('Honkwatt') && html.includes('Tankamp'), 'confirmed crew names');
+check(html.includes('Voltbot') && html.includes('Ampbot') && html.includes('Sparkbot') && html.includes('Coilbot') && html.includes('Plugbot') && html.includes('Glowbot'), 'confirmed crew names');
 check(!html.includes('Sparkback') && !html.includes('Skywatt'), 'old unofficial names stay out');
 check(html.includes('data-t="ask"') && html.includes('id="s-ask"'), 'ask your buddy has its own tab');
 check(html.includes('c1ExactFit') || html.includes('#3B7BFF'), 'fit pins can be blue');
-check(html.includes('3D dino') && html.includes('3D car') && html.includes('c1_settings'), 'profile 3D avatar choice is saved');
+check(html.includes('3D robot') && html.includes('3D car') && html.includes('c1_settings'), 'profile 3D avatar choice is saved');
 check(html.includes('Live status coming soon') && html.includes('Charger count not listed'), 'lot row status copy');
 check(html.includes('LOT_CAP=12') || html.includes('LOT_STALL_CAP') || html.includes('cap==null?LOT_CAP'), 'lot row caps visible stalls');
 check(!/taken|parked car/i.test(html.slice(html.indexOf('/* v23: profile avatar'))), 'v23 lot row does not show taken or a parked car');
@@ -56,8 +56,8 @@ check(threeSrc.includes('userData.wheels') && threeSrc.includes('w.rotation.z'),
 check(threeSrc.includes('blinkUntil') && threeSrc.includes('Math.sin(now / 550)'), 'headlight blink on tap and suspension bob');
 check(html.includes('c1-three.js?v=') && html.includes('three-0.187.0.module.min.js?v='), 'three.js assets are cache-busted');
 check(threeSrc.includes('Motion is off (Reduce Motion)') && threeSrc.includes('revealMounts'), 'hidden-tab reveal and reduced-motion note');
-check(threeSrc.includes('function buildRex') && threeSrc.includes('crestBolt') && !threeSrc.includes('Gold map-pin backing'), 'Zapsaurus is a full-body T-rex, not a map pin');
-check(threeSrc.includes('function buildTri') && threeSrc.includes('function buildStego') && threeSrc.includes('function buildAnkylo') && threeSrc.includes('function buildPtero') && threeSrc.includes('function buildPara'), 'all six buddies have species bodies');
+check(threeSrc.includes('function buildVolt') && threeSrc.includes('plugAntenna') && !threeSrc.includes('Gold map-pin backing'), 'Voltbot is a full-body robot, not a map pin');
+check(threeSrc.includes('function buildAmp') && threeSrc.includes('function buildSpark') && threeSrc.includes('function buildCoil') && threeSrc.includes('function buildPlug') && threeSrc.includes('function buildGlow'), 'all six buddies have robot bodies');
 check(html.includes('c1p-hi') && html.includes('#E6F1FF') && html.includes('c1p-name') && html.includes('#F4F7FB'), 'profile greeting and name meet contrast on the dark card');
 check(threeSrc.includes('mountChargeScene') && threeSrc.includes('buildSagCable') && threeSrc.includes('plugInRange'), 'charging scene has a sagging cable and a snappable plug');
 check(threeSrc.includes('setChargerLights') && threeSrc.includes('pinchScale') && threeSrc.includes('triggerRoar'), 'play widgets: lights, pinch, roar');
@@ -221,15 +221,15 @@ try {
     const t = (document.getElementById('c1edit') || {}).innerText || '';
     return {
       open: !!document.getElementById('c1edit'),
-      crew: /Zapsaurus/.test(t) && /Stegowatt/.test(t) && /Voltatops/.test(t) && /Pterowatt/.test(t) && /Tankamp/.test(t) && /Honkwatt/.test(t),
+      crew: /Voltbot/.test(t) && /Sparkbot/.test(t) && /Ampbot/.test(t) && /Plugbot/.test(t) && /Coilbot/.test(t) && /Glowbot/.test(t),
       noOld: !/Sparkback|Skywatt/.test(t),
       clear: /Clear my data/.test(t),
-      dino: /3D dino/.test(t),
+      robot: /3D robot/.test(t),
       car: /3D car/.test(t),
     };
   });
   check(edit.open && edit.crew && edit.noOld && edit.clear, 'profile edit sheet has the confirmed crew and Clear my data');
-  check(edit.dino && edit.car, 'profile edit sheet has 3D dino and 3D car');
+  check(edit.robot && edit.car, 'profile edit sheet has 3D robot and 3D car');
 
   const lotFn = await a.page.evaluate(() => {
     const missing = buildLotRow({});
