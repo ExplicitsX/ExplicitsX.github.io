@@ -888,7 +888,7 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  <div class="tab" data-t="trip" onclick="go('trip')"><b>🧭</b>Trip</div>
  <div class="tab" data-t="wallet" onclick="go('wallet')"><b>💳</b>Wallet</div>
  <div class="tab" data-t="ask" onclick="go('ask')"><b>💬</b>Ask</div>
- <div class="tab" data-t="profile" onclick="go('profile')"><b aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 3 v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="10" y="1.2" width="4" height="3" rx="1" fill="currentColor"/><ellipse cx="12" cy="13" rx="7.5" ry="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="12" r="1.6" fill="currentColor"/><circle cx="15" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="21.2" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg></b>Profile</div>
+ <div class="tab" data-t="profile" onclick="go('profile')"><b aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2.2 v3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="1.8" r="1.4" fill="currentColor"/><path d="M6.5 9.2 A 5.5 5.5 0 0 1 17.5 9.2 Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6.2 9.2 H17.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9.4" cy="7.6" r="1.2" fill="currentColor"/><circle cx="14.6" cy="7.6" r="1.2" fill="currentColor"/><ellipse cx="12" cy="14.2" rx="5.6" ry="6.4" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="12" cy="21" rx="2" ry="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></b>Profile</div>
 </nav>
 </div>
 <div class="foot" id="datasrc">This is a preview. Stations are real; prices, status and accounts are sample.</div>
@@ -2646,25 +2646,27 @@ const Txt = {
 
 function zapSvg(face){
   const skin='url(#c1zskin)';
-  const base=`<svg xmlns="http://www.w3.org/2000/svg" width="44" height="55" viewBox="-60 -62 120 150" aria-hidden="true"><defs><linearGradient id="c1zskin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B7BFF"/><stop offset="1" stop-color="#1E4FD8"/></linearGradient></defs>
-<path d="M0 78 C-40 40 -52 10 -52 -12 a52 52 0 0 1 104 0 C52 10 40 40 0 78z" fill="#0B1530"/>
-<path d="M0 70 C-34 36 -45 9 -45 -12 a45 45 0 0 1 90 0 C45 9 34 36 0 70z" fill="#FFD23F"/>
-<rect x="-22" y="-36" width="44" height="56" rx="20" fill="${skin}" stroke="#0B1530" stroke-width="4"/>
-<path d="M0 -36 L0 -50" stroke="#0B1530" stroke-width="3" stroke-linecap="round"/>
-<rect x="-7" y="-58" width="14" height="10" rx="3" fill="#C9D1DE" stroke="#0B1530" stroke-width="2"/>`;
-  if(face==='charging') return base+`<path d="M-16 -14 q8 -6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M0 -14 q8 -6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M-8 4 q8 8 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+  const base=`<svg xmlns="http://www.w3.org/2000/svg" width="44" height="58" viewBox="-60 -78 120 172" aria-hidden="true"><defs><linearGradient id="c1zskin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3B7BFF"/><stop offset="1" stop-color="#1E4FD8"/></linearGradient></defs>
+<ellipse cx="0" cy="78" rx="10" ry="22" fill="#1C2125" stroke="#0B1530" stroke-width="3"/>
+<path d="M-12 76 L-8 48 M12 76 L8 48" stroke="#0B1530" stroke-width="4" stroke-linecap="round"/>
+<ellipse cx="0" cy="18" rx="32" ry="40" fill="${skin}" stroke="#0B1530" stroke-width="4"/>
+<rect x="-30" y="-26" width="60" height="10" rx="3" fill="#1E4FD8" stroke="#0B1530" stroke-width="2.4"/>
+<path d="M-28 -26 A 28 28 0 0 1 28 -26 Z" fill="${skin}" stroke="#0B1530" stroke-width="4"/>
+<path d="M0 -52 L0 -66" stroke="#0B1530" stroke-width="3" stroke-linecap="round"/>
+<circle cx="0" cy="-72" r="6" fill="#4AAAE6" stroke="#0B1530" stroke-width="2"/>`;
+  if(face==='charging') return base+`<path d="M-16 -40 q8 -6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M0 -40 q8 -6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M-8 -8 q8 8 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
 <g transform="translate(36,-50)"><rect x="-11" y="-8" width="20" height="14" rx="2.5" fill="#34D1BF" stroke="#0B1530" stroke-width="2"/><rect x="9" y="-4" width="3.5" height="6" rx="1" fill="#0B1530"/><path d="M1 -5 L-4 1 L0 1 L-2 7 L6 -1 L1.5 -1z" fill="#0B1530"/></g></svg>`;
-  if(face==='sleepy') return base+`<path d="M-16 -14 q8 6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M0 -14 q8 6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
-<path d="M-6 6 q6 4 12 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+  if(face==='sleepy') return base+`<path d="M-16 -40 q8 6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M0 -40 q8 6 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M-6 -8 q6 4 12 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/>
 <text x="28" y="-36" font-size="14" font-weight="700" fill="#5A6680">z</text>
 <text x="38" y="-48" font-size="18" font-weight="700" fill="#5A6680">Z</text></svg>`;
-  return base+`<circle cx="-10" cy="-14" r="8" fill="#9CC2FF"/><circle cx="10" cy="-14" r="8" fill="#9CC2FF"/>
-<circle cx="-10" cy="-14" r="3.5" fill="#0B1530"/><circle cx="10" cy="-14" r="3.5" fill="#0B1530"/>
-<circle cx="-8" cy="-16" r="1.5" fill="#fff"/><circle cx="12" cy="-16" r="1.5" fill="#fff"/>
-<path d="M-8 4 q8 8 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+  return base+`<circle cx="-12" cy="-40" r="8" fill="#2A3840"/><circle cx="12" cy="-40" r="8" fill="#2A3840"/>
+<circle cx="-12" cy="-40" r="6" fill="#5EB8F0"/><circle cx="12" cy="-40" r="6" fill="#5EB8F0"/>
+<circle cx="-12" cy="-41" r="2.6" fill="#E7FCFD"/><circle cx="12" cy="-41" r="2.6" fill="#E7FCFD"/>
+<path d="M-8 -8 q8 8 16 0" stroke="#0B1530" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
 }
 
 function youPos(){
@@ -3408,35 +3410,45 @@ function sleepy(){try{const s=JSON.parse(localStorage.getItem('c1_trip_stats')||
 function greeting(){ if(sleepy()&&!rm()) return SLEEPY; return GREET[Math.floor(Date.now()/864e5)%3]; }
 
 function crewSvg(id, face, size){
-  const b=crewOf(id), c=b.color, O='#0B1530', G='#FFD23F', R='#C9D1DE', E='#9CC2FF';
-  const k=b.kind;
-  const ant=(v)=> v==='round'
-    ? `<path d="M80 36 L80 20" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="75" y="12" width="10" height="8" rx="3" fill="${R}" stroke="${O}" stroke-width="2"/>`
-    : v==='slim'
-    ? `<path d="M86 32 L90 16" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="86" y="6" width="8" height="12" rx="2" fill="${R}" stroke="${O}" stroke-width="2"/>`
-    : v==='coil'
-    ? `<path d="M80 48 q8 -10 0 -18 q-8 -10 0 -16" fill="none" stroke="${R}" stroke-width="3"/><rect x="76" y="8" width="8" height="6" rx="2" fill="${R}" stroke="${O}" stroke-width="1.8"/>`
-    : v==='block'
-    ? `<path d="M80 38 L80 22" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="73" y="12" width="14" height="10" rx="3" fill="${R}" stroke="${O}" stroke-width="2"/>`
-    : v==='ring'
-    ? `<path d="M80 32 L80 20" stroke="${O}" stroke-width="3"/><circle cx="80" cy="14" r="6" fill="none" stroke="${R}" stroke-width="3"/><circle cx="80" cy="14" r="2" fill="${G}"/>`
-    : `<path d="M80 32 L80 16" stroke="${O}" stroke-width="3" stroke-linecap="round"/><rect x="73" y="8" width="14" height="10" rx="3" fill="${R}" stroke="${O}" stroke-width="2"/>`;
+  const b=crewOf(id), locked=b.color, O='#0B1530', E='#5EB8F0', CORE='#E7FCFD', SOCK='#2A3840', ANT='#4AAAE6', STEEL='#6D848A';
+  const c=b.kind==='volt'?STEEL:locked;
+  const dark=(hex,amt)=>{const n=parseInt(hex.slice(1),16);const r=Math.max(0,Math.min(255,((n>>16)&255)+amt));const g=Math.max(0,Math.min(255,((n>>8)&255)+amt));const bl=Math.max(0,Math.min(255,(n&255)+amt));return '#'+((r<<16)|(g<<8)|bl).toString(16).padStart(6,'0')};
+  const mid=dark(c,-18), rim=dark(c,-48), dk=dark(c,-36);
   const eyes = face==='wink'
-    ? `<circle cx="72" cy="66" r="5" fill="${E}"/><circle cx="72" cy="66" r="2.2" fill="${O}"/><path d="M83 66 q5 -5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    ? `<circle cx="66" cy="74" r="10" fill="${SOCK}"/><circle cx="66" cy="74" r="7.2" fill="${E}"/><circle cx="66" cy="73" r="3.2" fill="${CORE}"/><path d="M86 74 q8 6 16 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
     : face==='sleepy'
-    ? `<path d="M67 66 q5 5 10 0 M83 66 q5 5 10 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
-    : `<circle cx="72" cy="66" r="6" fill="${E}"/><circle cx="88" cy="66" r="6" fill="${E}"/><circle cx="72" cy="66" r="2.4" fill="${O}"/><circle cx="88" cy="66" r="2.4" fill="${O}"/>`;
-  const mouth = face==='sleepy' ? `<path d="M74 80 q6 3 12 0" stroke="${O}" stroke-width="2.4" fill="none"/>` : `<path d="M74 80 q6 6 12 0" stroke="${O}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
-  const arm=`<path d="M110 100 C124 96 130 108 128 118" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round"/><ellipse cx="130" cy="120" rx="6" ry="5" fill="${c}" stroke="${O}" stroke-width="2"/>`;
-  let body='';
-  if(k==='volt') body=`<circle cx="80" cy="168" r="20" fill="#1A1F2B" stroke="${O}" stroke-width="3"/><circle cx="80" cy="168" r="9" fill="${R}" stroke="${O}" stroke-width="2"/><rect x="74" y="140" width="12" height="16" rx="4" fill="${O}"/><ellipse cx="80" cy="112" rx="28" ry="40" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="68" rx="20" ry="18" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('flat')}`;
-  else if(k==='amp') body=`<ellipse cx="80" cy="168" rx="36" ry="7" fill="${c}" opacity=".45" stroke="${O}" stroke-width="2"/><ellipse cx="80" cy="118" rx="36" ry="34" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="78" rx="22" ry="18" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('round')}`;
-  else if(k==='spark') body=`<circle cx="80" cy="170" r="16" fill="#1A1F2B" stroke="${O}" stroke-width="3"/><path d="M80 154 L68 118 M80 154 L92 118" stroke="${O}" stroke-width="4"/><ellipse cx="80" cy="108" rx="22" ry="36" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="66" rx="16" ry="15" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('slim')}`;
-  else if(k==='coil') body=`<ellipse cx="80" cy="166" rx="42" ry="7" fill="${c}" opacity=".45" stroke="${O}" stroke-width="2"/><ellipse cx="80" cy="120" rx="44" ry="26" fill="${c}" stroke="${O}" stroke-width="3"/><rect x="54" y="68" width="52" height="34" rx="12" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('coil')}`;
-  else if(k==='plug') body=`<circle cx="80" cy="170" r="18" fill="#1A1F2B" stroke="${O}" stroke-width="3"/><path d="M58 160 Q80 148 102 160" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="116" rx="32" ry="38" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="74" rx="18" ry="16" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('block')}`;
-  else body=`<ellipse cx="80" cy="168" rx="28" ry="6" fill="${c}" opacity=".5" stroke="${O}" stroke-width="2"/><ellipse cx="80" cy="112" rx="20" ry="42" fill="${c}" stroke="${O}" stroke-width="3"/><ellipse cx="80" cy="64" rx="16" ry="16" fill="${c}" stroke="${O}" stroke-width="3"/>${ant('ring')}`;
-  const w=size||72, h=Math.round(w*1.25);
-  return `<svg width="${w}" height="${h}" viewBox="0 0 160 200" aria-hidden="true"><ellipse cx="80" cy="188" rx="48" ry="6" fill="${O}" opacity=".18"/>${body}${arm}${eyes}${mouth}</svg>`;
+    ? `<path d="M58 74 q8 6 16 0 M86 74 q8 6 16 0" stroke="${O}" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    : `<circle cx="66" cy="74" r="10" fill="${SOCK}"/><circle cx="66" cy="74" r="7.2" fill="${E}"/><circle cx="66" cy="73" r="3.2" fill="${CORE}"/><circle cx="94" cy="74" r="10" fill="${SOCK}"/><circle cx="94" cy="74" r="7.2" fill="${E}"/><circle cx="94" cy="73" r="3.2" fill="${CORE}"/>`;
+  const body=`
+    <ellipse cx="80" cy="196" rx="9" ry="22" fill="#1C2125" stroke="${O}" stroke-width="2.4"/>
+    <circle cx="80" cy="196" r="4" fill="#2A3036"/>
+    <path d="M70 196 L74 168 M90 196 L86 168" stroke="${rim}" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="80" cy="132" rx="36" ry="46" fill="${c}" stroke="${O}" stroke-width="3"/>
+    <ellipse cx="80" cy="148" rx="28" ry="26" fill="${mid}" opacity=".55"/>
+    <path d="M80 100 L80 166 M58 118 L102 118 M62 146 L98 146" stroke="${dk}" stroke-width="1.6" opacity=".85"/>
+    <circle cx="64" cy="118" r="2.2" fill="${mid}"/><circle cx="96" cy="118" r="2.2" fill="${mid}"/>
+    <circle cx="66" cy="146" r="2.2" fill="${mid}"/><circle cx="94" cy="146" r="2.2" fill="${mid}"/>
+    <ellipse cx="66" cy="138" rx="8" ry="5" fill="${dk}" opacity=".22"/>
+    <g transform="translate(118,112)">
+      <circle cx="0" cy="0" r="10" fill="${c}" stroke="${O}" stroke-width="2"/>
+      <ellipse cx="10" cy="42" rx="9" ry="13" fill="${c}" stroke="${O}" stroke-width="2"/>
+      <path d="M6 54 L3 64 M10 55 L10 66 M14 54 L17 64" stroke="${dk}" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(42,112) scale(-1,1)">
+      <circle cx="0" cy="0" r="10" fill="${c}" stroke="${O}" stroke-width="2"/>
+      <ellipse cx="10" cy="42" rx="9" ry="13" fill="${c}" stroke="${O}" stroke-width="2"/>
+      <path d="M6 54 L3 64 M10 55 L10 66 M14 54 L17 64" stroke="${dk}" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <rect x="46" y="84" width="68" height="12" rx="4" fill="${rim}" stroke="${O}" stroke-width="2.2"/>
+    <path d="M48 86 A 32 32 0 0 1 112 86 Z" fill="${c}" stroke="${O}" stroke-width="3"/>
+    ${eyes}
+    <path d="M80 62 L80 22" stroke="${O}" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M80 62 L80 22" stroke="#3A4245" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="80" cy="16" r="7" fill="${ANT}" stroke="${O}" stroke-width="1.6"/>
+    <circle cx="80" cy="14" r="2.2" fill="${CORE}" opacity=".7"/>
+  `;
+  const w=size||72, h=Math.round(w*1.4);
+  return `<svg width="${w}" height="${h}" viewBox="0 0 160 220" aria-hidden="true"><ellipse cx="80" cy="208" rx="48" ry="6" fill="${O}" opacity=".18"/>${body}</svg>`;
 }
 
 function carSvg(paint, opts){
@@ -3819,5 +3831,5 @@ window.openEditV23=openEditV23;
 </script>
 
 
-<script type="module" src="./c1-three.js?v=20261113q3" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q3"></script>
+<script type="module" src="./c1-three.js?v=20261113q4" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q4"></script>
 </body></html>
