@@ -45,6 +45,10 @@ check(html.includes('Stegowatt') && html.includes('Voltatops') && html.includes(
 check(!html.includes('Sparkback') && !html.includes('Skywatt'), 'old unofficial names stay out');
 check(html.includes('data-t="ask"') && html.includes('id="s-ask"'), 'ask your buddy has its own tab');
 check(html.includes('c1ExactFit') || html.includes('#3B7BFF'), 'fit pins can be blue');
+check(html.includes('3D dino') && html.includes('3D car') && html.includes('c1_settings'), 'profile 3D avatar choice is saved');
+check(html.includes('Live status coming soon') && html.includes('Charger count not listed'), 'lot row status copy');
+check(html.includes('LOT_CAP=12') || html.includes('LOT_STALL_CAP') || html.includes('cap==null?LOT_CAP'), 'lot row caps visible stalls');
+check(!/taken|parked car/i.test(html.slice(html.indexOf('/* v23: profile avatar'))), 'v23 lot row does not show taken or a parked car');
 
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
 
@@ -128,11 +132,15 @@ try {
     hasCharger: !!document.querySelector('#sheet .c1chg-wrap, #sheet .c1stfx'),
     findAr: !!(document.querySelector('#sheet .c1findar') && /Find it in AR/.test(document.querySelector('#sheet .c1findar').textContent || '')),
     spin: !!document.querySelector('#sheet .c1chg-spin'),
+    lot: /Live status coming soon/.test((document.querySelector('#sheet .c1lot, #sheet .c1lot-missing') || document.getElementById('sheet') || {}).innerText || ''),
+    lotOk: !/taken|parked|in use|\bfree\b|occupied/i.test((document.querySelector('#sheet .c1lot, #sheet .c1lot-missing') || {}).innerText || ''),
+    stall: !!document.querySelector('#sheet .c1stall, #sheet .c1lot-missing'),
   }));
   check(!sheet.hidden, 'station sheet still opens');
   check(sheet.hasCharger, 'charger on the sheet');
   check(sheet.findAr, 'Find it in AR on the sheet');
   check(!sheet.spin, 'charger is still under reduced motion');
+  check(sheet.lot && sheet.stall && sheet.lotOk, 'station sheet has a generic lot row with live-status-coming-soon');
 
   await a.page.click('.tab[data-t="ask"]');
   await new Promise(r => setTimeout(r, 250));
@@ -166,9 +174,25 @@ try {
       crew: /Zapsaurus/.test(t) && /Stegowatt/.test(t) && /Voltatops/.test(t) && /Pterowatt/.test(t) && /Tankamp/.test(t) && /Honkwatt/.test(t),
       noOld: !/Sparkback|Skywatt/.test(t),
       clear: /Clear my data/.test(t),
+      dino: /3D dino/.test(t),
+      car: /3D car/.test(t),
     };
   });
   check(edit.open && edit.crew && edit.noOld && edit.clear, 'profile edit sheet has the confirmed crew and Clear my data');
+  check(edit.dino && edit.car, 'profile edit sheet has 3D dino and 3D car');
+
+  const lotFn = await a.page.evaluate(() => {
+    const missing = buildLotRow({});
+    const row = buildLotRow({dcPorts: 14, l2Ports: 2, plugs: ['CCS'], userPlug: 'CCS1'});
+    const blob = JSON.stringify(row).toLowerCase();
+    return {
+      missing: missing.listed === false && missing.stalls.length === 0,
+      cap: row.stalls.length === 12 && row.hidden === 4,
+      fits: row.stalls.filter(s => s.kind === 'dc').every(s => s.fits),
+      clean: !/taken|free|occupied|parked/.test(blob),
+    };
+  });
+  check(lotFn.missing && lotFn.cap && lotFn.fits && lotFn.clean, 'buildLotRow caps at 12, missing counts, no fake status');
 
   // Near my destination answers from station data, plug fit only, no price/status
   const dest = await a.page.evaluate(() => {

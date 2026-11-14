@@ -3544,4 +3544,243 @@ window.c1Crew=CREW;
 })();
 </script>
 
+
+<script>
+/* v23: profile avatar and lot row */
+(function(){
+const SET_KEY='c1_settings';
+const PAINTS=['#E8453C','#F4F7FB','#9AA3B2','#1A1D23','#1E4FD8','#0F766E','#CA8A04','#9A3412'];
+const BODIES=['sedan','suv','truck'];
+const BLUE='#3B7BFF', GRAY='#C9D1DE', NAVY='#0B1530', PAD='#9AA3B5';
+const LOT_CAP=12;
+const DC_PLUGS=['CCS','NACS','CHAdeMO'];
+const rm=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+const L=(en,es)=> (typeof L2==='function'?L2(en,es):en);
+function loadSet(){
+  try{
+    const o=JSON.parse(localStorage.getItem(SET_KEY)||'{}');
+    const profileAvatar=o.profileAvatar==='car'?'car':'dino';
+    const body=BODIES.includes(o.body)?o.body:'sedan';
+    const paint=PAINTS.includes(o.paint)?o.paint:'#E8453C';
+    return {profileAvatar, body, paint};
+  }catch(e){return {profileAvatar:'dino', body:'sedan', paint:'#E8453C'}}
+}
+function saveSet(p){try{localStorage.setItem(SET_KEY,JSON.stringify({...loadSet(),...p}))}catch(e){}}
+function plugFits(plug, userPlug){
+  if(!userPlug||!plug||plug==='DC') return false;
+  if(userPlug==='CCS1'||userPlug==='CCS') return plug==='CCS'||plug==='CCS1';
+  if(userPlug==='NACS') return plug==='NACS';
+  if(userPlug==='CHAdeMO') return plug==='CHAdeMO';
+  return plug==='J1772';
+}
+function userPlug(){
+  try{
+    if(typeof buddyPlug==='function'){ const p=buddyPlug(); if(p) return p==='CCS'?'CCS1':p; }
+    if(typeof carPlug==='function'){ const p=carPlug(); if(p) return p==='CCS'?'CCS1':p; }
+  }catch(e){}
+  return null;
+}
+function chargerCountsListed(s){
+  if(!s) return false;
+  if(s.portsListed===false) return false;
+  if(s.portsListed===true) return true;
+  if(s.dcPorts==null && s.l2Ports==null) return false;
+  if(s.dcPorts!=null && s.l2Ports!=null && s.dcPorts===0 && s.l2Ports===0) return false;
+  return true;
+}
+function stallPlug(kind, indexInKind, plugs){
+  if(kind==='l2') return 'J1772';
+  const dcs=DC_PLUGS.filter(p=>(plugs||[]).includes(p));
+  if(!dcs.length) return 'DC';
+  return dcs[indexInKind % dcs.length];
+}
+function plugLabel(plug){ return plug==='DC'?'DC fast':(plug==='CCS'?'CCS1':plug); }
+function buildLotRow(s){
+  s=s||{};
+  const listed=chargerCountsListed(s);
+  const dc=listed?Math.max(0,Math.floor(s.dcPorts||0)):0;
+  const l2=listed?Math.max(0,Math.floor(s.l2Ports||0)):0;
+  if(!listed) return {listed:false,stalls:[],hidden:0,dcCount:0,l2Count:0};
+  const cap=s.cap==null?LOT_CAP:s.cap;
+  const total=dc+l2, visible=Math.min(total,Math.max(0,cap)), stalls=[];
+  for(let i=0;i<visible;i++){
+    const kind=i<dc?'dc':'l2';
+    const indexInKind=kind==='dc'?i:i-dc;
+    const plug=stallPlug(kind,indexInKind,s.plugs||[]);
+    stalls.push({key:kind+'-'+indexInKind,kind,plug,plugLabel:plugLabel(plug),fits:plugFits(plug,s.userPlug)});
+  }
+  return {listed:true,stalls,hidden:Math.max(0,total-visible),dcCount:dc,l2Count:l2};
+}
+window.buildLotRow=buildLotRow;
+window.chargerCountsListed=chargerCountsListed;
+window.loadSet=loadSet;
+window.saveSet=saveSet;
+
+/* Listed DOE-style counts from plug types, never from avail/total occupancy. */
+try{
+  if(typeof S!=='undefined') S.forEach(s=>{
+    if(s.dcPorts!=null || s.l2Ports!=null || s.portsListed!=null) return;
+    const plugs=s.plugs||[];
+    const dcP=plugs.filter(p=>p==='CCS'||p==='NACS'||p==='CHAdeMO');
+    const hasL2=plugs.includes('J1772');
+    if(!dcP.length && !hasL2){ s.portsListed=false; return; }
+    s.dcPorts=(s.kw>=50 && dcP.length)?dcP.length*2:0;
+    s.l2Ports=hasL2?2:0;
+    s.portsListed=(s.dcPorts>0||s.l2Ports>0);
+  });
+}catch(e){}
+
+function carBodySvg(paint, body, opts){
+  const p=paint||'#E8453C', O=NAVY, port=BLUE;
+  const zap=opts&&opts.zap&&!rm();
+  const lamp=zap?'#FFF3B0':'#F4F7FB';
+  const sparks=zap?'<path d="M8 48 l-8 8 h6 l-6 8 M14 42 l-7 7 h5 l-5 7" fill="#FFD23F" stroke="#0B1530" stroke-width="1.3"/>':'';
+  const spin=rm()?'':'c1avatar-spin';
+  let bodyP='M22 70 c0-12 10-18 22-20 l18-16 c6-5 14-6 24-6 h28 c12 0 20 7 24 14 l16 14 c8 2 16 8 16 18 v4 H22z';
+  if(body==='suv') bodyP='M20 72 c0-14 8-22 22-24 l10-16 c4-6 12-8 20-8 h44 c12 0 20 7 24 16 l12 14 c6 2 14 8 14 18 v4 H20z';
+  if(body==='truck') bodyP='M20 70 c0-12 10-18 22-20 l16-16 c6-4 12-5 20-5 h16 v18 h52 c8 0 14 8 14 16 v7 H20z';
+  return `<div class="c1avatar-car" style="width:140px"><svg viewBox="0 0 160 110" width="140" height="96"><g class="${spin}">
+    <path d="${bodyP}" fill="${p}" stroke="${O}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M64 36 h26 v16 H60z M96 36 h18 l12 16 H96z" fill="#BFE3FF" stroke="${O}" stroke-width="1.8"/>
+    <rect x="18" y="58" width="10" height="8" rx="2" fill="${lamp}" stroke="${O}" stroke-width="1.5"/>
+    <rect x="48" y="62" width="8" height="10" rx="2" fill="${port}" stroke="${O}" stroke-width="1.5"/>
+    <circle cx="48" cy="86" r="11" fill="#22304F" stroke="${O}" stroke-width="2"/>
+    <circle cx="118" cy="86" r="11" fill="#22304F" stroke="${O}" stroke-width="2"/>
+    ${sparks}
+  </g></svg></div>`;
+}
+function avatarHtml(size){
+  const set=loadSet();
+  const prof=(typeof loadProf==='function')?loadProf():{buddyId:'zapsaurus',nickname:'Zapsaurus'};
+  const spin=rm()?'':'c1avatar-spin';
+  if(set.profileAvatar==='car') return carBodySvg(set.paint,set.body,{});
+  const svg=(typeof crewSvg==='function')?crewSvg(prof.buddyId,'happy',size||88):'';
+  return `<div class="${spin} c1avatar-dino" style="display:inline-block">${svg}</div>`;
+}
+function energyTap(el){
+  if(rm()||!el) return;
+  el.classList.add('c1energy');
+  const zap=document.createElement('span'); zap.className='c1zap-pop'; zap.textContent='⚡';
+  el.style.position='relative'; el.appendChild(zap);
+  setTimeout(()=>{zap.remove(); el.classList.remove('c1energy');},450);
+}
+
+function stallSvg(st){
+  const stroke=st.fits?BLUE:NAVY, sw=st.fits?3:2;
+  return `<div class="c1stall${st.fits?' fit':''}" aria-label="${st.plugLabel}. ${L('Live status coming soon','Estado en vivo próximamente')}">
+    <svg width="72" height="78" viewBox="0 0 72 78">
+      <ellipse cx="36" cy="70" rx="28" ry="5" fill="${NAVY}" opacity="0.16"/>
+      <path class="c1stall-pad" d="M10 58 L18 28 H54 L62 58 Z" fill="${PAD}" stroke="${stroke}" stroke-width="${sw}"/>
+      <rect x="28" y="10" width="16" height="28" rx="4" fill="${GRAY}" stroke="${stroke}" stroke-width="${sw}"/>
+      <rect x="30" y="14" width="12" height="6" rx="2" fill="#E6F1FF"/>
+      <text x="36" y="52" text-anchor="middle" font-size="8" font-weight="700" fill="${NAVY}">${st.plugLabel}</text>
+    </svg>
+    <div class="muted" style="font-size:10px;line-height:13px;text-align:center">${L('Live status coming soon','Estado en vivo próximamente')}</div>
+  </div>`;
+}
+function lotRowHtml(s){
+  const row=buildLotRow({dcPorts:s.dcPorts,l2Ports:s.l2Ports,portsListed:s.portsListed,plugs:s.plugs,userPlug:userPlug()});
+  if(!row.listed) return `<div class="c1lot-missing muted">${L('Charger count not listed','Número de cargadores no indicado')}</div>`;
+  const more=row.hidden?`<div class="c1lot-more" style="color:#3B7BFF;font-weight:800;padding:0 8px">+${row.hidden} ${L('more','más')}</div>`:'';
+  return `<div class="c1lot" style="display:flex;align-items:flex-end;overflow-x:auto;margin:8px 0">${row.stalls.map(stallSvg).join('')}${more}</div>`;
+}
+
+if(!document.getElementById('c1v23css')){
+  const st=document.createElement('style'); st.id='c1v23css';
+  st.textContent=`@media (prefers-reduced-motion:no-preference){.c1avatar-spin{animation:c1yaw 6s linear infinite;transform-origin:50% 50%}}
+  @media (prefers-reduced-motion:reduce){.c1avatar-spin,.c1avatar-spin *{animation:none!important}}
+  @keyframes c1yaw{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+  .c1zap-pop{position:absolute;top:0;right:4px;color:#FFD23F;font-size:18px;pointer-events:none}
+  .c1lot{perspective:640px}`;
+  document.head.appendChild(st);
+}
+
+function renderProfileV23(){
+  if(typeof renderProfileV22==='function') try{renderProfileV22()}catch(e){}
+  const root=document.getElementById('c1profile'); if(!root) return;
+  const hero=root.querySelector('.card');
+  if(hero){
+    const old=hero.querySelector('.c1buddy3d, .c1avatar-wrap');
+    const wrap=document.createElement('div');
+    wrap.className='c1avatar-wrap';
+    wrap.innerHTML=avatarHtml(88);
+    wrap.onclick=()=>energyTap(wrap);
+    if(old) old.replaceWith(wrap); else hero.insertBefore(wrap, hero.firstChild);
+  }
+  const ed=document.getElementById('c1p-edit');
+  if(ed) ed.onclick=openEditV23;
+}
+function openEditV23(){
+  const prof=(typeof loadProf==='function')?loadProf():{buddyId:'zapsaurus',nickname:'Zapsaurus'};
+  const set=loadSet();
+  document.getElementById('c1edit-bg')?.remove();
+  document.getElementById('c1edit')?.remove();
+  const bg=document.createElement('div'); bg.id='c1edit-bg';
+  const sh=document.createElement('div'); sh.id='c1edit'; sh.setAttribute('role','dialog'); sh.setAttribute('aria-label',L('Edit','Editar'));
+  const crew=(window.c1Crew||[]).map(c=>`<button type="button" class="chip${prof.buddyId===c.id?' on':''}" data-buddy="${c.id}">${c.name}</button>`).join('');
+  const bodyChips=BODIES.map(b=>`<button type="button" class="chip${set.body===b?' on':''}" data-body="${b}">${b==='sedan'?L('Sedan','Sedán'):b==='suv'?'SUV':L('Truck','Camioneta')}</button>`).join('');
+  const paintChips=PAINTS.map(c=>`<button type="button" class="chip" data-paint="${c}" style="background:${c};width:28px;height:28px;border-radius:14px;border:2px solid ${set.paint===c?'#3B7BFF':'#0B1530'}"></button>`).join('');
+  sh.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center"><b>${L('Edit','Editar')}</b><button type="button" class="lnk" id="c1edit-x" style="background:none;border:0;color:#3B7BFF">${L('Close','Cerrar')}</button></div>
+    <div style="margin-top:12px"><b>${L('Pick your buddy','Elige tu compañero')}</b></div>
+    <div class="muted">${L('Your charging buddy stays on this phone.','Tu compañero de carga se queda en este teléfono.')}</div>
+    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">${crew}</div>
+    <div style="margin-top:12px"><b>${L('Profile picture','Foto de perfil')}</b></div>
+    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+      <button type="button" class="chip${set.profileAvatar==='dino'?' on':''}" id="c1av-dino">${L('3D dino','Dino 3D')}</button>
+      <button type="button" class="chip${set.profileAvatar==='car'?' on':''}" id="c1av-car">${L('3D car','Auto 3D')}</button>
+    </div>
+    <div id="c1av-preview" style="margin-top:8px">${avatarHtml(72)}</div>
+    ${set.profileAvatar==='car'?`<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">${bodyChips}</div><div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">${paintChips}</div>`:''}
+    <div style="margin-top:12px"><b>${L('Edit nickname','Editar apodo')}</b></div>
+    <input id="c1e-nick" maxlength="12" value="${(prof.nickname||'').replace(/"/g,'')}" style="margin-top:6px">
+    <div style="margin-top:16px"><button type="button" class="btn" id="c1e-clear">${L('Clear my data','Borrar mis datos')}</button></div>`;
+  document.body.appendChild(bg); document.body.appendChild(sh);
+  const close=()=>{ const n=document.getElementById('c1e-nick'); if(n && typeof saveProf==='function') saveProf({nickname:(n.value||'Zapsaurus').slice(0,12)||'Zapsaurus'}); bg.remove(); sh.remove(); renderProfileV23(); };
+  bg.onclick=close; document.getElementById('c1edit-x').onclick=close;
+  sh.querySelectorAll('[data-buddy]').forEach(b=>b.onclick=()=>{ if(typeof saveProf==='function') saveProf({buddyId:b.getAttribute('data-buddy')}); openEditV23(); });
+  const dino=document.getElementById('c1av-dino'); if(dino) dino.onclick=()=>{ saveSet({profileAvatar:'dino'}); openEditV23(); };
+  const car=document.getElementById('c1av-car'); if(car) car.onclick=()=>{ saveSet({profileAvatar:'car'}); openEditV23(); };
+  sh.querySelectorAll('[data-body]').forEach(b=>b.onclick=()=>{ saveSet({body:b.getAttribute('data-body')}); openEditV23(); });
+  sh.querySelectorAll('[data-paint]').forEach(b=>b.onclick=()=>{ saveSet({paint:b.getAttribute('data-paint')}); openEditV23(); });
+  const prev=document.getElementById('c1av-preview'); if(prev) prev.onclick=()=>energyTap(prev);
+  document.getElementById('c1e-clear').onclick=()=>{
+    if(!confirm(L('Clear check-ins, planned-trip counts, network ticks, and nickname from this phone?','¿Borrar registros, conteo de viajes, redes marcadas y el apodo de este teléfono?'))) return;
+    try{['c1_myrep','c1_profile','c1_trip_stats','c1_wallet_nets',SET_KEY].forEach(k=>localStorage.removeItem(k))}catch(e){}
+    close();
+  };
+}
+
+function mountLot(s){
+  const sheet=document.getElementById('sheet');
+  const st=s||window.c1GuideStation||window.cur;
+  if(!sheet||!st) return;
+  const html=lotRowHtml(st);
+  const box=sheet.querySelector('.c1lot, .c1lot-missing');
+  if(box){ box.outerHTML=html; return; }
+  const host=sheet.querySelector('.c1scene, .c1stfx')||sheet;
+  if(host.insertAdjacentHTML){
+    if(host.classList && host.classList.contains('c1scene')) host.insertAdjacentHTML('afterend', html);
+    else host.insertAdjacentHTML('beforeend', html);
+  }
+}
+function hookFn(name){
+  const prev=window[name];
+  if(typeof prev!=='function' || prev._c1v23) return;
+  const wrapped=function(){
+    const r=prev.apply(this,arguments);
+    try{ mountLot(arguments[0]||window.c1GuideStation||window.cur); }catch(e){}
+    return r;
+  };
+  wrapped._c1v23=1;
+  window[name]=wrapped;
+}
+try{ hookFn('decorateSheet'); hookFn('pick'); hookFn('fillStation'); hookFn('cardAll'); }catch(e){}
+try{ if(window.cur||window.c1GuideStation) mountLot(window.cur||window.c1GuideStation); }catch(e){}
+
+try{ renderProfileV23(); }catch(e){}
+window.renderProfileV23=renderProfileV23;
+window.openEditV23=openEditV23;
+})();
+</script>
+
 </body></html>
