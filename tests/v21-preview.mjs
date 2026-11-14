@@ -54,6 +54,8 @@ const threeSrc = readFileSync(join(root, 't-97f47847fd25', 'c1-three.js'), 'utf8
 check(threeSrc.includes("face === 'blink'") && threeSrc.includes('body.scale.set'), 'dino breathes and blinks');
 check(threeSrc.includes('userData.wheels') && threeSrc.includes('w.rotation.z'), 'car wheels roll');
 check(threeSrc.includes('blinkUntil') && threeSrc.includes('Math.sin(now / 550)'), 'headlight blink on tap and suspension bob');
+check(html.includes('c1-three.js?v=') && html.includes('three-0.187.0.module.min.js?v='), 'three.js assets are cache-busted');
+check(threeSrc.includes('Motion is off (Reduce Motion)') && threeSrc.includes('revealMounts'), 'hidden-tab reveal and reduced-motion note');
 check(html.includes('Live status coming soon') && html.includes('Coming soon') && html.includes('SAMPLE'), 'wallet and lot labels stay');
 
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
