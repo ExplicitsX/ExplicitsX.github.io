@@ -3762,11 +3762,8 @@ function lotRowHtml(s){
   return `<div class="c1lot" style="margin:8px 0"><div style="display:flex;align-items:flex-end;overflow-x:auto">${row.stalls.map(stallSvg).join('')}${more}</div>${note}${cap}${legend}</div>`;
 }
 function openStationLot(){
+  if(window.openStationLot && window.openStationLot!==openStationLot) return window.openStationLot();
   try{ if(typeof go==='function') go('station'); }catch(e){}
-  setTimeout(()=>{
-    const el=document.querySelector('#s-station .c1-3d-lot, #c1-3d-dock-station .c1-3d-lot, .c1-3d-lot');
-    if(el && el.scrollIntoView) el.scrollIntoView({block:'center',behavior:(typeof rm==='function'&&rm())?'auto':'smooth'});
-  },80);
 }
 function arrivedAtStation(st){
   try{
@@ -3910,6 +3907,6 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261113q11"></script>
-<script type="module" src="./c1-three.js?v=20261113q11" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261113q11"></script>
+<script src="./c1-demo.js?v=20261114q12"></script>
+<script type="module" src="./c1-three.js?v=20261114q12" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261114q12"></script>
 </body></html>
