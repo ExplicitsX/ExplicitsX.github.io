@@ -50,6 +50,10 @@ check(html.includes('Live status coming soon') && html.includes('Charger count n
 check(html.includes('LOT_CAP=12') || html.includes('LOT_STALL_CAP') || html.includes('cap==null?LOT_CAP'), 'lot row caps visible stalls');
 check(!/taken|parked car/i.test(html.slice(html.indexOf('/* v23: profile avatar'))), 'v23 lot row does not show taken or a parked car');
 check(html.includes('c1-three.js') && html.includes('three-0.187.0'), 'three.js 0.187.0 is pinned and hooked');
+const threeSrc = readFileSync(join(root, 't-97f47847fd25', 'c1-three.js'), 'utf8');
+check(threeSrc.includes("face === 'blink'") && threeSrc.includes('body.scale.set'), 'dino breathes and blinks');
+check(threeSrc.includes('userData.wheels') && threeSrc.includes('w.rotation.z'), 'car wheels roll');
+check(threeSrc.includes('blinkUntil') && threeSrc.includes('Math.sin(now / 550)'), 'headlight blink on tap and suspension bob');
 check(html.includes('Live status coming soon') && html.includes('Coming soon') && html.includes('SAMPLE'), 'wallet and lot labels stay');
 
 check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech recognition');
