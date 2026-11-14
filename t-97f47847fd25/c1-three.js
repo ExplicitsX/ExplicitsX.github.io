@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q5';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261113q6';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261113q5';
+const C1_ASSET_V = '20261113q6';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -189,6 +189,11 @@ function injectCss() {
     }
     #s-station .c1gl-host, #s-charge .c1gl-host, .c1-3d-card .c1gl-host{background:#0B1530;border-radius:12px}
     #s-charge:has(#c1-3d-dock-charge .c1gl-on) #chcar .evh{display:none}
+    #s-charge .c1-3d-dock, #s-charge .c1-3d-card{background:#091925!important}
+    .c1-chg-svg{display:block;width:100%;height:100%;border-radius:12px}
+    @media (prefers-reduced-motion:reduce){
+      .c1-chg-svg animate, .c1-chg-svg animateMotion, .c1-chg-svg animateTransform{display:none}
+    }
     #s-map .c1-3d-dock, #sheet .c1-3d-dock{display:none!important}
     @media (prefers-reduced-motion:reduce){
       .c1gl-host .c1gl{/* still 3D, held still in JS */}
@@ -1366,176 +1371,217 @@ function canvasHit(m, cx, cy, yPlane) {
   return m.camera.position.clone().add(dir.multiplyScalar(t));
 }
 
+function chargeLowEnd() {
+  try {
+    const dpr = window.devicePixelRatio || 1;
+    const w = Math.min(screen.width, screen.height);
+    return dpr <= 1.5 || w <= 360 || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4 && dpr <= 2);
+  } catch (e) { return false; }
+}
+
+function chargeSceneSvg(uid) {
+  uid = uid || "chg";
+  const still = typeof rm === 'function' ? rm() : false;
+  const d = 'M 128 154 C 150 154 152 228 204 230 C 252 232 258 168 278 150';
+  const pts = [[128,154],[160,200],[204,230],[240,210],[260,170],[278,150]];
+  let beads = '';
+  if (still) {
+    for (let i = 0; i < 4; i++) {
+      const p = pts[i];
+      beads += `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#2EE6D6"/>`;
+    }
+  } else {
+    for (let i = 0; i < 6; i++) {
+      beads += `<circle r="5" fill="#2EE6D6"><animateMotion dur="2.8s" begin="${(-i * 2.8 / 6).toFixed(2)}s" repeatCount="indefinite" path="${d}"/></circle>`;
+    }
+  }
+  return `<div class="c1-2d-src"><svg class="c1-chg-svg" viewBox="0 0 480 270" aria-hidden="true"><defs>
+    <linearGradient id="c1${uid}Bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#091925"/><stop offset="1" stop-color="#212E3A"/></linearGradient>
+    <radialGradient id="c1${uid}Sh" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="480" height="270" fill="url(#c1${uid}Bg)"/>
+  <ellipse cx="200" cy="232" rx="170" ry="16" fill="url(#c1${uid}Sh)"/>
+  <rect x="94" y="68" width="40" height="160" rx="6" fill="#4C5C6A"/>
+  <rect x="94" y="220" width="40" height="10" rx="3" fill="#3A4856"/>
+  <rect x="106" y="86" width="16" height="26" rx="5" fill="none" stroke="#2EE6D6" stroke-width="2.4"/>
+  <rect x="111" y="80" width="6" height="7" rx="2" fill="#2EE6D6"/>
+  <path d="M116 96 L111 106 H115 L112 114 L121 102 H116 Z" fill="#2EE6D6"/>
+  <rect x="102" y="122" width="24" height="20" rx="3" fill="#1A2430"/>
+  <path d="${d}" fill="none" stroke="#1A2430" stroke-width="7" stroke-linecap="round"/>
+  ${beads}
+  <ellipse cx="332" cy="198" rx="18" ry="18" fill="#1A1F26"/><ellipse cx="332" cy="198" rx="10" ry="10" fill="#6A7A88"/>
+  <ellipse cx="412" cy="198" rx="18" ry="18" fill="#1A1F26"/><ellipse cx="412" cy="198" rx="10" ry="10" fill="#6A7A88"/>
+  <path d="M268 168 C270 148 300 132 348 128 C392 124 430 132 448 148 C456 156 458 168 452 180 C448 192 430 200 390 204 L300 204 C276 200 266 186 268 168 Z" fill="#4C5C6A"/>
+  <path d="M312 164 C322 146 348 138 376 138 C400 138 424 146 434 158 C408 150 376 150 348 154 C328 158 316 162 312 164 Z" fill="#243240"/>
+  <rect x="286" y="160" width="36" height="14" rx="3" fill="#6A7A88" opacity=".5"/>
+  <rect x="292" y="148" width="28" height="8" rx="3" fill="#E01018"/>
+  <rect x="368" y="146" width="26" height="8" rx="3" fill="#E01018"/>
+  <rect x="272" y="146" width="10" height="12" rx="2" fill="#1AA8A0"/>
+  </svg></div>`;
+}
+
+const CHARGE_TEAL = 0x2ee6d6;
+const CHARGE_GRAY = 0x4c5c6a;
+const CHARGE_GRAY_DK = 0x3a4856;
+const CHARGE_GRAY_LT = 0x6a7a88;
+
+function buildChargePillar() {
+  const g = new THREE.Group();
+  add(g, mesh(GEO.box, CHARGE_GRAY, 0.36, 2.14, 0.32, { flatShading: true }), 0, 1.12, 0);
+  add(g, mesh(GEO.box, CHARGE_GRAY_DK, 0.4, 0.1, 0.36, { flatShading: true }), 0, 0.05, 0);
+  const iconHalo = mesh(GEO.box, CHARGE_TEAL, 0.18, 0.28, 0.04, { emissive: CHARGE_TEAL, emissiveIntensity: 0.45, transparent: true, opacity: 0.32 });
+  add(g, iconHalo, 0, 1.74, 0.18);
+  const icon = mesh(GEO.box, CHARGE_TEAL, 0.1, 0.18, 0.03, { emissive: CHARGE_TEAL, emissiveIntensity: 0.8 });
+  add(g, icon, 0, 1.72, 0.195);
+  const nub = mesh(GEO.box, CHARGE_TEAL, 0.05, 0.05, 0.03, { emissive: CHARGE_TEAL, emissiveIntensity: 0.8 });
+  add(g, nub, 0, 1.84, 0.195);
+  const boltI = mesh(GEO.box, CHARGE_TEAL, 0.05, 0.1, 0.02, { emissive: CHARGE_TEAL, emissiveIntensity: 0.9 });
+  add(g, boltI, 0, 1.7, 0.21);
+  add(g, mesh(GEO.box, 0x1a2430, 0.22, 0.18, 0.04, { flatShading: true }), 0, 1.38, 0.17);
+  ;[-0.05, 0, 0.05].forEach((x) => add(g, mesh(GEO.sphereLo, 0x3a4856, 0.015, 0.015, 0.015), x, 1.26, 0.19));
+  g.userData.iconMats = [iconHalo.material, icon.material, nub.material, boltI.material];
+  g.userData.cableDoor = new THREE.Vector3(0.2, 1.08, 0.02);
+  return g;
+}
+
+/** Generic gray coupe-SUV, nose +X, no badge or grille. */
+function buildChargeCar() {
+  const g = new THREE.Group();
+  const col = CHARGE_GRAY;
+  add(g, mesh(GEO.sphere, col, 1.05, 0.38, 0.52, { flatShading: true }), 0.05, 0.52, 0);
+  add(g, mesh(GEO.sphere, col, 0.42, 0.32, 0.5, { flatShading: true }), 0.7, 0.5, 0);
+  add(g, mesh(GEO.sphere, col, 0.46, 0.36, 0.5, { flatShading: true }), -0.7, 0.52, 0);
+  add(g, mesh(GEO.sphere, CHARGE_GRAY_LT, 0.7, 0.2, 0.48, { flatShading: true, transparent: true, opacity: 0.25 }), 0.05, 0.62, 0);
+  const glass = { transparent: true, opacity: 0.82, flatShading: true };
+  add(g, mesh(GEO.sphere, 0x243240, 0.62, 0.28, 0.42, glass), 0.05, 0.86, 0);
+  add(g, mesh(GEO.box, CHARGE_GRAY_DK, 0.04, 0.22, 0.44, { flatShading: true }), 0.1, 0.86, 0);
+  add(g, mesh(GEO.box, CHARGE_GRAY_LT, 0.28, 0.1, 0.36, { flatShading: true }), -0.95, 0.72, 0);
+  const tails = [];
+  ;[-1, 1].forEach((s) => {
+    const lamp = mesh(GEO.box, 0xe01018, 0.06, 0.07, 0.2, { emissive: 0xe01018, emissiveIntensity: 0.8 });
+    add(g, lamp, -0.98, 0.78, s * 0.28);
+    tails.push(lamp);
+  });
+  g.userData.tails = tails;
+  const port = mesh(GEO.box, CHARGE_TEAL, 0.08, 0.1, 0.08, { emissive: CHARGE_TEAL, emissiveIntensity: 0.55 });
+  add(g, port, -0.92, 0.72, 0.42);
+  g.userData.port = port;
+  const wheels = [];
+  [[-0.68, -0.5], [-0.68, 0.5], [0.68, -0.5], [0.68, 0.5]].forEach(([x, z]) => {
+    const w = new THREE.Group();
+    const tire = mesh(GEO.cyl, 0x1a1f26, 0.22, 0.16, 0.22, { flatShading: true });
+    tire.rotation.x = Math.PI / 2;
+    w.add(tire);
+    const rim = mesh(GEO.cyl, CHARGE_GRAY_LT, 0.12, 0.17, 0.12, { flatShading: true });
+    rim.rotation.x = Math.PI / 2;
+    w.add(rim);
+    w.position.set(x, 0.22, z);
+    g.add(w);
+    wheels.push(w);
+  });
+  g.userData.wheels = wheels;
+  return g;
+}
+
+function makeChargeCurve() {
+  return new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-1.45, 1.08, 0.12),
+    new THREE.Vector3(-1.05, 0.55, 0.28),
+    new THREE.Vector3(-0.55, 0.12, 0.38),
+    new THREE.Vector3(0.05, 0.12, 0.4),
+    new THREE.Vector3(0.22, 0.72, 0.42),
+  ]);
+}
+
+/**
+ * 3/4-rear charging scene on an opaque card: slim pillar, teal plug icon,
+ * curved cable with flowing beads, generic gray coupe-SUV, red taillights,
+ * and a slight camera drift. No battery fill or progress. Still when reduced
+ * motion is on or the tab is hidden.
+ */
 function mountChargeScene(el, opts) {
   if (!el) return null;
-  return startMount('charge', el, opts.height || 200, (m) => {
+  const low = chargeLowEnd();
+  return startMount('charge', el, opts.height || 226, (m) => {
     const root = new THREE.Group();
     m.scene.add(root);
-    const chg = buildCharger(opts.plugs || []);
-    chg.scale.set(0.62, 0.62, 0.62);
-    chg.position.set(-1.2, 0, 0);
-    root.add(chg);
-    const car = buildCar(opts.body, opts.paint);
-    car.scale.set(0.86, 0.86, 0.86);
-    car.position.set(1.15, 0, 0.05);
-    car.rotation.y = -Math.PI / 2;
+    try { m.renderer.setClearColor(0x091925, 1); } catch (e) {}
+    m.scene.traverse((o) => {
+      if (o.isAmbientLight) o.intensity = 0.32;
+      if (o.isDirectionalLight) o.intensity *= 0.42;
+    });
+    if (!low) {
+      const c = document.createElement('canvas');
+      c.width = 8; c.height = 128;
+      const ctx = c.getContext('2d');
+      const gr = ctx.createLinearGradient(0, 0, 0, 128);
+      gr.addColorStop(0, '#091925');
+      gr.addColorStop(1, '#212E3A');
+      ctx.fillStyle = gr;
+      ctx.fillRect(0, 0, 8, 128);
+      const tex = new THREE.CanvasTexture(c);
+      const bg = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ map: tex }));
+      bg.position.set(0.2, 1.1, -4.2);
+      root.add(bg);
+    }
+    const floor = mesh(GEO.cyl, 0x1a2733, 3.4, 0.03, 2.2, { flatShading: true });
+    add(root, floor, 0.2, 0.01, 0.1);
+    const shadow = mesh(GEO.sphere, 0x000000, 1.9, 0.08, 0.7, { transparent: true, opacity: 0.32 });
+    add(root, shadow, 0.3, 0.05, 0);
+
+    const pillar = buildChargePillar();
+    pillar.position.set(-1.62, 0, 0.05);
+    root.add(pillar);
+    const car = buildChargeCar();
+    car.position.set(1.12, 0, 0);
     root.add(car);
-    const hang = { x: -0.55, y: 0.62, z: 0.15 };
-    const plug = mesh(GEO.box, 0x5a6680, 0.12, 0.2, 0.1);
-    add(root, plug, hang.x, hang.y, hang.z);
-    const outlet = { x: -0.95, y: 0.78, z: 0.12 };
-    let cable = buildSagCable(outlet, hang, 0.28);
-    root.add(cable);
-    const trailGrp = new THREE.Group();
-    root.add(trailGrp);
-    const zapBolt = bolt(0.28);
-    zapBolt.visible = false;
-    root.add(zapBolt);
 
-    m.state.lightsOn = true;
-    m.state.plugged = false;
-    m.state.zoom = 1;
-    m.state.trails = [];
-    m.state.plug = { ...hang };
-    setChargerLights(chg, true);
-    const baseCam = m.camera.position.clone();
-    const pad = mesh(GEO.cyl, 0x152445, 2.8, 0.04, 1.6);
-    add(root, pad, 0, 0.02, 0);
-    try { m.renderer.setClearColor(0x0b1530, 1); } catch (e) {}
-    // Pull back and drop the camera so the whole car and charger fit with padding
-    m.camera.position.set(0.35, 1.35, 7.2);
-    m.camera.lookAt(0, 0.55, 0);
-    m.camera.fov = 26;
+    const curve = makeChargeCurve();
+    const tube = new THREE.Mesh(
+      new THREE.TubeGeometry(curve, low ? 16 : 28, 0.032, 8, false),
+      hexMat(0x1a2430)
+    );
+    root.add(tube);
+    const beadN = low ? 3 : 6;
+    const beads = [];
+    for (let i = 0; i < beadN; i++) {
+      const b = mesh(GEO.sphereLo, CHARGE_TEAL, 0.055, 0.055, 0.055, { emissive: CHARGE_TEAL, emissiveIntensity: 0.95 });
+      root.add(b);
+      beads.push(b);
+      const p = curve.getPoint(i / beadN);
+      b.position.copy(p);
+    }
+
+    const basePos = new THREE.Vector3(-0.85, 1.32, 4.35);
+    const look = new THREE.Vector3(0.15, 0.68, 0);
+    m.camera.position.copy(basePos);
+    m.camera.lookAt(look);
+    m.camera.fov = 28;
     m.camera.updateProjectionMatrix();
-    baseCam.copy(m.camera.position);
 
-    const portWorld = () => {
-      const v = new THREE.Vector3();
-      if (car.userData.port) car.userData.port.getWorldPosition(v);
-      else v.set(0.55, 0.55, 0.15);
-      return v;
-    };
-
-    function refreshCable() {
-      const dest = m.state.plugged ? portWorld() : m.state.plug;
-      root.remove(cable);
-      try { cable.geometry.dispose(); } catch (e) {}
-      cable = buildSagCable(outlet, dest, m.state.plugged ? 0.22 : 0.28);
-      root.add(cable);
-      plug.position.set(dest.x, dest.y, dest.z);
-      if (car.userData.port) {
-        car.userData.port.material.emissiveIntensity = m.state.plugged ? 1.1 : 0.7;
-      }
-    }
-
-    const btn = opts.lightsBtn;
-    if (btn) {
-      btn.setAttribute('aria-pressed', 'true');
-      btn.textContent = 'Charger lights on';
-      btn.onclick = () => {
-        m.state.lightsOn = !m.state.lightsOn;
-        setChargerLights(chg, m.state.lightsOn);
-        btn.setAttribute('aria-pressed', m.state.lightsOn ? 'true' : 'false');
-        btn.textContent = m.state.lightsOn ? 'Charger lights on' : 'Charger lights off';
-      };
-    }
-
-    const ptrs = new Map();
-    let dragging = false;
-    let drawing = false;
-    let pinch0 = 0;
-    let pinchZoom = 1;
-    const onDown = (e) => {
-      if (m.still) return;
-      m.canvas.setPointerCapture?.(e.pointerId);
-      ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (ptrs.size === 2) {
-        const arr = [...ptrs.values()];
-        pinch0 = Math.hypot(arr[0].x - arr[1].x, arr[0].y - arr[1].y);
-        pinchZoom = m.state.zoom;
-        dragging = drawing = false;
-        return;
-      }
-      const hit = canvasHit(m, e.clientX, e.clientY, 0.6);
-      const dest = m.state.plugged ? portWorld() : m.state.plug;
-      if (!m.state.plugged && dist3(hit, dest) < 0.45) dragging = true;
-      else drawing = true;
-    };
-    const onMove = (e) => {
-      if (m.still) return;
-      if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (ptrs.size === 2) {
-        const arr = [...ptrs.values()];
-        const dist = Math.hypot(arr[0].x - arr[1].x, arr[0].y - arr[1].y);
-        m.state.zoom = pinchScale(pinch0, dist, pinchZoom);
-        const z = m.state.zoom;
-        m.camera.position.copy(baseCam).multiplyScalar(1 / z);
-        return;
-      }
-      if (dragging) {
-        const hit = canvasHit(m, e.clientX, e.clientY, 0.6);
-        m.state.plug = { x: hit.x, y: Math.max(0.2, Math.min(1.2, hit.y)), z: hit.z };
-        refreshCable();
-        return;
-      }
-      if (drawing) {
-        const hit = canvasHit(m, e.clientX, e.clientY, 0.9);
-        m.state.trails.push({ x: hit.x, y: hit.y, z: hit.z, t: performance.now() });
-      }
-    };
-    const onUp = (e) => {
-      ptrs.delete(e.pointerId);
-      if (dragging) {
-        const port = portWorld();
-        if (plugInRange(m.state.plug, port, 0.42)) {
-          m.state.plugged = true;
-          m.state.plug = snapPlugToPort(port);
-          zapBolt.position.set(port.x, port.y + 0.2, port.z);
-          zapBolt.visible = true;
-          setTimeout(() => { zapBolt.visible = false; }, 450);
-        } else {
-          m.state.plug = { ...hang };
-        }
-        refreshCable();
-      }
-      dragging = false;
-      drawing = false;
-    };
-    m.canvas.addEventListener('pointerdown', onDown);
-    m.canvas.addEventListener('pointermove', onMove);
-    m.canvas.addEventListener('pointerup', onUp);
-    m.canvas.addEventListener('pointercancel', onUp);
-
-    m.update = (dt, now) => {
-      if (car.userData.port && !m.still) {
-        const pulse = 0.55 + 0.35 * Math.sin(now / 400);
-        car.userData.port.material.emissiveIntensity = m.state.plugged ? 1.15 : pulse;
-      }
-      if (car.userData.wheels && !m.still && !m.state.plugged) {
-        car.userData.wheels.forEach((w) => { w.rotation.z += dt * 0.4; });
-      }
-      // refresh trail meshes lightly
-      const live = trailTick(m.state.trails, now);
-      m.state.trails = live;
-      while (trailGrp.children.length > live.length) {
-        const c = trailGrp.children[trailGrp.children.length - 1];
-        trailGrp.remove(c);
-      }
-      live.forEach((p, i) => {
-        let b = trailGrp.children[i];
-        if (!b) {
-          b = bolt(0.12);
-          trailGrp.add(b);
-        }
-        b.position.set(p.x, p.y, p.z);
-        b.visible = !m.still;
+    m.update = (_dt, now) => {
+      const still = m.still;
+      const icon = still ? 0.7 : 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(now / 420));
+      (pillar.userData.iconMats || []).forEach((mat) => { mat.emissiveIntensity = icon; });
+      const tail = still ? 0.85 : 0.7 + 0.3 * (0.5 + 0.5 * Math.sin(now / 640));
+      (car.userData.tails || []).forEach((lamp) => { lamp.material.emissiveIntensity = tail; });
+      const period = 2800;
+      const base = still ? 0 : ((now % period) / period);
+      beads.forEach((b, i) => {
+        const t = (base + i / beadN) % 1;
+        b.position.copy(curve.getPoint(t));
       });
-      if (m.still) {
-        trailGrp.visible = false;
-        zapBolt.visible = false;
-      } else trailGrp.visible = true;
+      if (still || low) {
+        m.camera.position.copy(basePos);
+      } else {
+        m.camera.position.set(
+          basePos.x + 0.12 * Math.sin(now / 1800),
+          basePos.y + 0.05 * Math.sin(now / 2200),
+          basePos.z + 0.1 * Math.cos(now / 2000)
+        );
+      }
+      m.camera.lookAt(look);
     };
-    refreshCable();
   });
 }
 
@@ -1566,8 +1612,7 @@ function ensureSheetDock(root) {
     dock = document.createElement('div');
     dock.id = dockId;
     dock.className = 'c1-3d-dock c1-3d-card notr';
-    dock.innerHTML = '<div class="c1-3d-charge" style="height:200px;min-height:200px;max-height:200px;margin:6px 0 4px"></div>'
-      + '<div class="c1-3d-play"><button type="button" class="chip c1-lights-btn" aria-pressed="true">Charger lights on</button></div>'
+    dock.innerHTML = '<div class="c1-3d-charge" style="height:226px;min-height:226px;margin:6px 0 4px">' + chargeSceneSvg('station') + '</div>'
       + '<div class="c1-3d-lot" style="min-height:100px;margin:4px 0 0"></div>'
       + '<div class="c1-3d-lot-cap muted" style="font-size:11px;text-align:center;margin:0 0 4px">Live status coming soon</div>';
   }
@@ -1586,8 +1631,7 @@ function fillStationDock(root, set, s) {
     userPlug: userPlug(),
     body: set.body,
     paint: set.paint,
-    height: 200,
-    lightsBtn: dock.querySelector('.c1-lights-btn'),
+    height: 226,
   });
   const lotHost = dock.querySelector('.c1-3d-lot');
   if (lotHost && s && typeof window.buildLotRow === 'function') {
@@ -1615,8 +1659,7 @@ function ensureChargeDock() {
   dock = document.createElement('div');
   dock.id = 'c1-3d-dock-charge';
   dock.className = 'c1-3d-dock c1-3d-card notr';
-  dock.innerHTML = '<div class="c1-3d-charge" style="height:200px;min-height:200px;max-height:200px;margin:6px 0 4px"></div>'
-    + '<div class="c1-3d-play"><button type="button" class="chip c1-lights-btn" aria-pressed="true">Charger lights on</button></div>';
+  dock.innerHTML = '<div class="c1-3d-charge" style="height:226px;min-height:226px;margin:6px 0 4px">' + chargeSceneSvg('charge') + '</div>';
   const chh = chx.querySelector('.chh');
   const chcar = document.getElementById('chcar');
   if (chh && chh.nextSibling) chx.insertBefore(dock, chh.nextSibling);
@@ -1634,8 +1677,7 @@ function fillChargeDock(root, set, s) {
     userPlug: userPlug(),
     body: set.body,
     paint: set.paint,
-    height: 200,
-    lightsBtn: dock.querySelector('.c1-lights-btn'),
+    height: 226,
   });
 }
 
