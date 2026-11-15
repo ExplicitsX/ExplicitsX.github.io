@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q14';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q15';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261115q14';
+const C1_ASSET_V = '20261115q15';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -1625,7 +1625,7 @@ function updateLotBadge(dock, layout, features) {
     ? lotLL('Layout from OpenStreetMap', 'Disposición de OpenStreetMap')
     : lotLL('Approximate layout', 'Disposición aproximada');
   const note = layout && layout.source === 'osm' ? '' : (lotLL('Layout is approximate', 'La disposición es aproximada') + '<br>');
-  const attrib = features ? ('<div style="font-size:10px;margin-top:2px">' + lotLL('Data © OpenStreetMap contributors', 'Datos © colaboradores de OpenStreetMap') + '</div>') : '';
+  const attrib = features ? ('<div style="font-size:10px;margin-top:2px"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">' + lotLL('© OpenStreetMap contributors', '© colaboradores de OpenStreetMap') + '</a></div>') : '';
   let badge = dock.querySelector('.c1-3d-lot-badge');
   if (!badge) {
     badge = document.createElement('div');
