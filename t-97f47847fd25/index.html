@@ -3910,8 +3910,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261115q13"></script>
-<script type="module" src="./c1-three.js?v=20261115q13" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q13"></script>
+<script src="./c1-demo.js?v=20261115q14"></script>
+<script type="module" src="./c1-three.js?v=20261115q14" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q14"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
@@ -4061,4 +4061,236 @@ window.openEditV23=openEditV23;
 })();
 </script>
 
+
+<style id="c1v25css">
+button,.btn,.chip,.c1t,.c1o{transition:background-color .18s ease,opacity .18s ease,transform .18s ease}
+@media (prefers-reduced-motion:reduce){button,.btn,.chip,.c1t,.c1o,input[type=range]{transition:none!important}}
+.c1meta{font-size:var(--caption);color:var(--m);margin-top:2px;line-height:1.35}
+.c1nav{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.c1nav .btn{margin:0;flex:1;min-width:104px;min-height:48px}
+#tsoc-wrap{margin-top:8px}
+#tsoc-wrap input[type=range]{width:100%;min-height:48px;accent-color:#1E4FD8}
+#tsoc-lab{font-weight:700}
+</style>
+<script>
+/* v25: cache-first map, DOE filters, nearby search, listed price, navigate, trip slider */
+(function(){
+  const L=(en,es)=> (typeof L2==='function'?L2(en,es):en);
+  const rm=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+  const FILTER_KEY='c1_filters_v1';
+  const VIEW_KEY='c1_map_view_v1';
+  const doe={freeOnly:false,open24h:false,showRestricted:false};
+  function loadFilters(){
+    try{
+      const o=JSON.parse(localStorage.getItem(FILTER_KEY)||'null');
+      if(!o||typeof o!=='object') return;
+      if(Array.isArray(o.on)&&typeof on!=='undefined'&&on&&on.add){o.on.forEach(f=>{if(typeof f==='string')on.add(f)});}
+      doe.freeOnly=o.freeOnly===true; doe.open24h=o.open24h===true; doe.showRestricted=o.showRestricted===true;
+    }catch(e){}
+  }
+  function saveFilters(){
+    try{
+      const payload={on:(typeof on!=='undefined'&&on&&on.forEach)?[...on]:[],freeOnly:doe.freeOnly,open24h:doe.open24h,showRestricted:doe.showRestricted};
+      localStorage.setItem(FILTER_KEY,JSON.stringify(payload));
+    }catch(e){}
+  }
+  function is24(h){return !!(h&&(/24\s*hours/.test(String(h).toLowerCase())||/24\s*\/\s*7/.test(String(h).toLowerCase())));}
+  function isFree(p){const t=String(p||'').trim().toLowerCase();return !!t&&!/\bnot\s+free\b/.test(t)&&/\bfree\b/.test(t);}
+  function isPublic(s){const c=String(s.ac||s.accessCode||s.access||'').trim().toLowerCase().replace(/[\s-]+/g,'_');return !c||c==='public'||c==='public_non_residential';}
+  function listed(s){const t=String(s.lp||s.pricingText||'').trim();return t||'';}
+  function lastTxt(s){
+    const conf=s.conf||s.lastConfirmed||'';
+    if(conf){const d=new Date(conf); if(!isNaN(d)) return L('Last updated '+d.toLocaleDateString(),'Última actualización '+d.toLocaleDateString());}
+    try{
+      const v=JSON.parse(localStorage.getItem(VIEW_KEY)||'null');
+      if(v&&v.savedAt){const d=new Date(v.savedAt); if(!isNaN(d)) return L('Last updated '+d.toLocaleDateString()+' (saved on this phone)','Última actualización '+d.toLocaleDateString()+' (guardada en este teléfono)');}
+    }catch(e){}
+    return L('Last updated time not listed','Sin fecha de última actualización');
+  }
+  loadFilters();
+
+  if(typeof tog==='function'&&!tog._c1v25){
+    const prev=tog;
+    tog=function(){const r=prev.apply(this,arguments); try{saveFilters();}catch(e){} return r;};
+    tog._c1v25=1; window.tog=tog;
+  }
+  if(typeof fPass==='function'&&!fPass._c1v25){
+    const prev=fPass;
+    fPass=function(s){
+      try{
+        if(!prev(s)) return false;
+        if(doe.freeOnly&&!isFree(listed(s))) return false;
+        if(doe.open24h&&!is24(s.hrs||s.accessHours)) return false;
+        if(!doe.showRestricted&&!isPublic(s)) return false;
+      }catch(e){return prev(s);}
+      return true;
+    };
+    fPass._c1v25=1; window.fPass=fPass;
+  }
+  if(typeof chips==='function'&&!chips._c1v25){
+    const prev=chips;
+    chips=function(){
+      const r=prev.apply(this,arguments);
+      try{
+        const el=typeof chips_el!=='undefined'?chips_el:document.getElementById('chips');
+        if(el&&!el.querySelector('[data-doe]')){
+          const mk=(key,label,on)=>{
+            const sp=document.createElement('span');
+            sp.className='chip'+(on?' on':'');
+            sp.dataset.doe=key;
+            sp.setAttribute('role','button');
+            sp.setAttribute('aria-pressed',on?'true':'false');
+            sp.style.minHeight='48px';
+            sp.textContent=(on?'✓ ':'')+label;
+            sp.onclick=function(){doe[key]=!doe[key]; saveFilters(); try{if(typeof draw==='function')draw(); if(typeof fRefilter==='function')fRefilter();}catch(e){} chips();};
+            el.appendChild(sp);
+          };
+          mk('freeOnly',L('Free (listed)','Gratis (listada)'),doe.freeOnly);
+          mk('open24h',L('Open 24h','Abierta 24 h'),doe.open24h);
+          mk('showRestricted',L('Show restricted','Mostrar acceso restringido'),doe.showRestricted);
+        }
+      }catch(e){}
+      return r;
+    };
+    chips._c1v25=1; window.chips=chips;
+    try{chips();}catch(e){}
+  }
+
+  // Nearby-first search: bias cities by distance and drop far junk on short queries.
+  if(typeof srFind==='function'&&!srFind._c1v25){
+    const prev=srFind;
+    srFind=function(qv){
+      const out=prev.apply(this,arguments)||[];
+      try{
+        const p=(typeof cloPos==='function'?cloPos():null)||(typeof map!=='undefined'&&map.getCenter? [map.getCenter().lat,map.getCenter().lng]:[34.0522,-118.2437]);
+        const q=String(qv||'').trim();
+        const dist=o=>{
+          const la=o.lat, lo=o.lng!=null?o.lng:o.lon;
+          if(la==null||lo==null) return 0;
+          const dlat=la-p[0], dlon=(lo-p[1])*0.8;
+          return Math.hypot(dlat,dlon)*69;
+        };
+        const cap=q.length>=4?1e9:150;
+        const ranked=out.map(item=>{
+          const o=item.o||item;
+          return {item, d:dist(o)};
+        }).filter(x=>x.d<=cap || (x.item.t==='s'&&x.d<=150));
+        ranked.sort((a,b)=>a.d-b.d);
+        return ranked.map(x=>x.item);
+      }catch(e){return out;}
+    };
+    srFind._c1v25=1; window.srFind=srFind;
+  }
+
+  function decorate(root,s){
+    if(!root||!s) return;
+    const h=root.querySelector(':scope > .c1h, .c1h');
+    if(!h) return;
+    if(!h.querySelector('.c1meta')){
+      const host=h.querySelector('.c1i')||h.querySelector('.c1btns');
+      const meta=document.createElement('div');
+      meta.className='c1meta muted';
+      const price=listed(s);
+      const hrs=String(s.hrs||s.accessHours||'').trim();
+      meta.innerHTML=lastTxt(s)
+        +'<div>'+(price?price+' · '+L('Listed price, may change','Precio listado, puede cambiar'):L('Price not listed','Precio no listado'))+'</div>'
+        +(hrs?'<div>'+L('Hours: ','Horario: ')+hrs+'</div>':'');
+      if(host) host.insertAdjacentElement('afterend',meta);
+      else h.appendChild(meta);
+    }
+    if(!h.querySelector('.c1rep')&&typeof openRB==='function'){
+      const btns=h.querySelector('.c1btns')||h.querySelector('.c1r');
+      const html='<button type="button" class="c1t c1rep" style="min-height:48px;margin-top:6px" onclick="openRB()">'+L('Report a problem','Reportar un problema')+'</button>';
+      if(btns) btns.insertAdjacentHTML('afterend',html);
+      else h.insertAdjacentHTML('beforeend',html);
+    }
+    const more=root.querySelector(':scope > .c1more, .c1more');
+    if(more&&!more.querySelector('.c1nav')){
+      const lat=s.lat, lon=(s.lng!=null?s.lng:s.lon);
+      if(lat!=null&&lon!=null){
+        const dest=encodeURIComponent(lat+','+lon);
+        const nav='<div class="c1nav">'
+          +'<a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+dest+'">'+L('Google Maps','Google Maps')+'</a>'
+          +'<a class="btn" target="_blank" rel="noopener" href="https://maps.apple.com/?daddr='+dest+'&dirflg=d">'+L('Apple Maps','Apple Maps')+'</a>'
+          +'<a class="btn" style="background:transparent;border:1px solid var(--b)" target="_blank" rel="noopener" href="https://www.waze.com/ul?ll='+lat+','+lon+'&navigate=yes">Waze</a>'
+          +'</div>';
+        const anchor=more.querySelector('.c1s-more');
+        if(anchor) anchor.insertAdjacentHTML('afterend',nav);
+        else more.insertAdjacentHTML('afterbegin',nav);
+      }
+    }
+  }
+  function hookCard(){
+    try{
+      decorate(document.getElementById('sheet'), typeof cur!=='undefined'?cur:null);
+      decorate(document.getElementById('s-station'), typeof cur!=='undefined'?cur:null);
+    }catch(e){}
+  }
+  if(typeof cardAll==='function'&&!cardAll._c1v25){
+    const prev=cardAll;
+    const wrapped=function(){const r=prev.apply(this,arguments); hookCard(); return r;};
+    wrapped._c1v25=1; wrapped._c1v24=prev._c1v24||1;
+    cardAll=wrapped; window.cardAll=wrapped;
+    try{wrapped();}catch(e){}
+  }else{
+    hookCard();
+  }
+
+  function restoreView(){
+    if(typeof map==='undefined'||!map||!map.setView) return;
+    try{
+      const v=JSON.parse(localStorage.getItem(VIEW_KEY)||'null');
+      if(v&&typeof v.lat==='number'&&typeof v.lng==='number'&&Math.abs(v.lat)<=90&&Math.abs(v.lng)<=180){
+        map.setView([v.lat,v.lng], v.zoom||map.getZoom(), {animate:false});
+      }
+    }catch(e){}
+    if(!map._c1view){
+      map.on('moveend',function(){
+        try{
+          const c=map.getCenter();
+          localStorage.setItem(VIEW_KEY, JSON.stringify({lat:c.lat,lng:c.lng,zoom:map.getZoom(),savedAt:Date.now()}));
+        }catch(e){}
+      });
+      map._c1view=1;
+    }
+  }
+  try{restoreView();}catch(e){}
+  setTimeout(restoreView, 400);
+
+  function tripSlider(){
+    const el=document.getElementById('tsoc');
+    if(!el||el._c1slider||el.type==='range') return;
+    const v=parseInt(el.value,10); const start=Number.isFinite(v)?v:68;
+    const wrap=document.createElement('div');
+    wrap.id='tsoc-wrap';
+    wrap.innerHTML='<div id="tsoc-lab">'+L('Starting battery '+start+'%','Batería al salir '+start+'%')+'</div>'
+      +'<input id="tsoc" type="range" min="0" max="100" value="'+start+'" aria-label="'+L('Starting battery %','Batería al salir %')+'">';
+    el.replaceWith(wrap);
+    const r=document.getElementById('tsoc');
+    const lab=document.getElementById('tsoc-lab');
+    if(r){
+      r._c1slider=1;
+      r.addEventListener('input',function(){
+        if(lab) lab.textContent=L('Starting battery '+r.value+'%','Batería al salir '+r.value+'%');
+        try{if(typeof trip==='function')trip();}catch(e){}
+      });
+    }
+    if(typeof tripPrep==='function'&&!tripPrep._c1v25){
+      const prev=tripPrep;
+      tripPrep=function(){const t=document.getElementById('tsoc'); if(!t||!t.options) return; return prev.apply(this,arguments);};
+      tripPrep._c1v25=1; window.tripPrep=tripPrep;
+    }
+  }
+  try{tripSlider();}catch(e){}
+  setTimeout(tripSlider, 600);
+
+  if(!rm()){
+    document.addEventListener('click',function(e){
+      const t=e.target&&e.target.closest&&e.target.closest('button,.btn,.chip,.c1t');
+      if(!t) return;
+      try{if(navigator.vibrate) navigator.vibrate(10);}catch(e){}
+    },true);
+  }
+})();
+</script>
 </body></html>
