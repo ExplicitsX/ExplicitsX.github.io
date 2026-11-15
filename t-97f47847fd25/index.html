@@ -1834,10 +1834,12 @@ var MORE_OPEN=!!new URLSearchParams(location.search).get('scene');
 function L2(en,es){return LANG=='es'?es:en}
 function cardHTML(s,where){const open=s.avail||0,tot=s.total||0,ok=open>0,f=fit(s);
  const fitL=!CAR?L2('Add your car to see if it fits','Agrega tu auto para ver si es compatible'):f=='yes'?'✓ '+fitsTxt():f=='adapter'?L2('Fits with an adapter: ','Funciona con adaptador: ')+T(adNote(s)):(carKW()==0&&!(s.plugs||[]).includes('J1772'))?L2('DC fast only. Your car uses Level 2, so it won’t fit','Solo carga rápida DC. Tu auto usa Nivel 2, no es compatible'):L2('Doesn’t fit your car','No es compatible con tu auto');
- return `<div class="c1h notr"><div class="c1n">${s.name}</div><span class="c1b${ok?' on':''}">${L2(`${open} of ${tot} open (sample)`,`${open} de ${tot} libres (muestra)`)}</span>
- <div class="c1i">${T(infoTxt(s))}</div><div class="c1f">${fitL}</div>
- <div class="c1btns"><button type="button" class="btn g c1s" onclick="openStart()">${L2('Start charging','Iniciar carga')}</button><a class="btn c1o" target="_blank" rel="noopener" href="${goURL(s)}">${L2('Take me there','Llévame')}</a></div>
- <div class="c1r"><button type="button" class="c1t" aria-expanded="${MORE_OPEN}" onclick="toggleMore()">${MORE_OPEN?L2('Fewer details ▴','Menos detalles ▴'):L2('More details ▾','Más detalles ▾')}</button><button type="button" class="c1t c1a" onclick="openAlong()">${L2('Charge along','Cargar en vivo')}</button></div></div>`}
+ const dist=(infoTxt(s)||'').split(' · ')[0]||'';
+ return `<div class="c1h notr"><div class="c1n">${s.name}</div>
+ <div class="c1f">${fitL}</div>
+ <div class="c1i">${dist}</div>
+ <div class="c1btns"><a class="btn c1o" target="_blank" rel="noopener" href="${goURL(s)}">${L2('Go','Ir')}</a></div>
+ <div class="c1r"><button type="button" class="c1t" aria-expanded="${MORE_OPEN}" onclick="toggleMore()">${MORE_OPEN?L2('Fewer details ▴','Menos detalles ▴'):L2('More details ▾','Más detalles ▾')}</button></div></div>`}
 function toggleMore(){MORE_OPEN=!MORE_OPEN;cardAll()}
 function cardInto(root,where,keep){if(!root||!cur)return;let h=root.querySelector(':scope>.c1h'),m=root.querySelector(':scope>.c1more');
  if(!m){m=document.createElement('div');m.className='c1more';root.appendChild(m)}
@@ -3615,6 +3617,7 @@ function openEdit(){
 try{ renderProfileV22(); }catch(e){}
 window.renderProfileV22=renderProfileV22;
 window.c1Crew=CREW;
+window.crewSvg=crewSvg;
 })();
 </script>
 
@@ -3907,6 +3910,155 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261114q12"></script>
-<script type="module" src="./c1-three.js?v=20261114q12" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261114q12"></script>
+<script src="./c1-demo.js?v=20261115q13"></script>
+<script type="module" src="./c1-three.js?v=20261115q13" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q13"></script>
+<style id="c1v24css">
+:root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
+.hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
+.muted{font-size:var(--caption)}
+.card,.sheet,.mbox,.ov,.btn,.inp,.c1-egg-card,.c1sum{border-radius:var(--radius)}
+.card,.sheet,.mbox,.c1-egg-card,.c1sum{box-shadow:var(--shadow)}
+.btn:not(.stopb):not(.danger),.btn.g{background:var(--blue)!important;color:#fff!important}
+.chip.on,.tab.on{color:var(--blue)}
+.chip.on{background:var(--blue)!important;border-color:var(--blue)!important;color:#fff!important;box-shadow:none}
+.c1btns .c1o,body:not(.hc) .c1btns .btn,body:not(.hc) .c1btns .btn.g{background:var(--blue)!important;color:#fff!important;border:0!important;box-shadow:var(--shadow)!important}
+.c1s-more{padding:8px 0 12px;display:flex;flex-direction:column;gap:8px}
+.c1s-more .btn{margin:0}
+.c1-egg{position:fixed;inset:0;background:rgba(11,21,48,.55);z-index:4000;display:flex;align-items:center;justify-content:center;padding:24px}
+.c1-egg[hidden]{display:none!important}
+.c1-egg-card{background:#132445;color:#F4F7FB;padding:20px;width:100%;max-width:320px;text-align:center;position:relative}
+.c1-egg-card b{display:block;font-size:var(--title);margin:8px 0 12px}
+.c1-egg-spark{position:absolute;right:18px;top:16px;color:#FFD23F;font-size:22px;pointer-events:none}
+.c1-brand{text-align:center;padding:12px 8px;min-height:48px;cursor:pointer;font-weight:700}
+@media (prefers-reduced-motion:reduce){
+  .screen.on,.screen.on>.card,#sheet,.c1avatar-spin,.c1chg-spin,.c1-egg-spark,.c1-egg-bot *{animation:none!important;transition:none!important}
+}
+@media (prefers-reduced-motion:no-preference){
+  .screen.on{animation:c1fade .2s ease-out}
+  .screen.on>.card{animation:c1fade .2s ease-out}
+  .c1avatar-spin,.c1chg-spin{animation:c1yaw 1.2s ease-out 1}
+  .c1-egg-spark{animation:c1spark .7s ease-out 1}
+}
+@keyframes c1fade{from{opacity:0}to{opacity:1}}
+@keyframes c1spark{from{opacity:0;transform:scale(.6) translateY(4px)}to{opacity:1;transform:none}}
+</style>
+<script>
+/* v24: calmer chrome, compact station sheet, 7-tap Kilolane egg */
+(function(){
+  const L=(en,es)=> (typeof L2==='function'?L2(en,es):en);
+  const rm=()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}};
+  function taps(needed, gap){
+    let n=0, last=0;
+    return function(){
+      const now=Date.now();
+      n = now-last>gap ? 1 : n+1;
+      last=now;
+      if(n<needed) return false;
+      n=0; return true;
+    };
+  }
+  function moreActions(root,s){
+    if(!root||!s) return;
+    const m=root.querySelector(':scope > .c1more');
+    if(!m||m.querySelector('.c1s-more')) return;
+    const open=s.avail||0, tot=s.total||0;
+    const occ=L((open+' of '+tot+' open (sample)'),(open+' de '+tot+' libres (muestra)'));
+    m.insertAdjacentHTML('afterbegin',
+      '<div class="c1s-more"><div class="muted c1b">'+occ+'</div>'
+      +'<div class="muted">'+(typeof infoTxt==='function'?infoTxt(s):'')+'</div>'
+      +'<button type="button" class="btn c1s" onclick="openStart()">'+L('Start charging','Iniciar carga')+'</button>'
+      +'<button type="button" class="c1t c1a" onclick="openAlong()">'+L('Charge along','Cargar en vivo')+'</button></div>');
+  }
+  function hookCard(){
+    if(typeof cardAll!=='function'||cardAll._c1v24) return;
+    const prev=cardAll;
+    const wrapped=function(){
+      const r=prev.apply(this,arguments);
+      try{
+        const s=typeof cur!=='undefined'?cur:window.c1GuideStation;
+        moreActions(document.getElementById('sheet'),s);
+        moreActions(document.getElementById('s-station'),s);
+      }catch(e){}
+      return r;
+    };
+    wrapped._c1v24=1;
+    cardAll=wrapped; window.cardAll=wrapped;
+    try{ wrapped(); }catch(e){}
+  }
+  hookCard();
+  setTimeout(hookCard, 800);
+
+
+  function eggCard(){
+    let el=document.getElementById('c1-egg');
+    if(!el){
+      el=document.createElement('div');
+      el.id='c1-egg';
+      el.className='c1-egg';
+      el.setAttribute('role','dialog');
+      el.setAttribute('aria-label',L('Made by Kevin ⚡','Hecho por Kevin ⚡'));
+      document.body.appendChild(el);
+    }
+    const wave=rm()?'happy':'wave';
+    const bot=(typeof crewSvg==='function')?crewSvg('voltbot',wave,88):'⚡';
+    el.innerHTML='<div class="c1-egg-card"><div class="c1-egg-bot">'+bot+'</div><span class="c1-egg-spark" aria-hidden="true">⚡</span><b>'+L('Made by Kevin ⚡','Hecho por Kevin ⚡')+'</b><button type="button" class="btn" id="c1-egg-x">'+L('Close','Cerrar')+'</button></div>';
+    el.hidden=false;
+    const close=function(){el.hidden=true; el.innerHTML='';};
+    el.onclick=function(e){ if(e.target===el) close(); };
+    const x=document.getElementById('c1-egg-x'); if(x) x.onclick=close;
+    if(!rm()) setTimeout(function(){
+      const host=el.querySelector('.c1-egg-bot');
+      if(host && typeof crewSvg==='function') host.innerHTML=crewSvg('voltbot','happy',88);
+    },1600);
+  }
+
+  const logoTap=taps(7,1600);
+  function onLogo(e){
+    const t=e.target&&e.target.closest&&e.target.closest('#c1-settings-logo, .c1-brand, .vlw');
+    if(!t) return;
+    if(t.closest && t.closest('#c1-egg')) return;
+    if(t.id!=='c1-settings-logo' && !t.classList.contains('c1-brand') && !t.closest('#menubox, #c1profile')) return;
+    if(logoTap()) eggCard();
+  }
+  document.addEventListener('click', onLogo, true);
+
+  function injectMenuLogo(){
+    const b=document.getElementById('menubox');
+    if(!b||b.querySelector('#c1-settings-logo')) return;
+    const mt=b.querySelector('.c1mt');
+    const html='<div id="c1-settings-logo" class="c1-brand" role="button" tabindex="0" aria-label="Kilolane">Kilolane · 1.0.0</div>';
+    if(mt) mt.insertAdjacentHTML('afterend', html);
+    else b.insertAdjacentHTML('beforeend', html);
+  }
+  try{
+    if(typeof openMenu==='function'){
+      const _om=openMenu;
+      openMenu=function(){const r=_om.apply(this,arguments); try{injectMenuLogo()}catch(e){} return r;};
+      window.openMenu=openMenu;
+    }
+  }catch(e){}
+
+  try{
+    if(typeof renderProfileV23==='function' && !renderProfileV23._c1egg){
+      const prev=renderProfileV23;
+      const wrap=function(){
+        const r=prev.apply(this,arguments);
+        try{
+          const root=document.getElementById('c1profile');
+          if(root && !root.querySelector('#c1-settings-logo')){
+            const foot=document.createElement('div');
+            foot.innerHTML='<div id="c1-settings-logo" class="c1-brand" role="button" tabindex="0" aria-label="Kilolane">Kilolane · 1.0.0</div>';
+            root.appendChild(foot);
+          }
+        }catch(e){}
+        return r;
+      };
+      wrap._c1egg=1;
+      renderProfileV23=wrap; window.renderProfileV23=wrap;
+      try{ wrap(); }catch(e){}
+    }
+  }catch(e){}
+})();
+</script>
+
 </body></html>
