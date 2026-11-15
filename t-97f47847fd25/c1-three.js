@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q13';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q14';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261115q13';
+const C1_ASSET_V = '20261115q14';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
