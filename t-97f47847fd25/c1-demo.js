@@ -109,8 +109,10 @@
     btn.type = 'button';
     btn.textContent = L('Try the demo', 'Probar la demo');
     btn.onclick = () => { w.classList.remove('on'); window.c1SetDemo(true); try { go('map'); } catch (e) {} };
+    const actions = (document.getElementById('w-continue') || {}).parentNode;
     const guest = w.querySelector('button.btn:not(.g)');
-    if (guest) w.insertBefore(btn, guest);
+    if (actions) actions.appendChild(btn);
+    else if (guest && guest.parentNode) guest.parentNode.insertBefore(btn, guest);
     else w.appendChild(btn);
   }
 

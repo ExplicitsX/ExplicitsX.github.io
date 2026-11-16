@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Kilolane preview (test version)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0B1530"><link rel="icon" href="./favicon.png" type="image/png" sizes="48x48"><link rel="icon" href="./mark.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./favicon-192.png"><meta property="og:title" content="Kilolane preview (test version)"><meta property="og:description" content="A test version of Kilolane with sample data. Live status is coming soon."><meta name="twitter:title" content="Kilolane preview (test version)"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
+<title>Kilolane preview (test version)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0B1530"><link rel="icon" href="./favicon.png" type="image/png" sizes="48x48"><link rel="icon" href="./mark.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./favicon-192.png"><meta property="og:title" content="Kilolane preview (test version)"><meta property="og:description" content="A test version of Kilolane with sample data. Live status is coming soon."><meta name="twitter:title" content="Kilolane preview (test version)"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com"><link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script><script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js" defer></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
 else if(L.TileLayer){L.TileLayer.addInitHook(function(){let bad=0;this.on('tileerror',()=>{if(++bad>=3)tileBar(this._map,1)}).on('tileload',()=>{bad=0;tileBar(this._map,0)})})}
 function tileBar(m,on){if(!m||!m.getContainer)return;const c=m.getContainer();let b=c.querySelector('.tilebar');if(!on){if(b)b.hidden=true;return}if(!b){b=document.createElement('div');b.className='tilebar';b.setAttribute('role','status');b.textContent='Map images didn’t load. Check your signal. Stations still work.';c.appendChild(b)}b.hidden=false}
@@ -874,11 +874,13 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
  <div class="card" id="gasc"></div>
  <div class="card" id="recap"></div>
 </section>
-<div class="ov" id="welcome"><div class="lgw notr" role="group" aria-label="Language / Idioma" style="align-self:flex-end"><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div><div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
- <div style="font-size:3.375rem">⚡</div><h2 style="color:var(--g);font-size:1.875rem"><span class="vlw">Kilolane</span></h2><p class="muted" style="font-size:1rem;margin-top:8px">Every charger. One app.</p>
- <p style="margin-top:24px;font-size:0.875rem">One map, all major networks · Trips planned for your car · Driver check-ins · One wallet (coming soon)</p></div>
- <button class="btn g" onclick="$('welcome').classList.remove('on');$('signup').classList.add('on')">Get started</button>
- <button class="btn" style="background:#fff;color:var(--n);border:1px solid var(--b)" onclick="$('welcome').classList.remove('on')">Explore as guest</button></div>
+<div class="ov" id="welcome"><div class="lgw notr" role="group" aria-label="Language / Idioma" style="align-self:flex-end"><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div>
+ <div class="row" style="align-items:center;justify-content:space-between;margin-bottom:16px"><svg class="c1-mark" viewBox="0 0 1024 1024" width="40" height="40" aria-hidden="true"><rect width="1024" height="1024" rx="200" fill="#0B1530"/><path d="M330 880 C 360 700, 640 690, 512 470 L 512 330" fill="none" stroke="#FFD23F" stroke-width="86" stroke-linecap="round"/><rect x="422" y="210" width="180" height="150" rx="40" fill="#fff"/><rect x="457" y="130" width="34" height="95" rx="17" fill="#fff"/><rect x="533" y="130" width="34" height="95" rx="17" fill="#fff"/></svg><button type="button" class="lnk" onclick="welcomeSkip()">Skip</button></div>
+ <div id="w-plug"><h2>Pick your plug</h2><p class="muted" style="margin-top:8px">We’ll use this to show chargers that fit. You can change it later in Settings.</p><div class="row" style="flex-wrap:wrap;gap:8px;margin-top:16px" id="w-plugs"></div></div>
+ <div id="w-car" hidden><h2>Pick your car</h2><p class="muted" style="margin-top:8px">Optional. We’ll use this to plan stops and show chargers that fit. You can change it later in Settings.</p><div class="row" style="flex-wrap:wrap;gap:8px;margin-top:16px" id="w-cars"></div><p class="muted" style="margin-top:16px">Skip this if you want to add a car later.</p></div>
+ <div id="w-loc" hidden><h2>Use your location?</h2><p class="muted" style="margin-top:8px">Location stays on this phone and is used to find chargers near you. You can skip this.</p><p class="muted" style="margin-top:8px">No account is required.</p></div>
+ <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px"><button class="btn g" id="w-continue" onclick="welcomeNext()">Continue</button><button class="btn g" id="w-allow" hidden onclick="welcomeDone(true)">Allow location</button><button class="btn" id="w-notnow" hidden style="background:#fff;color:var(--n);border:1px solid var(--b)" onclick="welcomeDone(false)">Not now</button></div>
+ <p hidden>Every charger. One app.</p><p hidden>One map, all major networks · Trips planned for your car · Driver check-ins · One wallet (coming soon)</p><button hidden onclick="$('welcome').classList.remove('on');$('signup').classList.add('on')">Get started</button><button hidden onclick="$('welcome').classList.remove('on')">Explore as guest</button></div>
 <div class="ov" id="signup"><h2>Make your account</h2><p class="muted" style="margin:6px 0 10px">Preview only. Nothing you type is saved or sent.</p>
  <input class="inp" id="suname" placeholder="First name (optional)" autocomplete="given-name"><input class="inp" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="Email"><select class="inp" id="car"><option value="">Your car (optional)</option><option>Tesla Model 3</option><option>Tesla Model Y</option><option>Ford Mustang Mach-E</option><option>Hyundai Ioniq 5</option><option>Rivian R1S</option><option>Chevy Equinox EV</option></select>
  <button class="btn g" onclick="signupDone()">Create account</button>
@@ -942,11 +944,27 @@ function baseLayer(m){if(GOOGLE_MAPS_KEY){const s=document.createElement('script
  else {(window.MAPS=window.MAPS||[]).push(m);m.setMaxZoom(19);applyStyle(m);}}
 // v13: map style (Satellite default / Dark)
 var MSTYLE=localStorage.getItem('c1_mstyle')||'map';
-function applyStyle(m){const E='https://server.arcgisonline.com/ArcGIS/rest/services/';(m._sty||[]).forEach(l=>m.removeLayer(l));
- m._sty=MSTYLE=='sat'?[L.tileLayer(E+'World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}),L.tileLayer(E+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),L.tileLayer(E+'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19})]
-  :[L.tileLayer(E+'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxNativeZoom:16,maxZoom:19})];
- m._sty.forEach(l=>{l.addTo(m);l.bringToBack();});
- const el=m.getContainer&&m.getContainer(); if(el){ el.classList.toggle('hans-mute', MSTYLE!='sat'); }}
+window.C1_BASEMAP_DAY=window.C1_BASEMAP_DAY||null;window.C1_BASEMAP_NIGHT=window.C1_BASEMAP_NIGHT||null;
+const C1_OFM_ATTR='OpenFreeMap © OpenMapTiles Data from OpenStreetMap';
+function c1OpenFreeStyle(){return document.body.classList.contains('night')?window.C1_BASEMAP_NIGHT:window.C1_BASEMAP_DAY}
+function c1LoadBasemaps(){if(window._c1BasemapP)return window._c1BasemapP;
+ window._c1BasemapP=Promise.all([fetch('./basemap.day.json').then(r=>r.json()),fetch('./basemap.night.json').then(r=>r.json())]).then(([d,n])=>{window.C1_BASEMAP_DAY=d;window.C1_BASEMAP_NIGHT=n;(window.MAPS||[]).forEach(applyStyle);}).catch(()=>{window._c1BasemapP=null});
+ return window._c1BasemapP}
+function applyStyle(m){const E='https://server.arcgisonline.com/ArcGIS/rest/services/';(m._sty||[]).forEach(l=>{try{m.removeLayer(l)}catch(e){}});
+ const el=m.getContainer&&m.getContainer(); const night=document.body.classList.contains('night');
+ if(el){el.classList.remove('hans-mute'); el.style.background=MSTYLE=='sat'?'#05070f':(night?'#0B1530':'#DDE5F2')}
+ if(MSTYLE=='sat'){
+  m._sty=[L.tileLayer(E+'World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}),L.tileLayer(E+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),L.tileLayer(E+'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19})];
+ } else if(typeof L.maplibreGL==='function' && c1OpenFreeStyle()){
+  const gl=L.maplibreGL({style:c1OpenFreeStyle(),attribution:C1_OFM_ATTR});
+  m._sty=[gl];
+ } else { m._sty=[]; c1LoadBasemaps(); }
+ m._sty.forEach(l=>{l.addTo(m); if(l.bringToBack) l.bringToBack();});
+ if(m.attributionControl && MSTYLE!='sat'){ try{ m.attributionControl.addAttribution(C1_OFM_ATTR);}catch(e){} }}
+c1LoadBasemaps();
+function c1WhenGL(fn){if(typeof L!=='undefined'&&typeof L.maplibreGL==='function')return fn(); window.addEventListener('load',fn);}
+c1WhenGL(function(){c1LoadBasemaps();(window.MAPS||[]).forEach(applyStyle)});
+document.addEventListener('DOMContentLoaded',function(){function hook(){if(typeof nightUI!=='function')return setTimeout(hook,50); const _n=nightUI; let last=document.body.classList.contains('night'); nightUI=function(){const r=_n.apply(this,arguments); const now=document.body.classList.contains('night'); if(now!==last){last=now; if(typeof setStyle==='function') setStyle(MSTYLE);} return r};} hook();});
 function setStyle(st,save){MSTYLE=st;if(save)localStorage.setItem('c1_mstyle',st);(window.MAPS||[]).forEach(applyStyle);const b=document.getElementById('stybtn');
  if(b){b.textContent=st=='sat'?'Map':'Satellite';b.setAttribute('aria-label','Map style: '+(st=='sat'?'Satellite':'Map')+'. Switch to '+(st=='sat'?'map':'satellite')+' map');b.setAttribute('aria-pressed',st=='sat');}}
 baseLayer(map);
@@ -1110,7 +1128,7 @@ if(!CAR)$('nfbtn').textContent='⚡ Show chargers near me';
 if(localStorage.getItem('c1_hc'))hcToggle(true);a11y();savings();pick(cur);
 // v13: selecting a station -> Satellite + close zoom on the lot (user toggle still overrides afterwards)
 var BOOT=1,FOCUS=null;function focusLot(s){FOCUS=s;if(MSTYLE!='sat')setStyle('sat');map.invalidateSize();map.setView([s.lat,s.lng],18);}
-{const _p3=pick;pick=function(s){_p3(s);if(!BOOT)focusLot(s);};const _g3=go;go=function(t){_g3(t);if(t=='station'&&cur&&!BOOT)focusLot(cur);if(t=='map'&&FOCUS)setTimeout(()=>{map.invalidateSize();map.setView([FOCUS.lat,FOCUS.lng],map.getZoom());},80);};}
+{const _p3=pick;pick=function(s){_p3(s);};const _g3=go;go=function(t){_g3(t);if(t=='station'&&cur&&!BOOT)focusLot(cur);if(t=='map'&&FOCUS)setTimeout(()=>{map.invalidateSize();map.setView([FOCUS.lat,FOCUS.lng],map.getZoom());},80);};}
 setStyle(MSTYLE);BOOT=0;
 // ===== v14: voice explanations (browser speechSynthesis only, no network) =====
 var SS=!!(window.speechSynthesis&&window.SpeechSynthesisUtterance),EXPLAIN_LOG=[],SPK_CUR=null;
@@ -1253,7 +1271,7 @@ function updLine(){const e=$('updl');if(e)e.textContent=`${OFF?'Offline · ':''}
  Station data: U.S. Department of Energy, Alternative Fuels Data Center (NREL)<br>
  <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Lot layouts: © OpenStreetMap contributors (ODbL)</a><br><br>
  <b>Real</b> · Station names, locations, plugs, last-confirmed dates: DOE AFDC snapshot, Nov 2026 (cached on this device)<br>
- <b>Real</b> · Map tiles &amp; satellite: Esri · Nearby places: OpenStreetMap (live when reachable) · Routes: straight line × 1.2, approx. (no routing service)<br>
+ <b>Real</b> · Map tiles: OpenFreeMap © OpenMapTiles Data from OpenStreetMap · Satellite: Esri · Nearby places: OpenStreetMap (live when reachable) · Routes: straight line × 1.2, approx. (no routing service)<br>
  <b>Real</b> · Trip stops &amp; backups: real DC fast stations (DOE AFDC, Nov 2026, thinned to fit offline)<br>
  <b>Yours</b> · Check-ins and prices you report (saved on this device)<br>
  <b>Sample</b> · Other drivers' check-ins and price reports, availability, ratings, busy/wait (typical, not live), idle-fee summaries, plug-by-plug status, trip prices, availability &amp; wait, wallet<br>
@@ -3933,8 +3951,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261115q19"></script>
-<script type="module" src="./c1-three.js?v=20261115q19" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q19"></script>
+<script src="./c1-demo.js?v=20261115q20"></script>
+<script type="module" src="./c1-three.js?v=20261115q20" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q20"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
@@ -4486,6 +4504,7 @@ body.hc #s-map #sheet, body.hc #sheet, body.hc .sheet{background:#000!important;
 <style id="c1-mark-css">
 .c1-mark{width:32px;height:32px;flex:none;border-radius:8px;display:block}
 .mhdr{gap:8px}
+#welcome [hidden]{display:none!important}
 #map.hans-mute .leaflet-tile-pane{filter:saturate(.28) sepia(.1) hue-rotate(190deg) brightness(1.05) contrast(.92)}
 body.night #map.hans-mute .leaflet-tile-pane{filter:saturate(.2) sepia(.08) hue-rotate(200deg) brightness(.7) contrast(1.08)}
 #c1-lane-intro{position:absolute;inset:0;z-index:1200;background:#0B1530;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:system-ui,sans-serif}
@@ -4553,4 +4572,36 @@ body.night #map.hans-mute .leaflet-tile-pane{filter:saturate(.2) sepia(.08) hue-
 })();
 </script>
 
+
+<script>
+(function(){
+  const PLUGS=['CCS1','NACS','CHAdeMO','J1772'];
+  const CARS=['Tesla Model 3','Tesla Model Y','Ford Mustang Mach-E','Hyundai Ioniq 5','Rivian R1S','Chevy Equinox EV'];
+  let wStep=0, wPlug=null, wCar=null;
+  function chip(label, on, fn){const b=document.createElement('button'); b.type='button'; b.className='chip'+(on?' on':''); b.textContent=label; b.setAttribute('aria-pressed', on?'true':'false'); b.onclick=fn; return b}
+  function paintWelcome(){
+    const p=$('w-plugs'), c=$('w-cars');
+    if(p){p.innerHTML=''; PLUGS.forEach(x=>p.appendChild(chip(x,wPlug===x,()=>{wPlug=x;paintWelcome()})));}
+    if(c){c.innerHTML=''; CARS.forEach(x=>c.appendChild(chip(x,wCar===x,()=>{wCar=(wCar===x?null:x);paintWelcome()})));}
+    $('w-plug').hidden=wStep!==0; $('w-car').hidden=wStep!==1; $('w-loc').hidden=wStep!==2;
+    $('w-continue').hidden=wStep===2; $('w-allow').hidden=wStep!==2; $('w-notnow').hidden=wStep!==2;
+  }
+  window.welcomeNext=function(){ if(wStep>=2) return welcomeDone(false); wStep++; paintWelcome(); };
+  window.welcomeSkip=function(){ welcomeDone(false); };
+  window.welcomeDone=function(loc){
+    try{ sessionStorage.setItem('c1_welcome','1'); }catch(e){}
+    if(wCar){ try{ CAR=wCar; var sel=$('car'); if(sel) sel.value=wCar; if(typeof carUI==='function') carUI(); if(CAR&&typeof F!=='undefined'&&!F.includes('Fits my car')){F.unshift('Fits my car'); if(typeof chips==='function') chips();} if(typeof pick==='function'&&typeof cur!=='undefined'&&cur) pick(cur);}catch(e){} }
+    const w=$('welcome'); if(w) w.classList.remove('on');
+    if(loc && typeof geoLater==='function'){ try{ geoLater(()=>{}); }catch(e){} }
+  };
+  window.welcomeShow=function(step){ wStep=step||0; paintWelcome(); const w=$('welcome'); if(w) w.classList.add('on'); };
+  paintWelcome();
+  try{
+    const q=new URLSearchParams(location.search);
+    const force=q.get('welcome')==='1';
+    const skip=q.get('welcome')==='0' || sessionStorage.getItem('c1_intro')==='1' || sessionStorage.getItem('c1_welcome')==='1';
+    if(force) welcomeShow(q.get('wstep')==='car'?1:q.get('wstep')==='loc'?2:0);
+  }catch(e){}
+})();
+</script>
 </body></html>
