@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q21';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q22';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261115q21';
+const C1_ASSET_V = '20261115q22';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -2650,8 +2650,7 @@ export function remountAll() {
   const charge = document.getElementById('s-charge');
   if (charge) fillChargeDock(charge, set, s);
   // Wallet card
-  const wcard = document.querySelector('#c1wallet .c1wcard');
-  if (wcard) mountWallet(wcard);
+  // Pass 3: wallet is a flat SAMPLE card; leave the 3D wallet art unmounted.
   // Ask your buddy — replace the CSS/SVG buddy wherever it is
   document.querySelectorAll('#c1ask-tab .c1buddy3d, #c1ask .c1buddy3d, #c1p-buddy').forEach((el) => {
     mountBuddy(el, { id: set.buddyId, height: 200 });

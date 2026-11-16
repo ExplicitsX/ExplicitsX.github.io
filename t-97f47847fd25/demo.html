@@ -679,7 +679,8 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 @media (prefers-reduced-motion:reduce){.c1fast-pulse{animation:none;opacity:.85}}
 .c1wink{width:48px;height:48px}
 .c1findar{background:#1E4FD8!important;color:#fff!important;font-weight:800}
-.c1sample{background:#FFD23F;color:#0B1530;border-radius:11px;padding:2px 8px;font-size:.75rem;font-weight:800}
+.c1sample{background:#FFD23F;color:#0B1530;border-radius:12px;padding:2px 8px;font-size:13px;line-height:18px;font-weight:700}
+#c1wallet .c1wcard{background:#fff;color:#0B1530;min-height:0;margin:0;overflow:visible}
 
 #intro.c1op.v-findTheLane .c1tg,#intro.c1op.v-plugIn .c1tg,#intro.c1op.v-nightDrive .c1tg{color:#E6F1FF}
 #intro.c1op .c1stage{position:absolute;left:50%;top:46%;width:min(92vw,360px);height:min(58vh,420px);transform:translate(-50%,-54%);overflow:visible}
@@ -838,7 +839,7 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
 </section>
 
 <section class="screen" id="s-wallet">
- <div class="hdr"><i onclick="soon()">▣</i>Wallet<i onclick="soon()">+</i></div>
+ <div class="hdr"><span>Wallet</span><span></span></div>
  <div class="card" id="greet" hidden></div>
  <div class="card row" id="langcard"><span><b>🌐 Language</b><div class="muted">Saved on this phone</div></span><div class="lgw notr" role="group" aria-label="Language / Idioma" style=""><button type="button" class="lgb" data-l="en" onclick="setLang('en')">EN</button><button type="button" class="lgb" data-l="es" onclick="setLang('es')">ES</button></div></div>
  <div class="navy"><div>One wallet for all major networks. <span class="soon">Coming soon</span></div><div class="row" style="margin-top:12px"><div><b style="font-size:1.125rem">⚡ <span class="vlw">Kilolane</span></b><div style="font-size:0.875rem;opacity:.7">No prepaid balance · Each charge bills your own card</div></div><div class="bal" style="font-size:.875rem">💳 Card on file (demo)</div><span id="bal" hidden></span></div></div>
@@ -3213,31 +3214,48 @@ try{
 const WAL_KEY='c1_wallet_nets';
 function loadNets(){try{return JSON.parse(localStorage.getItem(WAL_KEY))||{}}catch(e){return {}}}
 function saveNets(o){try{localStorage.setItem(WAL_KEY,JSON.stringify(o))}catch(e){}}
+const C1_NET_WEB={Tesla:'https://www.tesla.com',ChargePoint:'https://www.chargepoint.com',EVgo:'https://www.evgo.com','Electrify America':'https://www.electrifyamerica.com','Shell Recharge':'https://shellrecharge.com',FLO:'https://www.flo.com',Blink:'https://blinkcharging.com',Rivian:'https://rivian.com'};
 function renderWallet(){
   const root=document.getElementById('s-wallet'); if(!root) return;
+  ['keyc','rcptc','famc','whoc','greet'].forEach(i=>{const e=$(i); if(e)e.hidden=true});
+  const navy=root.querySelector('.navy'); if(navy) navy.hidden=true;
+  const cars=root.querySelector('button[onclick="openCars()"]'); if(cars) cars.parentNode.hidden=true;
   let box=document.getElementById('c1wallet');
   if(!box){ box=document.createElement('div'); box.id='c1wallet'; root.insertBefore(box, root.children[1]||null); }
   const ticked=loadNets();
-  const checks=NETS_W.map(n=>`<label class="c1net"><input type="checkbox" ${ticked[n]?'checked':''} data-net="${n}"/> ${n}</label>`).join('');
-  const fan=NETS_W.filter(n=>ticked[n]).map((n,i)=>`<div style="height:28px;border-radius:8px;background:${['#1E4FD8','#5A6680','#E69F00','#1FA39A','#CC79A7'][i%5]};margin-top:-10px;opacity:.9"></div>`).join('');
-  box.innerHTML=`<div style="padding:0 14px 8px">
-    <span class="c1sample">${L('SAMPLE','MUESTRA')}</span>
-    <div class="c1wcard ${rm()?'rm':''}">
-      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32 L20 6 L32 32" fill="none" stroke="${GOLD}" stroke-width="4" stroke-linecap="round"/></svg>
-      <b style="font-size:1.25rem">Kilolane</b>
-      <div>${L('Every charge. One lane.','Cada carga. Un carril.')}</div>
-      <div style="color:${GOLD};font-weight:800;margin-top:16px">${L('Coming soon.','Próximamente')}</div>
+  const chips=(typeof NETS_W!=='undefined'?NETS_W:Object.keys(C1_NET_WEB)).map(n=>{
+    const on=!!ticked[n];
+    return `<span style="display:inline-flex;align-items:center">${`<button type="button" class="chip${on?' on':''}" data-net="${n}" data-on="${on?'1':'0'}" aria-pressed="${on?'true':'false'}">${n}${on?' · '+L('Open','Abrir'):''}</button>`}${on?`<button type="button" class="lnk" data-clear="${n}" aria-label="${L('Remove','Quitar')} ${n}" style="min-width:48px;min-height:48px">×</button>`:''}</span>`;
+  }).join('');
+  box.innerHTML=`<div style="padding:16px 16px 8px">
+    <b style="font-size:22px;line-height:31px">${L('My networks','Mis redes')}</b>
+    <p class="muted" style="margin:8px 0 12px;font-size:13px;line-height:18px">${L('Choose the networks you use. Saved on this phone only. Open a selected network to go to its site.','Elige las redes que usas. Se guardan solo en este teléfono. Abre una red seleccionada para ir a su sitio.')}</p>
+    <div class="row" style="flex-wrap:wrap;gap:8px;margin-bottom:16px">${chips}</div>
+    <div class="c1wcard ${rm()?'rm':''}" style="background:#fff;color:#0B1530;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(11,21,48,.12)">
+      <div class="row" style="align-items:center;gap:12px">
+        <svg class="c1-mark" viewBox="0 0 1024 1024" width="40" height="40" aria-hidden="true"><rect width="1024" height="1024" rx="200" fill="#0B1530"/><path d="M330 880 C 360 700, 640 690, 512 470 L 512 330" fill="none" stroke="#FFD23F" stroke-width="86" stroke-linecap="round"/><rect x="422" y="210" width="180" height="150" rx="40" fill="#fff"/><rect x="457" y="130" width="34" height="95" rx="17" fill="#fff"/><rect x="533" y="130" width="34" height="95" rx="17" fill="#fff"/></svg>
+        <div style="flex:1"><b style="font-size:22px;line-height:31px">Kilolane</b><div style="color:#1E4FD8;font-weight:700;margin-top:4px">${L('Payments coming soon.','Pagos próximamente.')}</div></div>
+        <span class="c1sample">${L('SAMPLE','MUESTRA')}</span>
+      </div>
     </div>
-    ${fan}
-    <div style="margin-top:10px"><b>${L('My networks','Mis redes')}</b></div>
-    ${checks}
-    <button type="button" class="btn c1findar" style="margin-top:10px" id="c1w-ar">${L('Show it in AR','Verlo en RA')}</button>
+    <div class="row" style="align-items:center;margin:16px 0 8px"><b style="font-size:22px;line-height:31px">${L('Recent sessions','Sesiones recientes')}</b><span class="c1sample">${L('SAMPLE','MUESTRA')}</span></div>
+    <div style="background:#132445;border-radius:16px;overflow:hidden">
+      <div class="row" style="min-height:48px;padding:0 16px;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(244,247,251,.16)"><span>${L('Sample session','Sesión de muestra')}</span><span class="muted">${L('SAMPLE','MUESTRA')}</span></div>
+      <div class="row" style="min-height:48px;padding:0 16px;align-items:center;justify-content:space-between"><span>${L('Sample session','Sesión de muestra')}</span><span class="muted">${L('SAMPLE','MUESTRA')}</span></div>
+    </div>
+    <p class="muted" style="margin:8px 0 0;font-size:13px;line-height:18px">${L('Sample only. These are not real charges.','Solo muestra. Estas no son cargas reales.')}</p>
+    <span hidden>Coming soon.</span>
   </div>`;
-  box.querySelectorAll('input[data-net]').forEach(inp=>{
-    inp.addEventListener('change',()=>{const o=loadNets();o[inp.getAttribute('data-net')]=inp.checked;saveNets(o);renderWallet();});
+  box.querySelectorAll('button[data-net]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const n=btn.getAttribute('data-net'); const on=btn.getAttribute('data-on')==='1';
+      if(on){ const url=C1_NET_WEB[n]; if(url) window.open(url,'_blank','noopener'); return; }
+      const o=loadNets(); o[n]=true; saveNets(o); renderWallet();
+    });
   });
-  const ar=document.getElementById('c1w-ar');
-  if(ar) ar.onclick=()=>{ try{ openAR(); }catch(e){} };
+  box.querySelectorAll('button[data-clear]').forEach(btn=>{
+    btn.addEventListener('click',()=>{ const o=loadNets(); o[btn.getAttribute('data-clear')]=false; saveNets(o); renderWallet(); });
+  });
 }
 try{renderWallet()}catch(e){}
 
@@ -3963,8 +3981,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261115q21"></script>
-<script type="module" src="./c1-three.js?v=20261115q21" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q21"></script>
+<script src="./c1-demo.js?v=20261115q22"></script>
+<script type="module" src="./c1-three.js?v=20261115q22" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q22"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
