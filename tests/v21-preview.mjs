@@ -9,11 +9,11 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
+const html = readFileSync(join(root, 't-97f47847fd25', 'demo.html'), 'utf8');
 const fails = [];
 const check = (c, m) => { if (!c) fails.push(m); };
 
-check(html.includes('<title>Kilolane mock v19z2</title>'), 'title stays v19z2');
+check(html.includes('<title>Kilolane preview (test version)</title>'), 'title is preview (test version)');
 check(html.includes('C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1}'), 'v20 openings string kept');
 check(html.includes('laneLights') && html.includes('zapHello'), 'two new openings');
 check(html.includes("return 'rotate'"), 'opening default is rotate');
@@ -71,11 +71,15 @@ check(!/webkitSpeechRecognition|SpeechRecognition/.test(v21), 'no cloud speech r
 
 
 const android = readFileSync(join(root, 't-97f47847fd25', 'android', 'index.html'), 'utf8');
-check(android.includes('<title>Kilolane Android tester (preview)</title>'), 'android tester title');
-check(/noindex/.test(android), 'android tester is noindex');
-check(android.includes('uv2ySIZ3aJ9EhTqiehDyK5ky29GwTNg9MgDONA6I_oI.apk') && android.includes('Install Kilolane'), 'android tester links the current APK');
-check(android.includes('<svg') && !/qrserver|chart\.googleapis|api.qrserver/i.test(android), 'android tester QR is a local inline SVG');
-check(!/<form/i.test(android) && !/sign-?up|mailchimp|analytics|gtag|googletagmanager/i.test(android), 'android tester has no sign-ups, forms, or tracking');
+const landing = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
+check(android.includes('<title>Kilolane preview (test version)</title>'), 'android redirect title');
+check(/noindex/.test(android) && /noindex/.test(landing), 'landing and android redirect are noindex');
+check(/http-equiv="refresh"/i.test(android) && (android.includes('url=../') || android.includes('href="../"')), 'android path redirects or links to the landing');
+check(landing.includes('uv2ySIZ3aJ9EhTqiehDyK5ky29GwTNg9MgDONA6I_oI.apk') && landing.includes('Download for Android'), 'landing links the current preview APK');
+check(landing.includes('Open web demo') && landing.includes('./demo.html'), 'landing links the web demo');
+check(/close and reopen twice to get updates\./i.test(landing), 'landing has the update note');
+check(landing.includes('This is a test version with sample data. Live status is coming soon.'), 'landing has the test-version note');
+check(!/<form/i.test(android) && !/sign-?up|mailchimp|analytics|gtag|googletagmanager/i.test(android+landing), 'landing and android redirect have no sign-ups, forms, or tracking');
 if (fails.length) { console.error(fails.map(f => 'FAIL ' + f).join('\n')); process.exit(1); }
 console.log('v21 static checks ok');
 
@@ -108,7 +112,7 @@ async function boot(opts = {}) {
       if (cfg.opening) localStorage.setItem('c1_opening', cfg.opening);
     } catch (e) {}
   }, { skipIntro: !!opts.skipIntro, opening: opts.opening || '' });
-  await page.goto(`http://127.0.0.1:${port}/t-97f47847fd25/${opts.query || ''}`, {waitUntil: 'domcontentloaded', timeout: 45000});
+  await page.goto(`http://127.0.0.1:${port}/t-97f47847fd25/demo.html${opts.query || ''}`, {waitUntil: 'domcontentloaded', timeout: 45000});
   return {page, errors};
 }
 
@@ -132,7 +136,7 @@ try {
       plugFilter: /Fits my car|onlyMyPlug|My plug|plug/i.test(document.body.innerText),
     };
   });
-  check(state.title === 'Kilolane mock v19z2', 'title live');
+  check(state.title === 'Kilolane preview (test version)', 'title live');
   check(state.pins > 5 && state.mapOn, 'map and pins still work');
   check(state.askTab && !state.askOnMap, 'ask your buddy is its own tab, not on the map');
   check(state.profileTab, 'profile tab present');
