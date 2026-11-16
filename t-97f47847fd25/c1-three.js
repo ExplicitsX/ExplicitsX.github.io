@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q17';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q18';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261115q17';
+const C1_ASSET_V = '20261115q18';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -2231,29 +2231,21 @@ function buildChargePillar() {
 function buildChargeCar() {
   const g = new THREE.Group();
   const col = CHARGE_GRAY;
-  const flat = { flatShading: true };
-  const glassOpt = { transparent: true, opacity: 0.88, flatShading: true };
-  // closed liftback hull — one lower body + one sloped cabin, no truck bed
-  add(g, mesh(GEO.box, col, 2.0, 0.44, 0.98, flat), 0.0, 0.48, 0);
-  add(g, mesh(GEO.sphere, col, 1.02, 0.24, 0.5, flat), 0.02, 0.56, 0);
-  add(g, mesh(GEO.sphere, col, 0.3, 0.24, 0.47, flat), 0.92, 0.5, 0);
-  add(g, mesh(GEO.box, col, 0.14, 0.48, 0.96, flat), -0.96, 0.54, 0);
-  add(g, mesh(GEO.box, CHARGE_GRAY_LT, 0.03, 0.1, 0.24, flat), -1.04, 0.5, 0);
-  const cabin = mesh(GEO.box, col, 1.55, 0.4, 0.86, flat);
-  cabin.rotation.z = -0.2;
-  cabin.position.set(0.06, 0.82, 0);
+  const soft = { flatShading: false };
+  const flat = soft;
+  const glassOpt = { transparent: true, opacity: 0.72, flatShading: false };
+  // Rounded generic volumes. Not a production car silhouette, badge, or grille.
+  add(g, mesh(GEO.box, col, 2.0, 0.5, 0.96, soft), 0.0, 0.5, 0);
+  add(g, mesh(GEO.sphere, col, 0.98, 0.28, 0.5, soft), 0.0, 0.58, 0);
+  const cabin = mesh(GEO.box, col, 1.2, 0.36, 0.8, soft);
+  cabin.position.set(0.04, 0.86, 0);
   g.add(cabin);
-  const roofSoft = mesh(GEO.sphere, col, 0.72, 0.2, 0.44, flat);
-  roofSoft.position.set(0.1, 0.94, 0);
+  const roofSoft = mesh(GEO.sphere, col, 0.62, 0.22, 0.42, soft);
+  roofSoft.position.set(0.04, 0.98, 0);
   g.add(roofSoft);
-  const wind = mesh(GEO.box, 0x243240, 0.4, 0.28, 0.8, glassOpt);
-  wind.rotation.z = 0.38;
-  wind.position.set(0.55, 0.82, 0);
+  const wind = mesh(GEO.box, 0x243240, 0.7, 0.22, 0.72, glassOpt);
+  wind.position.set(0.08, 0.88, 0);
   g.add(wind);
-  const rearGlass = mesh(GEO.box, 0x243240, 0.55, 0.24, 0.8, glassOpt);
-  rearGlass.rotation.z = -0.32;
-  rearGlass.position.set(-0.48, 0.84, 0);
-  g.add(rearGlass);
   const tails = [];
   ;[-1, 1].forEach((s) => {
     const lamp = mesh(GEO.box, 0xe01018, 0.04, 0.07, 0.28, { emissive: 0xe01018, emissiveIntensity: 0.95 });

@@ -725,7 +725,26 @@ body.night .evh .hlg{opacity:.85;animation:none}body.night .evh.done .hlg{animat
 @media (prefers-reduced-motion:reduce){#intro.c1op.go .c1lane,#intro.c1op.go .c1pin,#intro.c1op.go .c1plug,#intro.c1op.go .c1bolt,#intro.c1op.go .c1beam,#intro.c1op.go .c1nm,#intro.c1op.go .c1tg{animation:none}
 #intro.c1op.go .c1lane{stroke-dashoffset:0}#intro.c1op.go .c1pin,#intro.c1op.go .c1bolt,#intro.c1op.go .c1nm,#intro.c1op.go .c1tg{opacity:1}#intro.c1op.go .c1plug,#intro.c1op.go .c1beam{transform:none}}
 
-</style></head><body><script>/* v20 openings: Plug in, Find the lane (default), Night drive. ~2s, skippable, once per load. */
+</style>
+<style id="c1-hans">
+:root{--ink:#0B1530;--blue:#1E4FD8;--fit:#3B7BFF;--yellow:#FFD23F;--slate:#5A6680;--line:#C9D1DE;--mist:#DDE5F2;--surface:#fff;}
+.tab{position:relative;font-size:13px;line-height:1.4}
+.tab.on{color:#F4F7FB;font-weight:700}
+.tab.on::after{content:"";display:block;width:24px;height:3px;margin:4px auto 0;border-radius:2px;background:#FFD23F}
+.tab:not(.on)::after{content:"";display:block;height:7px;margin-top:4px}
+.clu{background:#0B1530;border:2px solid #fff;color:#fff;box-shadow:0 4px 16px rgba(11,21,48,.12)}
+.clu.ca{background:#0B1530}
+.c1-pin{background:none;border:none}
+.c1-pin svg{display:block}
+#sheet,.sheet,.card{border-radius:16px}
+.card{box-shadow:0 4px 16px rgba(11,21,48,.12)}
+.btn,button.btn,.choice.primary{border-radius:12px;min-height:48px}
+.chip{border-radius:999px;min-height:48px}
+#c1-lane-progress{height:4px;background:transparent;position:absolute;left:0;right:0;top:0;z-index:50}
+#c1-lane-progress.on{background:#FFD23F}
+#c1-map-dim{position:absolute;left:0;right:0;bottom:0;height:220px;background:rgba(11,21,48,.28);pointer-events:none;z-index:4}
+</style>
+</head><body><script>/* v20 openings: Plug in, Find the lane (default), Night drive. ~2s, skippable, once per load. */
 var C1INTRO='findTheLane';
 var C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1};Object.assign(C1_OPENINGS,{laneLights:1,zapHello:1});var C1_OPENING_PREFS={rotate:1,plugIn:1,findTheLane:1,nightDrive:1,laneLights:1,zapHello:1};
 function endIntro(){const e=document.getElementById('intro');if(!e||e.classList.contains('out'))return;e.classList.add('out');setTimeout(()=>e.remove(),320)}
@@ -1416,7 +1435,7 @@ function renderTrip(){const P=PLAN;if(!P)return;$('torig').textContent=P.olabel;
  setTimeout(tripMap,60)}
 function tripMap(){const P=PLAN;if(!P)return;if(!tm){tm=L.map('tmap',{zoomControl:false,attributionControl:false});baseLayer(tm)}if(!tsl)tsl=L.layerGroup().addTo(tm);tsl.clearLayers();tm.invalidateSize();
  const way=[P.o,...P.stops.map(s=>[s.lat,s.lng]),P.d],pts=[];for(let k=0;k<way.length-1;k++)for(let f=0;f<=12;f++)pts.push(slerp(way[k],way[k+1],f/12));
- L.polyline(pts,{color:'#00ff9d',weight:5}).addTo(tsl);[P.o,P.d].forEach(p=>L.circleMarker(p,{radius:7,color:'#fff',fillColor:'#0f1f3d',fillOpacity:1,weight:2}).addTo(tsl));
+ L.polyline(pts,{color:'#FFD23F',weight:5}).addTo(tsl);[P.o,P.d].forEach(p=>L.circleMarker(p,{radius:7,color:'#fff',fillColor:'#0f1f3d',fillOpacity:1,weight:2}).addTo(tsl));
  P.stops.forEach((s,i)=>{L.circleMarker([s.lat,s.lng],{radius:8,color:'#fff',fillColor:(NC[(s.nf||(typeof nfOf==='function'?nfOf(s.net):s.net))]||NC.Other||'#6B7280'),fillOpacity:1,weight:2}).addTo(tsl).bindTooltip(`${i+1}. ${s.name}`);if(s.bk)L.circleMarker([s.bk.lat,s.bk.lng],{radius:5,color:'#ffb020',fillColor:'#ffb020',fillOpacity:.9,weight:1}).addTo(tsl).bindTooltip('Backup: '+s.bk.name)});
  tm.fitBounds(L.latLngBounds(pts),{padding:[20,20]})}
 // backups, saved route & broken-stop swap (replace the LA→SF versions)
@@ -3913,8 +3932,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261115q17"></script>
-<script type="module" src="./c1-three.js?v=20261115q17" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q17"></script>
+<script src="./c1-demo.js?v=20261115q18"></script>
+<script type="module" src="./c1-three.js?v=20261115q18" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q18"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
@@ -4301,4 +4320,165 @@ button,.btn,.chip,.c1t,.c1o{transition:background-color .18s ease,opacity .18s e
   }
 })();
 </script>
+
+<script>
+/* Hans style pins, no network colors on the pin. Fit = blue ring + plug; fast = yellow bolt. */
+(function(){
+  function pinSvg(fit, fast){
+    const ring = fit ? '<circle cx="16" cy="16" r="14.5" fill="none" stroke="#3B7BFF" stroke-width="3"/>' : '';
+    const bolt = fast ? '<circle cx="24" cy="8" r="6" fill="#FFD23F" stroke="#0B1530" stroke-width="1.5"/><path d="M24.2 4.2 L21.6 8.6 H24 L22.6 12 l3.2-4.2 H23.4z" fill="none" stroke="#0B1530" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>' : '';
+    return '<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="12" fill="#0B1530"/>'+ring+'<path d="M13 8v5M19 8v5M12 13h8v2.2a4 4 0 0 1-8 0zM16 19.2V23" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+bolt+'</svg>';
+  }
+  function isFit(s){ try{ return typeof c1ExactFit==='function' && !!c1ExactFit(s); }catch(e){ return false; } }
+  function isFast(s){ return !!(s && (s.dc || s.kw>=50 || (s.dcPorts|0)>0)); }
+  function pinIcon(s){
+    const fast=isFast(s);
+    return L.divIcon({className:'c1-pin'+(fast?' c1fast-pulse':''), html:pinSvg(isFit(s), fast), iconSize:[32,32], iconAnchor:[16,16]});
+  }
+  window.c1PinIcon=pinIcon;
+  function asMarker(s, click){
+    const m=L.marker([s.lat,s.lng],{icon:pinIcon(s), keyboard:true, title:s.name||'Station', alt:s.name||'Station'});
+    m.on('click', click || function(){ pick(s); if(window.cardAll) cardAll(); });
+    m._st=s; return m;
+  }
+  window.fMk=function(s){ if(s && !s.nf && typeof nfOf==='function') try{s.nf=nfOf(s.net)}catch(e){} return asMarker(s); };
+  // yellow loading lane
+  const phone=document.querySelector('.phone')||document.body;
+  if(!document.getElementById('c1-lane-progress')){
+    const bar=document.createElement('div'); bar.id='c1-lane-progress'; phone.appendChild(bar);
+  }
+  if(!document.getElementById('c1-map-dim')){
+    const dim=document.createElement('div'); dim.id='c1-map-dim'; phone.appendChild(dim);
+  }
+  function ensureLane(el){
+    if(!el||el.querySelector('.c1-card-lane')) return;
+    const lane=document.createElement('div');
+    lane.className='c1-card-lane';
+    lane.setAttribute('aria-hidden','true');
+    el.insertBefore(lane, el.firstChild);
+  }
+  function lanes(){ try{ ensureLane(document.getElementById('sheet')); }catch(e){} }
+  if(typeof cardAll==='function' && !cardAll._c1lane){
+    const prev=cardAll;
+    cardAll=function(){ const r=prev.apply(this,arguments); lanes(); return r; };
+    cardAll._c1lane=1; window.cardAll=cardAll;
+  }
+  lanes();
+  setTimeout(lanes, 400);
+})();
+</script>
+
+
+<style id="c1-hans-sheet">
+/* Station card: white Hans sheet, yellow top lane, ink type. Network name stays on the card. */
+#s-map #sheet, #sheet, .sheet{
+  background:#FFFFFF!important;
+  color:#0B1530!important;
+  border:0!important;
+  border-top:0!important;
+  border-radius:16px!important;
+  box-shadow:inset 0 4px 0 #FFD23F, 0 4px 16px rgba(11,21,48,.12)!important;
+  padding:16px 16px 12px!important;
+}
+#s-map #sheet::before, #sheet::before{
+  content:"";position:absolute;left:16px;right:16px;top:0;height:4px;background:#FFD23F;border-radius:0 0 2px 2px;z-index:5;pointer-events:none;
+}
+#sheet .c1n, #sheet #st-name, #sheet b{font-size:22px!important;line-height:1.4;font-weight:700;color:#0B1530!important}
+#sheet .c1net, #sheet #st-net, #st-net{color:#5A6680!important;font-size:17px!important;font-weight:600}
+#sheet .c1i, #sheet .c1f, #sheet .c1meta, #sheet .muted, #sheet .c1t{color:#5A6680!important;font-size:13px!important}
+#sheet .c1btns .btn, #sheet .btn, body:not(.hc) #sheet .c1btns .btn, body:not(.hc) #sheet .c1btns .btn.g, body:not(.hc) #sheet .c1btns .c1o{
+  background:#1E4FD8!important;color:#fff!important;border-radius:12px!important;min-height:48px!important;border:0!important
+}
+#sheet .c1rep, #sheet .c1t.c1rep, #sheet a.tmt, #sheet .lnk{color:#1E4FD8!important;background:transparent!important;text-decoration:underline;min-height:48px}
+#sheet .v19y-x{color:#0B1530!important}
+#sheet .c1-card-lane, .c1-card-lane{height:4px;background:#FFD23F;border-radius:999px;margin:0 0 12px;flex-shrink:0}
+body.hc #s-map #sheet, body.hc #sheet, body.hc .sheet{background:#000!important;color:#fff!important}
+</style>
+<script>
+/* Paint canvas station pins as round navy plugs (Hans). Fit = blue ring; fast = yellow bolt. */
+(function(){
+  function isFit(s){ try{ return typeof c1ExactFit==='function' && !!c1ExactFit(s); }catch(e){ return false; } }
+  function isFast(s){ return !!(s && (s.dc || s.kw>=50 || (s.dcPorts|0)>0)); }
+  function plugPath(ctx,x,y,r){
+    const s=r*0.95;
+    ctx.save();
+    ctx.strokeStyle='#fff';
+    ctx.lineWidth=Math.max(1.6, r*0.16);
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    ctx.beginPath();
+    ctx.moveTo(x-s*0.22, y-s*0.42);
+    ctx.lineTo(x-s*0.22, y-s*0.12);
+    ctx.moveTo(x+s*0.22, y-s*0.42);
+    ctx.lineTo(x+s*0.22, y-s*0.12);
+    ctx.moveTo(x-s*0.32, y-s*0.12);
+    ctx.lineTo(x+s*0.32, y-s*0.12);
+    ctx.lineTo(x+s*0.32, y+s*0.04);
+    ctx.arc(x, y+s*0.04, s*0.32, 0, Math.PI, false);
+    ctx.lineTo(x-s*0.32, y-s*0.12);
+    ctx.moveTo(x, y+s*0.36);
+    ctx.lineTo(x, y+s*0.55);
+    ctx.stroke();
+    ctx.restore();
+  }
+  function drawHansPin(layer){
+    if(!this._drawing||!layer._point||!this._ctx)return;
+    const ctx=this._ctx, x=layer._point.x, y=layer._point.y;
+    const r=Math.max(10, Math.min(14, layer._radius||12));
+    const s=layer._st || (typeof v19zOf==='function'?v19zOf(layer):null);
+    const fit=isFit(s);
+    const fast=isFast(s);
+    // Center on the old teardrop head so existing hit tests still work.
+    const cx=x, cy=y - (layer._radius||15)*1.45;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.fillStyle='#0B1530';
+    ctx.fill();
+    if(fit){
+      ctx.beginPath();
+      ctx.arc(cx, cy, r+2.2, 0, Math.PI*2);
+      ctx.strokeStyle='#3B7BFF';
+      ctx.lineWidth=3;
+      ctx.stroke();
+    }
+    plugPath(ctx, cx, cy, r);
+    if(fast){
+      const bx=cx+r*0.72, by=cy-r*0.72, br=6;
+      ctx.beginPath();
+      ctx.arc(bx, by, br, 0, Math.PI*2);
+      ctx.fillStyle='#FFD23F';
+      ctx.strokeStyle='#0B1530';
+      ctx.lineWidth=1.4;
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.strokeStyle='#0B1530';
+      ctx.lineWidth=1.2;
+      ctx.lineCap='round';
+      ctx.lineJoin='round';
+      ctx.moveTo(bx+0.2, by-3.4);
+      ctx.lineTo(bx-2.2, by+0.6);
+      ctx.lineTo(bx+0.2, by+0.6);
+      ctx.lineTo(bx-1.2, by+3.4);
+      ctx.lineTo(bx+2.4, by-0.2);
+      ctx.lineTo(bx-0.2, by-0.2);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+  if(window.L && L.Canvas && L.Canvas.prototype){
+    L.Canvas.prototype._updateTeardrop=drawHansPin;
+  }
+  // Redraw any already-painted canvas pins.
+  try{
+    if(typeof map!=='undefined' && map && map.eachLayer){
+      map.eachLayer(function(l){
+        if(l && l.redraw) try{l.redraw()}catch(e){}
+        if(l && l.eachLayer) l.eachLayer(function(c){ if(c&&c.redraw) try{c.redraw()}catch(e){} });
+      });
+    }
+  }catch(e){}
+})();
+</script>
+
 </body></html>
