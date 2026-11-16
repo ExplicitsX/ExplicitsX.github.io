@@ -945,23 +945,35 @@ function baseLayer(m){if(GOOGLE_MAPS_KEY){const s=document.createElement('script
 // v13: map style (Satellite default / Dark)
 var MSTYLE=localStorage.getItem('c1_mstyle')||'map';
 window.C1_BASEMAP_DAY=window.C1_BASEMAP_DAY||null;window.C1_BASEMAP_NIGHT=window.C1_BASEMAP_NIGHT||null;
-const C1_OFM_ATTR='OpenFreeMap © OpenMapTiles Data from OpenStreetMap';
+window.C1_BASEMAP_HOST=window.C1_BASEMAP_HOST||'openfreemap';
+const C1_OSM_COPYRIGHT='https://www.openstreetmap.org/copyright';
+const C1_OFM_ATTR_HTML='© OpenFreeMap © OpenMapTiles <a href="'+C1_OSM_COPYRIGHT+'" target="_blank" rel="noopener">© OpenStreetMap contributors</a>';
+const C1_BACKUP_ATTR_HTML='<a href="'+C1_OSM_COPYRIGHT+'" target="_blank" rel="noopener">© OpenStreetMap contributors</a>';
+const C1_BACKUP_DAY='https://tiles.versatiles.org/assets/styles/neutrino/style.json';
+const C1_BACKUP_NIGHT='https://tiles.versatiles.org/assets/styles/eclipse/style.json';
+function c1CreditHtml(){const h=window.C1_BASEMAP_HOST;return h==='openfreemap'?C1_OFM_ATTR_HTML:h==='versatiles'?C1_BACKUP_ATTR_HTML:''}
+function c1SetMapCredit(m){if(!m||!m.attributionControl)return; try{m.attributionControl.removeAttribution(C1_OFM_ATTR_HTML)}catch(e){} try{m.attributionControl.removeAttribution(C1_BACKUP_ATTR_HTML)}catch(e){} const html=c1CreditHtml(); if(html&&MSTYLE!='sat'){try{m.attributionControl.addAttribution(html)}catch(e){}}}
+function c1StepBasemap(){const h=window.C1_BASEMAP_HOST; if(h==='openfreemap') window.C1_BASEMAP_HOST='versatiles'; else if(h==='versatiles') window.C1_BASEMAP_HOST='none'; else return; (window.MAPS||[]).forEach(applyStyle)}
+function c1BindGlErrors(gl){const map=gl&&gl.getMap&&gl.getMap(); if(!map||gl._c1err)return; gl._c1err=1; map.once('load',function(){gl._c1ok=1}); map.on('error',function(){if(!gl._c1ok)c1StepBasemap()})}
 function c1OpenFreeStyle(){return document.body.classList.contains('night')?window.C1_BASEMAP_NIGHT:window.C1_BASEMAP_DAY}
 function c1LoadBasemaps(){if(window._c1BasemapP)return window._c1BasemapP;
  window._c1BasemapP=Promise.all([fetch('./basemap.day.json').then(r=>r.json()),fetch('./basemap.night.json').then(r=>r.json())]).then(([d,n])=>{window.C1_BASEMAP_DAY=d;window.C1_BASEMAP_NIGHT=n;(window.MAPS||[]).forEach(applyStyle);}).catch(()=>{window._c1BasemapP=null});
  return window._c1BasemapP}
 function applyStyle(m){const E='https://server.arcgisonline.com/ArcGIS/rest/services/';(m._sty||[]).forEach(l=>{try{m.removeLayer(l)}catch(e){}});
- const el=m.getContainer&&m.getContainer(); const night=document.body.classList.contains('night');
- if(el){el.classList.remove('hans-mute'); el.style.background=MSTYLE=='sat'?'#05070f':(night?'#0B1530':'#DDE5F2')}
+ const el=m.getContainer&&m.getContainer(); const night=document.body.classList.contains('night'); const host=window.C1_BASEMAP_HOST||'openfreemap';
+ if(el){el.classList.remove('hans-mute'); el.style.background=(MSTYLE=='sat'||host==='none')?'#0B1530':(night?'#0B1530':'#DDE5F2')}
  if(MSTYLE=='sat'){
   m._sty=[L.tileLayer(E+'World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}),L.tileLayer(E+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),L.tileLayer(E+'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19})];
- } else if(typeof L.maplibreGL==='function' && c1OpenFreeStyle()){
-  const gl=L.maplibreGL({style:c1OpenFreeStyle(),attribution:C1_OFM_ATTR});
-  m._sty=[gl];
+ } else if(host==='none'){ m._sty=[]; }
+ else if(typeof L.maplibreGL==='function' && (host==='versatiles'||c1OpenFreeStyle())){
+  const style=host==='versatiles'?(night?C1_BACKUP_NIGHT:C1_BACKUP_DAY):c1OpenFreeStyle();
+  if(!style){ m._sty=[]; c1LoadBasemaps(); }
+  else { const gl=L.maplibreGL({style,attribution:c1CreditHtml()}); m._sty=[gl]; }
  } else { m._sty=[]; c1LoadBasemaps(); }
- m._sty.forEach(l=>{l.addTo(m); if(l.bringToBack) l.bringToBack();});
- if(m.attributionControl && MSTYLE!='sat'){ try{ m.attributionControl.addAttribution(C1_OFM_ATTR);}catch(e){} }}
+ m._sty.forEach(l=>{l.addTo(m); if(l.bringToBack) l.bringToBack(); c1BindGlErrors(l);});
+ c1SetMapCredit(m);}
 c1LoadBasemaps();
+(function(){const c=new AbortController(); const t=setTimeout(function(){c.abort()},4000); fetch('https://tiles.openfreemap.org/planet',{signal:c.signal}).then(function(r){if(!r.ok)throw 0}).catch(function(){if(window.C1_BASEMAP_HOST==='openfreemap')c1StepBasemap()}).finally(function(){clearTimeout(t)})})();
 function c1WhenGL(fn){if(typeof L!=='undefined'&&typeof L.maplibreGL==='function')return fn(); window.addEventListener('load',fn);}
 c1WhenGL(function(){c1LoadBasemaps();(window.MAPS||[]).forEach(applyStyle)});
 document.addEventListener('DOMContentLoaded',function(){function hook(){if(typeof nightUI!=='function')return setTimeout(hook,50); const _n=nightUI; let last=document.body.classList.contains('night'); nightUI=function(){const r=_n.apply(this,arguments); const now=document.body.classList.contains('night'); if(now!==last){last=now; if(typeof setStyle==='function') setStyle(MSTYLE);} return r};} hook();});
@@ -1271,7 +1283,7 @@ function updLine(){const e=$('updl');if(e)e.textContent=`${OFF?'Offline · ':''}
  Station data: U.S. Department of Energy, Alternative Fuels Data Center (NREL)<br>
  <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Lot layouts: © OpenStreetMap contributors (ODbL)</a><br><br>
  <b>Real</b> · Station names, locations, plugs, last-confirmed dates: DOE AFDC snapshot, Nov 2026 (cached on this device)<br>
- <b>Real</b> · Map tiles: OpenFreeMap © OpenMapTiles Data from OpenStreetMap · Satellite: Esri · Nearby places: OpenStreetMap (live when reachable) · Routes: straight line × 1.2, approx. (no routing service)<br>
+ <b>Real</b> · Map tiles: © OpenFreeMap © OpenMapTiles <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> (backup: VersaTiles) · Satellite: Esri · Nearby places: OpenStreetMap (live when reachable) · Routes: straight line × 1.2, approx. (no routing service)<br>
  <b>Real</b> · Trip stops &amp; backups: real DC fast stations (DOE AFDC, Nov 2026, thinned to fit offline)<br>
  <b>Yours</b> · Check-ins and prices you report (saved on this device)<br>
  <b>Sample</b> · Other drivers' check-ins and price reports, availability, ratings, busy/wait (typical, not live), idle-fee summaries, plug-by-plug status, trip prices, availability &amp; wait, wallet<br>
@@ -3951,8 +3963,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261115q20"></script>
-<script type="module" src="./c1-three.js?v=20261115q20" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q20"></script>
+<script src="./c1-demo.js?v=20261115q21"></script>
+<script type="module" src="./c1-three.js?v=20261115q21" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q21"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
