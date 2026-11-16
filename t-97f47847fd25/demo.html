@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Kilolane preview (test version)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#060a16"><meta property="og:title" content="Kilolane preview (test version)"><meta property="og:description" content="A test version of Kilolane with sample data. Live status is coming soon."><meta name="twitter:title" content="Kilolane preview (test version)"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
+<title>Kilolane preview (test version)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0B1530"><link rel="icon" href="./favicon.png" type="image/png" sizes="48x48"><link rel="icon" href="./mark.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./favicon-192.png"><meta property="og:title" content="Kilolane preview (test version)"><meta property="og:description" content="A test version of Kilolane with sample data. Live status is coming soon."><meta name="twitter:title" content="Kilolane preview (test version)"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://server.arcgisonline.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -799,9 +799,9 @@ function c1IntroRun(id,rm){if(!C1_OPENINGS[id])id='findTheLane';let o=document.g
 <div class="status"><span>9:41</span><span>●●● ▮</span></div>
 
 <section class="screen on" id="s-map">
- <div class="hdr mhdr"><i onclick="openMenu()" role="button" tabindex="0" aria-label="Menu">☰</i><h2 class="sr">Map</h2><div class="srch notr"><input id="stsearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="srl" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Search a city or station" aria-label="Search a city or station"><button type="button" class="srx" id="srx" aria-label="Clear search" hidden>×</button><ul id="srl" role="listbox" aria-label="Suggestions" hidden></ul></div><i id="hcbtn" onclick="hcToggle()" aria-pressed="false">◐</i></div>
+ <div class="hdr mhdr"><i onclick="openMenu()" role="button" tabindex="0" aria-label="Menu">☰</i><svg class="c1-mark" viewBox="0 0 1024 1024" width="32" height="32" aria-hidden="true"><rect width="1024" height="1024" rx="200" fill="#0B1530"/><path d="M330 880 C 360 700, 640 690, 512 470 L 512 330" fill="none" stroke="#FFD23F" stroke-width="86" stroke-linecap="round"/><rect x="422" y="210" width="180" height="150" rx="40" fill="#fff"/><rect x="457" y="130" width="34" height="95" rx="17" fill="#fff"/><rect x="533" y="130" width="34" height="95" rx="17" fill="#fff"/></svg><h2 class="sr">Map</h2><div class="srch notr"><input id="stsearch" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="srl" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Search a city or station" aria-label="Search a city or station"><button type="button" class="srx" id="srx" aria-label="Clear search" hidden>×</button><ul id="srl" role="listbox" aria-label="Suggestions" hidden></ul></div><i id="hcbtn" onclick="hcToggle()" aria-pressed="false">◐</i></div>
  <div class="chips" id="chips"></div>
- <div class="nfit"><button class="btn g" onclick="nearestFit()" id="nfbtn" style="flex:1">⚡ Show chargers near me</button><button class="btn" id="stybtn" style="width:auto;white-space:nowrap" onclick="setStyle(MSTYLE=='sat'?'dark':'sat',1)"></button></div>
+ <div class="nfit"><button class="btn g" onclick="nearestFit()" id="nfbtn" style="flex:1">⚡ Show chargers near me</button><button class="btn" id="stybtn" style="width:auto;white-space:nowrap" onclick="setStyle(MSTYLE=='sat'?'map':'sat',1)"></button></div>
  <div id="map" role="region" aria-label="Charger map. Use &quot;Nearest charger&quot; or the filters to find one fast."></div>
  <button type="button" class="btn c1ar-open" id="arbtn" onclick="openAR()">Point your phone</button>
  <div class="sheet" id="sheet" hidden role="region" aria-label="Selected station" aria-live="polite"></div>
@@ -941,13 +941,14 @@ function baseLayer(m){if(GOOGLE_MAPS_KEY){const s=document.createElement('script
  s.onload=()=>{const g=document.createElement('script');g.src='https://unpkg.com/leaflet.gridlayer.googlemutant@0.14.1/dist/Leaflet.GoogleMutant.js';g.onload=()=>L.gridLayer.googleMutant({type:'roadmap'}).addTo(m);document.head.appendChild(g);};document.head.appendChild(s);}
  else {(window.MAPS=window.MAPS||[]).push(m);m.setMaxZoom(19);applyStyle(m);}}
 // v13: map style (Satellite default / Dark)
-var MSTYLE=localStorage.getItem('c1_mstyle')||'sat';
+var MSTYLE=localStorage.getItem('c1_mstyle')||'map';
 function applyStyle(m){const E='https://server.arcgisonline.com/ArcGIS/rest/services/';(m._sty||[]).forEach(l=>m.removeLayer(l));
  m._sty=MSTYLE=='sat'?[L.tileLayer(E+'World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Imagery © Esri, Maxar, Earthstar Geographics'}),L.tileLayer(E+'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:19}),L.tileLayer(E+'Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19})]
-  :[L.tileLayer(E+'Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxNativeZoom:16,maxZoom:19})];
- m._sty.forEach(l=>{l.addTo(m);l.bringToBack();});}
+  :[L.tileLayer(E+'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxNativeZoom:16,maxZoom:19})];
+ m._sty.forEach(l=>{l.addTo(m);l.bringToBack();});
+ const el=m.getContainer&&m.getContainer(); if(el){ el.classList.toggle('hans-mute', MSTYLE!='sat'); }}
 function setStyle(st,save){MSTYLE=st;if(save)localStorage.setItem('c1_mstyle',st);(window.MAPS||[]).forEach(applyStyle);const b=document.getElementById('stybtn');
- if(b){b.textContent=st=='sat'?'🌙 Map':'🛰 Satellite';b.setAttribute('aria-label','Map style: '+(st=='sat'?'Satellite':'Dark')+'. Switch to '+(st=='sat'?'dark':'satellite')+' map');b.setAttribute('aria-pressed',st=='sat');}}
+ if(b){b.textContent=st=='sat'?'Map':'Satellite';b.setAttribute('aria-label','Map style: '+(st=='sat'?'Satellite':'Map')+'. Switch to '+(st=='sat'?'map':'satellite')+' map');b.setAttribute('aria-pressed',st=='sat');}}
 baseLayer(map);
 let layer=L.layerGroup().addTo(map);
 function draw(){layer.clearLayers();S.filter(s=>s.price<=maxP&&xf(s)&&[...on].every(f=>f=="Reliable only"||f=="Favorites"?true:f=="Fits my car"?fit(s)!="no":f=="Fast (50 kW+)"?s.kw>=50:(NETS.includes(f)||f=="Other")?s.net==f:s.plugs.includes(f))).forEach(s=>{
@@ -3932,8 +3933,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261115q18"></script>
-<script type="module" src="./c1-three.js?v=20261115q18" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q18"></script>
+<script src="./c1-demo.js?v=20261115q19"></script>
+<script type="module" src="./c1-three.js?v=20261115q19" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261115q19"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
@@ -4478,6 +4479,77 @@ body.hc #s-map #sheet, body.hc #sheet, body.hc .sheet{background:#000!important;
       });
     }
   }catch(e){}
+})();
+</script>
+
+
+<style id="c1-mark-css">
+.c1-mark{width:32px;height:32px;flex:none;border-radius:8px;display:block}
+.mhdr{gap:8px}
+#map.hans-mute .leaflet-tile-pane{filter:saturate(.28) sepia(.1) hue-rotate(190deg) brightness(1.05) contrast(.92)}
+body.night #map.hans-mute .leaflet-tile-pane{filter:saturate(.2) sepia(.08) hue-rotate(200deg) brightness(.7) contrast(1.08)}
+#c1-lane-intro{position:absolute;inset:0;z-index:1200;background:#0B1530;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:system-ui,sans-serif}
+#c1-lane-intro .c1-mark{width:160px;height:160px}
+#c1-lane-intro .c1nm{font-size:32px;font-weight:700;margin-top:16px}
+#c1-lane-intro .lane-draw{stroke-dasharray:920;stroke-dashoffset:920}
+#c1-lane-intro.go .lane-draw{animation:c1LaneDraw .6s ease forwards}
+#c1-lane-intro.out{animation:c1LaneFade .3s ease forwards}
+@keyframes c1LaneDraw{to{stroke-dashoffset:0}}
+@keyframes c1LaneFade{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  #c1-lane-intro .lane-draw,#c1-lane-intro.go .lane-draw{animation:none;stroke-dashoffset:0}
+  #c1-lane-intro.out{animation:none;opacity:0}
+}
+.c1-fit-moment{display:flex;align-items:center;gap:8px;color:#3B7BFF;font-weight:700;margin:6px 0 2px;font-size:17px;line-height:1.4}
+.c1-pin.c1-fit-pulse svg circle[stroke="#3B7BFF"]{animation:c1FitPulse .7s ease 1}
+@keyframes c1FitPulse{0%{stroke-opacity:1;stroke-width:5}100%{stroke-opacity:.25;stroke-width:3}}
+@media (prefers-reduced-motion:reduce){.c1-pin.c1-fit-pulse svg circle[stroke="#3B7BFF"]{animation:none}}
+</style>
+<script>
+(function(){
+  const skip=(()=>{ try{ return sessionStorage.getItem('c1_intro')==='1'; }catch(e){ return false; } })();
+  const rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function playLane(){
+    if(skip||rm||document.getElementById('intro')) return;
+    const phone=document.querySelector('.phone')||document.body;
+    if(getComputedStyle(phone).position==='static') phone.style.position='relative';
+    if(document.getElementById('c1-lane-intro')) return;
+    const el=document.createElement('div');
+    el.id='c1-lane-intro';
+    el.setAttribute('aria-hidden','true');
+    el.innerHTML='<svg class="c1-mark" viewBox="0 0 1024 1024" width="160" height="160"><path class="lane-draw" d="M330 880 C 360 700, 640 690, 512 470 L 512 330" fill="none" stroke="#FFD23F" stroke-width="86" stroke-linecap="round"/><g class="plug" style="opacity:0;transition:opacity .15s"><rect x="422" y="210" width="180" height="150" rx="40" fill="#fff"/><rect x="457" y="130" width="34" height="95" rx="17" fill="#fff"/><rect x="533" y="130" width="34" height="95" rx="17" fill="#fff"/></g></svg><div class="c1nm">Kilolane</div>';
+    phone.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add('go'));
+    setTimeout(()=>{ const g=el.querySelector('.plug'); if(g) g.style.opacity=1; }, 540);
+    setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(), 320); }, 600);
+  }
+  function fitMoment(){
+    try{
+      const s=typeof cur!=='undefined'?cur:null;
+      const sh=document.getElementById('sheet');
+      if(!sh||!s) return;
+      const fits=typeof c1ExactFit==='function'&&c1ExactFit(s);
+      let row=sh.querySelector('.c1-fit-moment');
+      if(fits){
+        if(!row){
+          row=document.createElement('div');
+          row.className='c1-fit-moment';
+          row.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12 l5 5 9-9" stroke="#3B7BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Fits your car</span>';
+          const name=sh.querySelector('.c1n, #st-name, h2, b');
+          if(name&&name.parentNode) name.parentNode.insertBefore(row, name.nextSibling);
+          else sh.insertBefore(row, sh.firstChild.nextSibling);
+        }
+      } else if(row) row.remove();
+    }catch(e){}
+  }
+  if(typeof cardAll==='function'&&!cardAll._c1fit){
+    const prev=cardAll;
+    cardAll=function(){ const r=prev.apply(this,arguments); fitMoment(); return r; };
+    cardAll._c1fit=1; window.cardAll=cardAll;
+  }
+  setTimeout(fitMoment, 500);
+  if(document.readyState==='complete') playLane();
+  else window.addEventListener('load', playLane);
 })();
 </script>
 
