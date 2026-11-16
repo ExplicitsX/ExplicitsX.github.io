@@ -8,11 +8,11 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const html = readFileSync(join(root, 't-97f47847fd25', 'index.html'), 'utf8');
+const html = readFileSync(join(root, 't-97f47847fd25', 'demo.html'), 'utf8');
 const fails = [];
 const check = (c, m) => { if (!c) fails.push(m); };
 
-check(html.includes('<title>Kilolane mock v19z2</title>'), 'title stays v19z2');
+check(html.includes('<title>Kilolane preview (test version)</title>'), 'title is preview (test version)');
 check(html.includes('C1_OPENINGS={plugIn:1,findTheLane:1,nightDrive:1}'), 'three openings');
 check(html.includes("Don't use while driving. Pull over or let a passenger use this."), 'driving notice copy');
 check(html.includes("I'm not driving"), 'ack button copy');
@@ -90,7 +90,7 @@ async function boot(opts = {}) {
     denyCam: opts.denyCam !== false
   });
   const q = opts.query || '?night=0';
-  await page.goto(`http://127.0.0.1:${port}/t-97f47847fd25/${q}`, {waitUntil: 'domcontentloaded', timeout: 45000});
+  await page.goto(`http://127.0.0.1:${port}/t-97f47847fd25/demo.html${q.startsWith('?')||q.startsWith('#')?q:(q?'?'+q:'')}`, {waitUntil: 'domcontentloaded', timeout: 45000});
   return {page, errors};
 }
 
@@ -110,7 +110,7 @@ try {
     you: !!document.querySelector('#map .c1you'),
     face: typeof c1MascotFace === 'function' ? c1MascotFace() : ''
   }));
-  check(mapState.title === 'Kilolane mock v19z2', 'title live');
+  check(mapState.title === 'Kilolane preview (test version)', 'title live');
   check(!mapState.intro, 'intro skipped when c1_intro=1');
   check(mapState.arbtn.includes('Point your phone'), 'AR button visible');
   check(mapState.pins > 5 && mapState.mapOn && mapState.sheetHidden, 'map and pins still work');
