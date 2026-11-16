@@ -3,10 +3,10 @@
  * Falls back to the existing SVG/CSS visuals if WebGL is missing.
  * Light for older iPhones: shared unit geometry, Lambert, no shadows, DPR cap, pause offscreen.
  */
-import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q16';
+import * as THREE from './vendor/three-0.187.0.module.min.js?v=20261115q17';
 
 const THREE_VERSION = '0.187.0';
-const C1_ASSET_V = '20261115q16';
+const C1_ASSET_V = '20261115q17';
 const NAVY = 0x0b1530;
 const BLUE = 0x3b7bff;
 const BLUE_DEEP = 0x1e4fd8;
@@ -1716,9 +1716,10 @@ function lotSceneSvg(layout, opts) {
   opts = opts || {};
   const W = 480, H = 250;
   const pad = layout.pad;
-  const span = Math.max(pad.w, pad.d, 8);
-  const yaw = 0.58, pitch = 0.66, scale = 210 / span * (opts.zoom || 1);
-  const tgt = { x: 0.3, y: 0.2, z: 0.4 };
+  const view = chargerViewBounds(layout);
+  const span = view.span;
+  const yaw = 0.58, pitch = 0.66, scale = 250 / span * (opts.zoom || 1);
+  const tgt = { x: view.cx, y: view.cy, z: view.cz };
   const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
   function proj(x, y, z) {
     const tx = x - tgt.x, ty = y - tgt.y, tz = z - tgt.z;
@@ -1943,7 +1944,7 @@ function attachLotControls(m, layout, opts) {
     }
     if (pointers.size >= 2 && startDist > 0) {
       const d = pinchD();
-      state.zoom = pinchScale(startDist, d, startZoom, 0.7, 1.9);
+      state.zoom = pinchScale(startDist, d, startZoom, 0.45, 1.9);
       moved += 4;
       return;
     }
@@ -1988,6 +1989,35 @@ function attachLotControls(m, layout, opts) {
   };
 }
 
+
+function nearestChargerStalls(layout, maxSpan) {
+  maxSpan = maxSpan == null ? 10 : maxSpan;
+  const stalls = (layout && layout.stalls) || [];
+  if (stalls.length <= 1) return stalls;
+  const dist = function (s) { return Math.hypot(s.pillar.x, s.pillar.z); };
+  const sorted = stalls.slice().sort(function (a, b) { return dist(a) - dist(b); });
+  const origin = sorted[0];
+  const nearby = sorted.filter(function (s) {
+    return Math.hypot(s.pillar.x - origin.pillar.x, s.pillar.z - origin.pillar.z) <= maxSpan;
+  });
+  return nearby.length ? nearby : [origin];
+}
+function chargerViewBounds(layout) {
+  const stalls = nearestChargerStalls(layout);
+  if (!stalls.length) {
+    return { cx: 0, cy: 0.4, cz: 0, span: Math.max(layout.pad.w, layout.pad.d, 8) };
+  }
+  const xs = [], zs = [];
+  stalls.forEach(function (s) {
+    xs.push(s.x, s.pillar.x);
+    zs.push(s.z, s.pillar.z);
+  });
+  const minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+  const minZ = Math.min.apply(null, zs), maxZ = Math.max.apply(null, zs);
+  const w = maxX - minX + 6, d = maxZ - minZ + 6;
+  return { cx: (minX + maxX) / 2, cy: 0.4, cz: (minZ + maxZ) / 2, span: Math.min(Math.max(w, d, 8), 10) };
+}
+
 function mountLot(el, row, opts) {
   if (!el) return null;
   opts = opts || {};
@@ -2004,20 +2034,21 @@ function mountLot(el, row, opts) {
     m.root = root;
     try { m.renderer.setClearColor(LOT_BG, 1); } catch (e) {}
     try { m.scene.background = new THREE.Color(LOT_BG); } catch (e) {}
-    const span = Math.max(layout.pad.w, layout.pad.d, 8);
-    const baseDist = Math.max(16, span * 0.86);
+    const view = chargerViewBounds(layout);
+    const span = view.span;
+    const baseDist = Math.max(14, span * 0.86);
     m.camera.fov = 30;
     m.camera.near = 0.2;
-    m.camera.far = Math.max(400, baseDist * 4);
+    m.camera.far = Math.max(400, Math.max(layout.pad.w, layout.pad.d, baseDist) * 4);
     m.camera.updateProjectionMatrix();
     m.state.yaw = 0.58;
     m.state.pitch = 0.66;
     m.state.zoom = 1;
-    const look = new THREE.Vector3(0.3, 0.4, 0.4);
+    const look = new THREE.Vector3(view.cx, view.cy, view.cz);
     const placeCam = () => {
       const yaw = m.still ? 0.58 : m.state.yaw;
       const pitch = m.still ? 0.66 : Math.max(0.35, Math.min(1.15, m.state.pitch || 0.66));
-      const dist = baseDist / Math.max(0.7, m.state.zoom || 1);
+      const dist = baseDist / Math.max(0.45, m.state.zoom || 1);
       m.camera.position.set(
         look.x + dist * Math.sin(yaw) * Math.cos(pitch),
         look.y + dist * Math.sin(pitch),
