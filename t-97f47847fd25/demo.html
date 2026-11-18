@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Kilolane preview (test version)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0B1530"><link rel="icon" href="./favicon.png" type="image/png" sizes="48x48"><link rel="icon" href="./mark.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./favicon-192.png"><meta property="og:title" content="Kilolane preview (test version)"><meta property="og:description" content="A test version of Kilolane with sample data. Live status is coming soon."><meta name="twitter:title" content="Kilolane preview (test version)"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
+<title>Kilolane preview (test version)</title><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0B1530"><link rel="icon" href="./assets/v2/favicon.ico" sizes="16x16 32x32 48x48"><link rel="icon" href="./assets/v2/favicon-32.png" type="image/png" sizes="32x32"><link rel="apple-touch-icon" href="./assets/v2/apple-touch-icon.png"><meta property="og:title" content="Kilolane preview (test version)"><meta property="og:description" content="A test version of Kilolane with sample data. Live status is coming soon."><meta name="twitter:title" content="Kilolane preview (test version)"><link rel="preconnect" href="https://unpkg.com"><link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js" defer></script><script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.22/leaflet-maplibre-gl.js" defer></script><script>/* v18c: if Leaflet can't load, keep the app usable with a no-op map stub */
 if(!window.L){window.NOMAP=1;(function(){const f=function(){};let P;P=new Proxy(f,{get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k===Symbol.iterator)return function*(){};if(k===Symbol.hasInstance)return()=>false;if(k==='then')return undefined;if(k==='getLayers')return()=>[];if(k==='hasLayer'||k==='contains'||k==='intersects')return()=>false;if(k==='getZoom')return()=>11;if(k==='getCenter'||k==='getLatLng')return()=>({lat:34.05,lng:-118.27});if(k==='length')return 0;if(k==='toString')return()=>'';return P},apply(){return P},construct(){return P},set(){return true}});window.L=P})()}
@@ -3957,8 +3957,8 @@ window.openEditV23=openEditV23;
 })();
 
 </script>
-<script src="./c1-demo.js?v=20261116a"></script>
-<script type="module" src="./c1-three.js?v=20261116a" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261116a"></script>
+<script src="./c1-demo.js?v=20261118a"></script>
+<script type="module" src="./c1-three.js?v=20261118a" data-c1-three-src="./vendor/three-0.187.0.module.min.js?v=20261118a"></script>
 <style id="c1v24css">
 :root{--radius:14px;--shadow:0 4px 16px rgba(11,21,48,.22);--blue:#1E4FD8;--navy:#0B1530;--white:#F4F7FB;--title:1.125rem;--body:.9375rem;--caption:.8125rem}
 .hdr{padding:12px 16px;font-size:var(--title);font-weight:700;align-items:center}
@@ -4670,7 +4670,12 @@ html,body,.phone,button,input,select,textarea,.hdr,.big,h1,h2,.clu,.usbox,#fulln
 .c1-av{width:36px;height:36px;border-radius:50%;background:#E6EBF3;color:#0B1530;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
 .c1-openico{margin-left:auto;color:#1E4FD8;display:flex}
 .c1-hint{margin:10px 2px 0;color:#5A6680;font-size:15px}
+.c1-wtop{display:flex;align-items:center;gap:10px}
+.c1-wtop h2{margin:0}
+.c1-wmark{width:40px;height:40px;flex:none;display:block}
+.c1-whero{display:block;width:112px;height:112px;margin:0 auto 12px}
 .c1-addnets{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:8px;border:0;border-radius:12px;background:#1E4FD8;color:#fff;font-size:17px;font-weight:700;cursor:pointer}
+.leaflet-marker-icon.c1-v2pin{background:none;border:0}
 .c1-paysoon{margin-top:18px;border:1.5px dashed #C9D1DE;border-radius:16px;padding:14px 16px;text-align:center;color:#5A6680;font-size:15px;background:transparent}
 .c1-picks{display:flex;flex-wrap:wrap;gap:8px}
 .c1-picks button{min-height:48px;padding:0 16px;border-radius:999px;border:1.5px solid #C9D1DE;background:#fff;color:#0B1530;font-size:15px;font-weight:600;cursor:pointer}
@@ -4946,10 +4951,11 @@ button,.btn,.chip,.c1t,.tab,.c1-picks button,.c1-open{transition:background-colo
     let box=document.getElementById('c1nets');
     if(!box){ box=document.createElement('div'); box.id='c1nets'; root.appendChild(box); }
     const rows=pickedList();
+    const hero='<img class="c1-whero" src="assets/v2/wallet-plug-hero.svg" width="112" height="112" alt="">';
     const list=rows.length
       ? '<div class="c1-sec"><span>'+L('MY NETWORKS','MIS REDES')+'</span><button type="button" class="c1-edit" id="c1-net-edit">'+L('Edit','Editar')+'</button></div><div class="c1-netcard">'+rows.map(n=>'<a class="c1-netrow" href="'+n.href+'" target="_blank" rel="noopener"><span class="c1-av" aria-hidden="true">'+n.name.charAt(0)+'</span><span>'+n.name+'</span><span class="c1-openico">'+ico('open',20)+'</span></a>').join('')+'</div><p class="c1-hint">'+L('Tap a network to open its app.','Toca una red para abrir su app.')+'</p>'
-      : '<button type="button" class="c1-addnets" id="c1-net-edit">'+L('Add your networks','Agrega tus redes')+'</button>';
-    box.innerHTML='<h2>'+L('Wallet','Billetera')+'</h2><div class="c1-lane" aria-hidden="true"></div>'+list+'<div class="c1-paysoon">'+L('Payments coming soon','Pagos próximamente')+'</div>';
+      : hero+'<button type="button" class="c1-addnets" id="c1-net-edit">'+L('Add your networks','Agrega tus redes')+'</button>';
+    box.innerHTML='<div class="c1-wtop"><img class="c1-wmark" src="assets/v2/wallet-plug-hero.svg" width="40" height="40" alt=""><h2>'+L('Wallet','Billetera')+'</h2></div><div class="c1-lane" aria-hidden="true"></div>'+list+'<div class="c1-paysoon">'+L('Payments coming soon','Pagos próximamente')+'</div>';
     const ed=document.getElementById('c1-net-edit');
     if(ed) ed.onclick=openNetEdit;
   }
@@ -5094,4 +5100,88 @@ button,.btn,.chip,.c1t,.tab,.c1-picks button,.c1-open{transition:background-colo
 })();
 </script>
 
+<script>
+/* v2 map pins: 40x52 SVG, tip anchored at (20,45). Clustering still uses fMk. */
+(function(){
+  const BASE='assets/v2/';
+  function isFit(s){ try{ return typeof c1ExactFit==='function' && !!c1ExactFit(s); }catch(e){ return false; } }
+  function isFast(s){ return !!(s && (s.dc || s.kw>=50 || (s.dcPorts|0)>0)); }
+  function same(a,b){ return !!(a&&b&&a.lat===b.lat&&a.lng===b.lng&&a.name===b.name); }
+  function kind(s){
+    if(typeof cur!=='undefined' && same(s, cur)) return 'selected';
+    if(isFit(s)) return 'fits';
+    if(isFast(s)) return 'fast';
+    return 'pin';
+  }
+  function urlFor(s){
+    const k=kind(s);
+    if(k==='selected') return BASE+'pin-selected.svg';
+    if(k==='fits') return BASE+'pin-fits.svg';
+    if(k==='fast') return BASE+'pin-fast.svg';
+    return BASE+'pin.svg';
+  }
+  function iconFor(s){
+    return L.icon({iconUrl:urlFor(s), iconSize:[40,52], iconAnchor:[20,45], className:'c1-v2pin'});
+  }
+  const pins=new Set();
+  function pinMarker(s){
+    const m=L.marker([s.lat, s.lng], {icon:iconFor(s), keyboard:true, title:s.name||'Station', alt:s.name||'Station'});
+    m._st=s; m._c1kind=kind(s); pins.add(m);
+    m.on('remove', function(){ pins.delete(m); });
+    m.on('click', function(){ try{ pick(s); }catch(e){} try{ if(window.cardAll) cardAll(); }catch(e){} refreshPins(); });
+    return m;
+  }
+  function refreshPins(){
+    pins.forEach(function(m){
+      const s=m._st; if(!s||!m.setIcon) return;
+      const k=kind(s);
+      if(m._c1kind===k) return;
+      m._c1kind=k;
+      try{ m.setIcon(iconFor(s)); }catch(e){}
+    });
+  }
+  window.c1PinMarker=pinMarker;
+  window.c1RefreshPins=refreshPins;
+  window.fMk=function(s){ if(s && !s.nf && typeof nfOf==='function') try{s.nf=nfOf(s.net)}catch(e){} return pinMarker(s); };
+  try{ fMk=window.fMk; }catch(e){}
+  if(typeof pick==='function' && !pick._c1v2pin){
+    const prev=pick;
+    const wrapped=function(){ const r=prev.apply(this, arguments); try{ refreshPins(); }catch(e){} return r; };
+    wrapped._c1v2pin=1;
+    pick=wrapped; window.pick=wrapped;
+  }
+  const byLl=new Map();
+  function stationAt(ll){
+    if(typeof S==='undefined' || !S) return null;
+    if(byLl.size!==S.length){ byLl.clear(); for(let i=0;i<S.length;i++){ const s=S[i]; if(s&&s.lat!=null) byLl.set((+s.lat).toFixed(5)+','+(+s.lng).toFixed(5), s); } }
+    return byLl.get((+ll.lat).toFixed(5)+','+(+ll.lng).toFixed(5))||null;
+  }
+  function swapCircles(group){
+    if(!group||!group.eachLayer) return;
+    const drop=[];
+    const add=[];
+    const seen=new Set();
+    group.eachLayer(function(l){
+      if(!l||typeof l.getRadius!=='function'||!l.getLatLng) return;
+      drop.push(l);
+      const s=l._st||stationAt(l.getLatLng());
+      if(!s) return;
+      const id=s.lat+','+s.lng+'|'+(s.name||'');
+      if(seen.has(id)) return;
+      seen.add(id);
+      add.push(s);
+    });
+    drop.forEach(function(l){ try{ group.removeLayer(l); }catch(e){} });
+    add.forEach(function(s){ try{ pinMarker(s).addTo(group); }catch(e){} });
+  }
+  if(typeof draw==='function' && !draw._c1v2pin){
+    const prev=draw;
+    const wrapped=function(){ const r=prev.apply(this, arguments); try{ if(typeof layer!=='undefined') swapCircles(layer); }catch(e){} return r; };
+    wrapped._c1v2pin=1;
+    draw=wrapped; window.draw=wrapped;
+  }
+  try{ if(typeof draw==='function') draw(); }catch(e){}
+  try{ refreshPins(); }catch(e){}
+})();
+</script>
 </body></html>
