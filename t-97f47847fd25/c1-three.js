@@ -755,7 +755,7 @@ function buildWalletCard() {
     ctx.fillText('Kilolane', 220, 140);
     ctx.fillStyle = '#DDE5F2';
     ctx.font = '22px Inter, system-ui, sans-serif';
-    ctx.fillText('Every charge. One lane.', 220, 178);
+    ctx.fillText('Public EV chargers, one map', 220, 178);
     ctx.fillStyle = '#FFD23F';
     ctx.font = 'bold 32px Inter, system-ui, sans-serif';
     ctx.fillText('Coming soon', 220, 240);
