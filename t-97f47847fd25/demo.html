@@ -1360,7 +1360,7 @@ function clusterVis(z,vb){const showDet=z>=10&&vb.intersects(LA_BOX);if(showDet&
  const fn=$('fullnote');if(fn)fn.hidden=!(z>=8&&!LA_BOX.contains(map.getCenter()));}
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function flyOrJump(ll,z,dur){RM?map.setView(ll,z,{animate:false}):map.flyTo(ll,z,{duration:dur||1.2})}
-const usc=L.control({position:'topleft'});usc.onAdd=()=>{const d=L.DomUtil.create('div','usbox');d.setAttribute('role','status');d.innerHTML=`<span class="lb">Launching in Los Angeles</span><br>${US_TOTAL.toLocaleString()} US public charging stations as of Nov 2026 · DOE AFDC Nov 2026`;return d};usc.addTo(map);
+const usc=L.control({position:'topleft'});usc.onAdd=()=>{const d=L.DomUtil.create('div','usbox');d.setAttribute('role','status');d.innerHTML=`<span class="lb">Launching in Los Angeles</span><br>${US_TOTAL.toLocaleString()} US public charging stations as of Nov 2026 · DOE AFDC`;return d};usc.addTo(map);
 $('map').insertAdjacentHTML('beforeend','<div id="fullnote" role="status" hidden>Numbers show public stations here. Full details for this area are coming in the app.</div>');
 map.on('zoomend moveend',()=>{clearTimeout(drawClusters.t);drawClusters.t=setTimeout(drawClusters,60)});
 // start on the whole-US view; fly to LA once the welcome intro ends (instant with reduced motion)
